@@ -1,10 +1,14 @@
 package ast
 
-import "token"
+import (
+	"bytes"
+	"token"
+)
 
 
 type Node interface {
 	TokenLiteral() string
+	String() string // This will allow us to print AST nodes for debugging and to compare them with other AST nodes.
 }
 
 type Statement interface {
@@ -37,6 +41,19 @@ type ReturnStatement struct {
 	ReturnValue Expression
 }
 
+type ExpressionStatement struct {
+	// We need this because sometimes we have an expression act like a statement
+	// e.g let x = 5;
+	// x + 10; // this is an expression but it acts like a statement
+	Token token.Token // the first token of the expression
+	Expression Expression
+}
+
+type IntegerLiteral struct {
+	Token token.Token // token.INT
+	Value int64
+}
+
 func (p *Program) TokenLiteral() string { // used only for debugging and testing
 	if len(p.Statements) > 0{
 		return p.Statements[0].TokenLiteral()
@@ -44,6 +61,64 @@ func (p *Program) TokenLiteral() string { // used only for debugging and testing
 		return ""
 	}
 }
+
+// This will allow us to print AST nodes for debugging and to compare them with other AST nodes.
+func (p *Program) String() string { // used only for debugging and testing
+	var out bytes.Buffer
+
+	for _, s := range p.Statements {
+		out.WriteString(s.String())
+	}
+
+	return out.String()
+}
+
+func (letStatement *LetStatement) String() string {
+	var out bytes.Buffer
+
+	out.WriteString(letStatement.TokenLiteral() + " ")
+	out.WriteString(letStatement.Name.Value)
+	out.WriteString(" = ")
+
+	if letStatement.Value != nil {
+		out.WriteString(letStatement.Value.String())
+	}
+
+	out.WriteString(";")
+
+	return out.String()
+}
+
+func (returnStatement *ReturnStatement) String() string {
+	var out bytes.Buffer
+
+	out.WriteString(returnStatement.TokenLiteral() + " ")
+
+	if returnStatement.ReturnValue != nil {
+		out.WriteString(returnStatement.ReturnValue.String())
+	}
+
+	out.WriteString(";")
+
+	return out.String()
+}
+
+func (expressionStatement *ExpressionStatement) String() string {
+	if expressionStatement.Expression != nil {
+		return expressionStatement.Expression.String()
+	}
+
+	return ""
+}
+
+func (identifier *Identifier) String() string {
+	return identifier.Value
+}
+
+func (integerLiteral *IntegerLiteral) String() string {
+	return integerLiteral.TokenLiteral()
+}
+// -------------------------------------------------------------------------
 
 func (ls *LetStatement) statementNode(){}
 func (ls *LetStatement) TokenLiteral() string {
@@ -58,4 +133,14 @@ func (i *Identifier) TokenLiteral() string {
 func (rs *ReturnStatement) statementNode(){}
 func (rs *ReturnStatement) TokenLiteral() string {
 	return rs.Token.Literal
+}
+
+func (es *ExpressionStatement) statementNode(){}
+func (es *ExpressionStatement) TokenLiteral() string {
+	return es.Token.Literal
+}
+
+func (il *IntegerLiteral) expressionNode(){}
+func (il *IntegerLiteral) TokenLiteral() string {
+	return il.Token.Literal
 }
