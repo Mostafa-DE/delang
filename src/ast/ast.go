@@ -54,6 +54,12 @@ type IntegerLiteral struct {
 	Value int64
 }
 
+type PrefixExpression struct {
+	Token token.Token // The prefix token, e.g. !
+	Operator string
+	Right Expression
+}
+
 func (p *Program) TokenLiteral() string { // used only for debugging and testing
 	if len(p.Statements) > 0{
 		return p.Statements[0].TokenLiteral()
@@ -118,6 +124,17 @@ func (identifier *Identifier) String() string {
 func (integerLiteral *IntegerLiteral) String() string {
 	return integerLiteral.TokenLiteral()
 }
+
+func (prefixExpression *PrefixExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("(")
+	out.WriteString(prefixExpression.Operator)
+	out.WriteString(prefixExpression.Right.String())
+	out.WriteString(")")
+
+	return out.String()
+}
 // -------------------------------------------------------------------------
 
 func (ls *LetStatement) statementNode(){}
@@ -143,4 +160,9 @@ func (es *ExpressionStatement) TokenLiteral() string {
 func (il *IntegerLiteral) expressionNode(){}
 func (il *IntegerLiteral) TokenLiteral() string {
 	return il.Token.Literal
+}
+
+func (pe *PrefixExpression) expressionNode(){}
+func (pe *PrefixExpression) TokenLiteral() string {
+	return pe.Token.Literal
 }
