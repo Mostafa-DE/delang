@@ -1,33 +1,43 @@
 package parser
 
 import (
-	"token"
-	"lexer"
 	"ast"
+	"lexer"
+	"token"
 )
-
 
 const (
 	_ int = iota // iota is a special constant that can be used to increment values
 	LOWEST
-	EQUALS // ==
+	EQUAL       // ==
 	LESSGREATER // > or <
-	SUM // +
-	PRODUCT //. *
-	PREFIX // -X or !X
-	CALL // myFunction(X)
+	SUMSUB      // + or -
+	MULDIV      //. *
+	PREFIX      // -X or !X
+	CALL        // myFunction(X)
 )
+
+var precedences = map[token.TokenType]int{
+	token.EQUAL:       EQUAL,
+	token.NOTEQUAL:    EQUAL,
+	token.LESSTHAN:    LESSGREATER,
+	token.GREATERTHAN: LESSGREATER,
+	token.PLUS:        SUMSUB,
+	token.MINUS:       SUMSUB,
+	token.SLASH:       MULDIV,
+	token.ASTERISK:    MULDIV, // Multiplication has the highest precedence
+}
 
 type (
 	prefixParseFunc func() ast.Expression
-	infixParseFunc func(ast.Expression) ast.Expression
+	infixParseFunc  func(ast.Expression) ast.Expression
 )
 
-type Parser struct {// TODO: This is should be in ast_types.go file
-	lexerInstance *lexer.Lexer
-	currentToken token.Token
-	peekToken token.Token
-	errors []string
+type Parser struct {
+	lexerInstance   *lexer.Lexer
+	currentToken    token.Token
+	peekToken       token.Token
+	errors          []string
 	prefixParseFuns map[token.TokenType]prefixParseFunc
-	infixParseFuns map[token.TokenType]infixParseFunc
+	infixParseFuns  map[token.TokenType]infixParseFunc
 }

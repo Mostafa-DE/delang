@@ -1,16 +1,15 @@
 package parser
 
 import (
-	"token"
 	"ast"
+	"token"
 )
-
 
 func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 	statement := &ast.ReturnStatement{Token: p.currentToken}
 
 	// if !p.expectPeekType(token.RETURN) {
-		// return nil
+	// return nil
 	// }
 
 	// TODO: We're skipping the expressions until we encounter a semicolon

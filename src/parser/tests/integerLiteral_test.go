@@ -1,10 +1,10 @@
 package tests
 
 import (
-	"testing"
+	"ast"
 	"lexer"
 	"parser"
-	"ast"
+	"testing"
 )
 
 func TestIntegerLiteralExpression(t *testing.T) {

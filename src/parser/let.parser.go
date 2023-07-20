@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"token"
 	"ast"
+	"token"
 )
 
 func (p *Parser) parseLetStatement() *ast.LetStatement {
@@ -13,7 +13,7 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 	}
 
 	statement.Name = &ast.Identifier{Token: p.currentToken, Value: p.currentToken.Literal}
-	
+
 	if !p.expectPeekType(token.ASSIGN) {
 		return nil
 	}
@@ -22,6 +22,6 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 	for !p.currentTokenTypeIs(token.SEMICOLON) {
 		p.nextToken()
 	}
-	
+
 	return statement
 }

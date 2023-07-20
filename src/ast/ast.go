@@ -5,7 +5,6 @@ import (
 	"token"
 )
 
-
 type Node interface {
 	TokenLiteral() string
 	String() string // This will allow us to print AST nodes for debugging and to compare them with other AST nodes.
@@ -32,12 +31,12 @@ type Identifier struct {
 
 type LetStatement struct {
 	Token token.Token // token.LET
-	Name *Identifier
+	Name  *Identifier
 	Value Expression
 }
 
 type ReturnStatement struct {
-	Token token.Token // token.RETURN
+	Token       token.Token // token.RETURN
 	ReturnValue Expression
 }
 
@@ -45,7 +44,7 @@ type ExpressionStatement struct {
 	// We need this because sometimes we have an expression act like a statement
 	// e.g let x = 5;
 	// x + 10; // this is an expression but it acts like a statement
-	Token token.Token // the first token of the expression
+	Token      token.Token // the first token of the expression
 	Expression Expression
 }
 
@@ -55,13 +54,20 @@ type IntegerLiteral struct {
 }
 
 type PrefixExpression struct {
-	Token token.Token // The prefix token, e.g. !
+	Token    token.Token // The prefix token, e.g. !
 	Operator string
-	Right Expression
+	Right    Expression
+}
+
+type InfixExpression struct {
+	Token    token.Token // The operator token, e.g. +
+	Left     Expression
+	Operator string
+	Right    Expression
 }
 
 func (p *Program) TokenLiteral() string { // used only for debugging and testing
-	if len(p.Statements) > 0{
+	if len(p.Statements) > 0 {
 		return p.Statements[0].TokenLiteral()
 	} else {
 		return ""
@@ -135,9 +141,22 @@ func (prefixExpression *PrefixExpression) String() string {
 
 	return out.String()
 }
+
+func (infixExpression *InfixExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("(")
+	out.WriteString(infixExpression.Left.String())
+	out.WriteString(" " + infixExpression.Operator + " ")
+	out.WriteString(infixExpression.Right.String())
+	out.WriteString(")") // e.g => (1 + 2)
+
+	return out.String()
+}
+
 // -------------------------------------------------------------------------
 
-func (ls *LetStatement) statementNode(){}
+func (ls *LetStatement) statementNode() {}
 func (ls *LetStatement) TokenLiteral() string {
 	return ls.Token.Literal
 }
@@ -147,22 +166,27 @@ func (i *Identifier) TokenLiteral() string {
 	return i.Token.Literal
 }
 
-func (rs *ReturnStatement) statementNode(){}
+func (rs *ReturnStatement) statementNode() {}
 func (rs *ReturnStatement) TokenLiteral() string {
 	return rs.Token.Literal
 }
 
-func (es *ExpressionStatement) statementNode(){}
+func (es *ExpressionStatement) statementNode() {}
 func (es *ExpressionStatement) TokenLiteral() string {
 	return es.Token.Literal
 }
 
-func (il *IntegerLiteral) expressionNode(){}
+func (il *IntegerLiteral) expressionNode() {}
 func (il *IntegerLiteral) TokenLiteral() string {
 	return il.Token.Literal
 }
 
-func (pe *PrefixExpression) expressionNode(){}
+func (pe *PrefixExpression) expressionNode() {}
 func (pe *PrefixExpression) TokenLiteral() string {
 	return pe.Token.Literal
+}
+
+func (ie *InfixExpression) expressionNode() {}
+func (ie *InfixExpression) TokenLiteral() string {
+	return ie.Token.Literal
 }

@@ -2,12 +2,11 @@ package parser
 
 import (
 	"ast"
-	"lexer"
-    "token"
 	"fmt"
+	"lexer"
 	"strconv"
+	"token"
 )
-
 
 func (p *Parser) parseIntegerLiteral() ast.Expression {
 	literal := &ast.IntegerLiteral{Token: p.currentToken}
@@ -29,7 +28,7 @@ func (p *Parser) parseIdentifier() ast.Expression {
 
 func (p *Parser) parsePrefixExpression() ast.Expression {
 	expression := &ast.PrefixExpression{
-		Token: p.currentToken,
+		Token:    p.currentToken,
 		Operator: p.currentToken.Literal,
 	}
 
@@ -38,6 +37,54 @@ func (p *Parser) parsePrefixExpression() ast.Expression {
 	expression.Right = p.parseExpression(PREFIX)
 
 	return expression
+}
+
+func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
+	expression := &ast.InfixExpression{
+		Token:    p.currentToken,
+		Operator: p.currentToken.Literal,
+		Left:     left,
+	}
+
+	precedence := p.currentPrecedence()
+	p.nextToken()
+	expression.Right = p.parseExpression(precedence)
+
+	return expression
+}
+
+func (p *Parser) parseExpression(precedence int) ast.Expression {
+	prefix := p.prefixParseFuns[p.currentToken.Type]
+	if prefix == nil {
+		p.noPrefixParseFnError(p.currentToken.Type)
+		return nil
+	}
+
+	leftExp := prefix()
+
+	for !p.peekTokenTypeIs(token.SEMICOLON) && precedence < p.peekPrecedence() {
+		infix := p.infixParseFuns[p.peekToken.Type]
+		if infix == nil {
+			return leftExp
+		}
+
+		p.nextToken()
+
+		leftExp = infix(leftExp)
+	}
+
+	return leftExp
+}
+
+func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
+	statement := &ast.ExpressionStatement{Token: p.currentToken}
+	statement.Expression = p.parseExpression(LOWEST)
+
+	if p.peekTokenTypeIs(token.SEMICOLON) {
+		p.nextToken()
+	}
+
+	return statement
 }
 
 func (p *Parser) nextToken() {
@@ -56,7 +103,7 @@ func (p *Parser) registerPrefix(tokenType token.TokenType, fn prefixParseFunc) {
 func initRegisterPrefix(p *Parser) {
 	data := []struct {
 		tokenType token.TokenType
-		fn prefixParseFunc
+		fn        prefixParseFunc
 	}{
 		{token.IDENT, p.parseIdentifier},
 		{token.INT, p.parseIntegerLiteral},
@@ -64,8 +111,28 @@ func initRegisterPrefix(p *Parser) {
 		{token.MINUS, p.parsePrefixExpression},
 	}
 
-	for _, d := range data {
-		p.registerPrefix(d.tokenType, d.fn)
+	for _, val := range data {
+		p.registerPrefix(val.tokenType, val.fn)
+	}
+}
+
+func initRegisterInfix(p *Parser) {
+	data := []struct {
+		tokenType token.TokenType
+		fn        infixParseFunc
+	}{
+		{token.PLUS, p.parseInfixExpression},
+		{token.MINUS, p.parseInfixExpression},
+		{token.SLASH, p.parseInfixExpression},
+		{token.ASTERISK, p.parseInfixExpression},
+		{token.EQUAL, p.parseInfixExpression},
+		{token.NOTEQUAL, p.parseInfixExpression},
+		{token.LESSTHAN, p.parseInfixExpression},
+		{token.GREATERTHAN, p.parseInfixExpression},
+	}
+
+	for _, val := range data {
+		p.registerInfix(val.tokenType, val.fn)
 	}
 }
 
@@ -79,33 +146,39 @@ func New(l *lexer.Lexer) *Parser {
 	p.prefixParseFuns = make(map[token.TokenType]prefixParseFunc)
 	initRegisterPrefix(p)
 
+	p.infixParseFuns = make(map[token.TokenType]infixParseFunc)
+	initRegisterInfix(p)
+
 	return p
 }
 
 func (p *Parser) parseStatement() ast.Statement {
 	switch p.currentToken.Type {
-		case token.LET:
-			return p.parseLetStatement()
-		case token.RETURN:
-			return p.parseReturnStatement()
-		default:
-			return p.parseExpressionStatement()
+	case token.LET:
+		return p.parseLetStatement()
+	case token.RETURN:
+		return p.parseReturnStatement()
+	default:
+		return p.parseExpressionStatement()
 	}
 }
 
-func (p *Parser) ParserProgram() *ast.Program{
+func (p *Parser) ParserProgram() *ast.Program {
 	program := &ast.Program{}
 	program.Statements = []ast.Statement{}
 
 	for !p.currentTokenTypeIs(token.EOFILE) {
 		statement := p.parseStatement()
-		
-		if statement != nil {
-			program.Statements = append(program.Statements, statement)
-		}
+
+		program.Statements = append(program.Statements, statement)
 
 		p.nextToken()
 	}
 
 	return program
+}
+
+func (p *Parser) noPrefixParseFnError(t token.TokenType) {
+	msg := fmt.Sprintf("No prefix parse function for %s found", t)
+	p.errors = append(p.errors, msg)
 }
