@@ -1,18 +1,16 @@
 package tests
 
 import (
-	"testing"
+	"ast"
 	"lexer"
 	"parser"
-	"ast"
-	"fmt"
+	"testing"
 )
 
-
 func TestParsingPrefixExpressions(t *testing.T) {
-	prefixTests := []struct{
-		input string
-		operator string
+	prefixTests := []struct {
+		input        string
+		operator     string
 		integerValue int64
 	}{
 		{"!5;", "!", 5},
@@ -35,35 +33,28 @@ func TestParsingPrefixExpressions(t *testing.T) {
 			t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T", program.Statements[0])
 		}
 
-		prefixExpression, ok := statement.Expression.(*ast.PrefixExpression)
-		if !ok {
-			t.Fatalf("expression not *ast.PrefixExpression. got=%T", statement.Expression)
-		}
-
-		if prefixExpression.Operator != val.operator {
-			t.Fatalf("prefixExpression.Operator not '%s'. got='%s'", prefixExpression.Operator, val.operator,)
-		}
-
-		if !testIntegerLiteral(t, prefixExpression.Right, val.integerValue) {
-			return
-		}
+		testPrefixExpression(t, statement.Expression, val.operator, val.integerValue)
 	}
 }
 
-func testIntegerLiteral(t *testing.T, expression ast.Expression, value int64) bool {
-	integerLiteral, ok := expression.(*ast.IntegerLiteral)
+func testPrefixExpression(
+	t *testing.T,
+	expression ast.Expression,
+	operator string,
+	right interface{},
+) bool {
+	prefixExpression, ok := expression.(*ast.PrefixExpression)
 	if !ok {
-		t.Errorf("expression not *ast.IntegerLiteral. got=%T", expression)
+		t.Errorf("expression not *ast.PrefixExpression. got=%T", expression)
 		return false
 	}
 
-	if integerLiteral.Value != value {
-		t.Errorf("integerLiteral.Value not %d. got=%d", value, integerLiteral.Value)
+	if prefixExpression.Operator != operator {
+		t.Errorf("prefixExpression.Operator not '%s'. got='%s'", operator, prefixExpression.Operator)
 		return false
 	}
 
-	if integerLiteral.TokenLiteral() != fmt.Sprintf("%d", value) {
-		t.Errorf("integerLiteral.TokenLiteral not %d. got=%s", value, integerLiteral.TokenLiteral())
+	if !testLiteralExpression(t, prefixExpression.Right, right) {
 		return false
 	}
 

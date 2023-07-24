@@ -10,9 +10,9 @@ import (
 func TestInfixExpression(t *testing.T) {
 	infixTests := []struct {
 		input      string
-		leftValue  int64
+		leftValue  interface{}
 		operator   string
-		rightValue int64
+		rightValue interface{}
 	}{
 		{"5 + 5;", 5, "+", 5},
 		{"5 - 5;", 5, "-", 5},
@@ -22,6 +22,10 @@ func TestInfixExpression(t *testing.T) {
 		{"5 < 5;", 5, "<", 5},
 		{"5 == 5;", 5, "==", 5},
 		{"5 != 5;", 5, "!=", 5},
+		{"true == true", true, "==", true},
+		{"true != false", true, "!=", false},
+		{"false == false", false, "==", false},
+		{"true == false", true, "==", false},
 	}
 
 	for _, val := range infixTests {
@@ -36,28 +40,39 @@ func TestInfixExpression(t *testing.T) {
 		}
 
 		statement, ok := program.Statements[0].(*ast.ExpressionStatement)
-
 		if !ok {
 			t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T", program.Statements[0])
 		}
 
-		infixExpression, ok := statement.Expression.(*ast.InfixExpression)
-
-		if !ok {
-			t.Fatalf("expression not *ast.InfixExpression. got=%T", statement.Expression)
-		}
-
-		if !testIntegerLiteral(t, infixExpression.Left, val.leftValue) {
-			return
-		}
-
-		if infixExpression.Operator != val.operator {
-			t.Fatalf("infixExpression.Operator not '%s'. got='%s'", infixExpression.Operator, val.operator)
-		}
-
-		if !testIntegerLiteral(t, infixExpression.Right, val.rightValue) {
-			return
-		}
-
+		testInfixExpression(t, statement.Expression, val.leftValue, val.operator, val.rightValue)
 	}
+}
+
+func testInfixExpression(
+	t *testing.T,
+	expression ast.Expression,
+	left interface{},
+	operator string,
+	right interface{},
+) bool {
+	infixExpression, ok := expression.(*ast.InfixExpression)
+	if !ok {
+		t.Errorf("expression not *ast.InfixExpression. got=%T", expression)
+		return false
+	}
+
+	if !testLiteralExpression(t, infixExpression.Left, left) {
+		return false
+	}
+
+	if infixExpression.Operator != operator {
+		t.Errorf("infixExpression.Operator not '%s'. got='%s'", operator, infixExpression.Operator)
+		return false
+	}
+
+	if !testLiteralExpression(t, infixExpression.Right, right) {
+		return false
+	}
+
+	return true
 }

@@ -8,7 +8,26 @@ import (
 	"token"
 )
 
+func (p *Parser) parseGroupedExpression() ast.Expression {
+	defer untrace(trace("parseGroupedExpression"))
+	p.nextToken()
+
+	expression := p.parseExpression(LOWEST)
+
+	if !p.expectPeekType(token.RIGHTPAR) {
+		return nil
+	}
+
+	return expression
+}
+
+func (p *Parser) parseBoolean() ast.Expression {
+	defer untrace(trace("parseBoolean"))
+	return &ast.Boolean{Token: p.currentToken, Value: p.currentTokenTypeIs(token.TRUE)}
+}
+
 func (p *Parser) parseIntegerLiteral() ast.Expression {
+	defer untrace(trace("parseIntegerLiteral"))
 	literal := &ast.IntegerLiteral{Token: p.currentToken}
 
 	value, err := strconv.ParseInt(p.currentToken.Literal, 0, 64)
@@ -27,6 +46,7 @@ func (p *Parser) parseIdentifier() ast.Expression {
 }
 
 func (p *Parser) parsePrefixExpression() ast.Expression {
+	defer untrace(trace("parsePrefixExpression"))
 	expression := &ast.PrefixExpression{
 		Token:    p.currentToken,
 		Operator: p.currentToken.Literal,
@@ -40,6 +60,7 @@ func (p *Parser) parsePrefixExpression() ast.Expression {
 }
 
 func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
+	defer untrace(trace("parseInfixExpression"))
 	expression := &ast.InfixExpression{
 		Token:    p.currentToken,
 		Operator: p.currentToken.Literal,
@@ -54,29 +75,31 @@ func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
 }
 
 func (p *Parser) parseExpression(precedence int) ast.Expression {
-	prefix := p.prefixParseFuns[p.currentToken.Type]
-	if prefix == nil {
+	defer untrace(trace("parseExpression"))
+	prefixParseFunc := p.prefixParseFuns[p.currentToken.Type]
+	if prefixParseFunc == nil {
 		p.noPrefixParseFnError(p.currentToken.Type)
 		return nil
 	}
 
-	leftExp := prefix()
+	leftExp := prefixParseFunc()
 
 	for !p.peekTokenTypeIs(token.SEMICOLON) && precedence < p.peekPrecedence() {
-		infix := p.infixParseFuns[p.peekToken.Type]
-		if infix == nil {
+		infixParseFunc := p.infixParseFuns[p.peekToken.Type]
+		if infixParseFunc == nil {
 			return leftExp
 		}
 
-		p.nextToken()
+		p.nextToken() // Move to the next token (operator) because we already have the left expression
 
-		leftExp = infix(leftExp)
+		leftExp = infixParseFunc(leftExp)
 	}
 
 	return leftExp
 }
 
 func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
+	defer untrace(trace("parseExpressionStatement"))
 	statement := &ast.ExpressionStatement{Token: p.currentToken}
 	statement.Expression = p.parseExpression(LOWEST)
 
@@ -109,6 +132,10 @@ func initRegisterPrefix(p *Parser) {
 		{token.INT, p.parseIntegerLiteral},
 		{token.EXCLAMATION, p.parsePrefixExpression},
 		{token.MINUS, p.parsePrefixExpression},
+		{token.TRUE, p.parseBoolean},
+		{token.FALSE, p.parseBoolean},
+		{token.LEFTPAR, p.parseGroupedExpression},
+		{token.RIGHTPAR, p.parseGroupedExpression},
 	}
 
 	for _, val := range data {

@@ -1,10 +1,10 @@
 package tests
 
 import (
-	"testing"
 	"ast"
 	"lexer"
 	"parser"
+	"testing"
 )
 
 func TestIdentifierExpression(t *testing.T) {
@@ -24,17 +24,5 @@ func TestIdentifierExpression(t *testing.T) {
 		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T", program.Statements[0])
 	}
 
-	identifier, ok := statement.Expression.(*ast.Identifier)
-	if !ok {
-		t.Fatalf("expression not *ast.Identifier. got=%T", statement.Expression)
-	}
-
-	if identifier.Value != "foobar" {
-		t.Errorf("identifier.Value not %s. got=%s", "foobar", identifier.Value)
-	}
-
-	if identifier.TokenLiteral() != "foobar" {
-		t.Errorf("identifier.TokenLiteral not %s. got=%s", "foobar", identifier.TokenLiteral())
-	}
-	
+	testIdentifier(t, statement.Expression, "foobar")
 }
