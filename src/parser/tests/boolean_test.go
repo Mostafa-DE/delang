@@ -20,7 +20,7 @@ func TestBooleanExpression(t *testing.T) {
 		l := lexer.New(val.input)
 		p := parser.New(l)
 
-		program := p.ParserProgram()
+		program := p.ParseProgram()
 		checkParserErrors(t, p)
 
 		if len(program.Statements) != 1 {

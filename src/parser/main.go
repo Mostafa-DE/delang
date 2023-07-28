@@ -7,7 +7,7 @@ import (
 )
 
 func (p *Parser) parseExpression(precedence int) ast.Expression {
-	defer untrace(trace("parseExpression"))
+	// defer untrace(trace("parseExpression"))
 	prefixParseFunc := p.prefixParseFuns[p.currentToken.Type]
 	if prefixParseFunc == nil {
 		p.noPrefixParseFnError(p.currentToken.Type)
@@ -56,6 +56,8 @@ func initRegisterPrefix(p *Parser) {
 		{token.FALSE, p.parseBoolean},
 		{token.LEFTPAR, p.parseGroupedExpression},
 		{token.RIGHTPAR, p.parseGroupedExpression},
+		{token.IF, p.parseIfExpression},
+		{token.FUNCTION, p.parseFunction},
 	}
 
 	for _, val := range data {
@@ -76,6 +78,7 @@ func initRegisterInfix(p *Parser) {
 		{token.NOTEQUAL, p.parseInfixExpression},
 		{token.LESSTHAN, p.parseInfixExpression},
 		{token.GREATERTHAN, p.parseInfixExpression},
+		{token.LEFTPAR, p.parseCallFunction},
 	}
 
 	for _, val := range data {
@@ -110,7 +113,7 @@ func (p *Parser) parseStatement() ast.Statement {
 	}
 }
 
-func (p *Parser) ParserProgram() *ast.Program {
+func (p *Parser) ParseProgram() *ast.Program {
 	program := &ast.Program{}
 	program.Statements = []ast.Statement{}
 

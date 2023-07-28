@@ -2,7 +2,6 @@ package tests
 
 import (
 	"ast"
-	"fmt"
 	"lexer"
 	"parser"
 	"testing"
@@ -19,12 +18,12 @@ func TestReturnStatements(t *testing.T) {
 	l := lexer.New(input)
 	p := parser.New(l)
 
-	program := p.ParserProgram()
+	program := p.ParseProgram()
 
 	checkParserErrors(t, p)
 
 	if program == nil {
-		t.Fatalf("ParserProgram() returned nil :( ")
+		t.Fatalf("ParseProgram() returned nil :( ")
 	}
 
 	if len(program.Statements) != 4 {
@@ -32,7 +31,6 @@ func TestReturnStatements(t *testing.T) {
 	}
 
 	for _, statement := range program.Statements {
-		fmt.Println(statement)
 		returnStatement, ok := statement.(*ast.ReturnStatement) // type assertion to make sure we have a return statement
 
 		if !ok {

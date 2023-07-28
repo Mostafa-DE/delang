@@ -25,7 +25,8 @@ var precedences = map[token.TokenType]int{
 	token.PLUS:        SUMSUB,
 	token.MINUS:       SUMSUB,
 	token.SLASH:       MULDIV,
-	token.ASTERISK:    MULDIV, // Multiplication has the highest precedence
+	token.ASTERISK:    MULDIV,
+	token.LEFTPAR:     CALL, // function call has the highest precedence
 }
 
 type (

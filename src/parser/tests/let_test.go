@@ -17,12 +17,12 @@ func TestLetStatements(t *testing.T) {
 	l := lexer.New(input)
 	p := parser.New(l)
 
-	program := p.ParserProgram()
+	program := p.ParseProgram()
 
 	checkParserErrors(t, p)
 
 	if program == nil {
-		t.Fatalf("ParserProgram() returned nil :( ")
+		t.Fatalf("ParseProgram() returned nil :( ")
 	}
 
 	if len(program.Statements) != 3 {
