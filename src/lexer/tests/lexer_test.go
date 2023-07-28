@@ -1,10 +1,10 @@
 package lexer
 
 import (
+	"lexer"
 	"testing"
 	"token"
 )
-
 
 func TestNextToken(t *testing.T) {
 	input := `
@@ -34,7 +34,7 @@ func TestNextToken(t *testing.T) {
 	`
 
 	tests := []struct {
-		expectedType token.TokenType
+		expectedType    token.TokenType
 		expectedLiteral string
 	}{
 		{token.LET, "let"},
@@ -113,7 +113,7 @@ func TestNextToken(t *testing.T) {
 		{token.EOFILE, ""},
 	}
 
-	l := New(input)
+	l := lexer.New(input)
 
 	for idx, val := range tests {
 		tok := l.NextToken()
@@ -121,14 +121,14 @@ func TestNextToken(t *testing.T) {
 		if tok.Type != val.expectedType {
 			t.Fatalf(
 				"Failed at index [%d] - tokenType wrong. expected=%q but got=%q",
-				idx, val.expectedType, tok.Type,
+				idx, tok.Type, val.expectedType,
 			)
 		}
 
 		if tok.Literal != val.expectedLiteral {
 			t.Fatalf(
 				"Failed at index [%d] - literal wrong. expected=%q but got=%q",
-				idx, val.expectedLiteral, tok.Literal,
+				idx, tok.Literal, val.expectedLiteral,
 			)
 		}
 
