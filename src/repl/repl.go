@@ -5,27 +5,48 @@ import (
 	"fmt"
 	"io"
 	"lexer"
-	"token"
+	"parser"
 )
 
 const PROMPT = ">> "
-
 
 func StartSession(input io.Reader, output io.Writer) {
 	scanner := bufio.NewScanner(input)
 
 	for {
-		fmt.Printf(PROMPT)
+		fmt.Print(PROMPT)
 		scanned := scanner.Scan()
-		if !scanned {return}
-
-		lineText := scanner.Text()
-		l := lexer.New(lineText)
-
-		for tok := l.NextToken(); tok.Type != token.EOFILE ; tok = l.NextToken() {
-			fmt.Printf("%+v\n", tok)
+		if !scanned {
+			return
 		}
 
+		lineText := scanner.Text()
 
+		if lineText == ".exit" {
+			return
+		}
+
+		if lineText == ".help" {
+			fmt.Printf("Help is on the way!\n")
+			continue
+		}
+
+		if lineText == "clear" {
+			clearConsole(output)
+			continue
+		}
+
+		l := lexer.New(lineText)
+		p := parser.New(l)
+
+		program := p.ParseProgram()
+
+		if len(p.Errors()) != 0 {
+			printParserErrors(output, p.Errors())
+			continue
+		}
+
+		io.WriteString(output, program.String())
+		io.WriteString(output, "\n")
 	}
 }
