@@ -31,7 +31,7 @@ func testIdentifier(t *testing.T, expression ast.Expression, value string) bool 
 	}
 
 	if identifier.Value != value {
-		t.Errorf("identifier.Value not %s. got=%s", value, identifier.Value)
+		t.Errorf("identifier.Value not %s. got=%s", identifier.Value, value)
 		return false
 	}
 

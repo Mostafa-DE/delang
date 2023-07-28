@@ -8,39 +8,38 @@ import (
 )
 
 func TestLetStatements(t *testing.T) {
-	input := `
-		let x = 5;
-		let y = 10;
-		let num = 1234;
-	`
-
-	l := lexer.New(input)
-	p := parser.New(l)
-
-	program := p.ParseProgram()
-
-	checkParserErrors(t, p)
-
-	if program == nil {
-		t.Fatalf("ParseProgram() returned nil :( ")
-	}
-
-	if len(program.Statements) != 3 {
-		t.Fatalf("Let statement doesn't contain 3 statements. got=%d", len(program.Statements))
-	}
-
 	tests := []struct {
+		input              string
 		expectedIdentifier string
+		expectedValue      interface{}
 	}{
-		{"x"},
-		{"y"},
-		{"num"},
+		{"let x = 5;", "x", 5},
+		{"let y = 10;", "y", 10},
+		{"let num = 1234;", "num", 1234},
 	}
 
-	for idx, val := range tests {
-		statement := program.Statements[idx]
+	for _, val := range tests {
+		l := lexer.New(val.input)
+		p := parser.New(l)
+
+		program := p.ParseProgram()
+		checkParserErrors(t, p)
+
+		statement := program.Statements[0]
 
 		if !testLetStatement(t, statement, val.expectedIdentifier) {
+			return
+		}
+
+		value := statement.(*ast.LetStatement).Value
+
+		if !testLiteralExpression(t, value, val.expectedValue) {
+			return
+		}
+
+		identifier := statement.(*ast.LetStatement).Name
+
+		if !testLiteralExpression(t, identifier, val.expectedIdentifier) {
 			return
 		}
 	}
@@ -59,12 +58,12 @@ func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
 	}
 
 	if letStatement.Name.Value != name {
-		t.Errorf("letStatement.Name.Value not '%s'. got=%s", name, letStatement.Name.Value)
+		t.Errorf("letStatement.Name.Value not '%s'. got=%s", letStatement.Name.Value, name)
 		return false
 	}
 
 	if letStatement.Name.TokenLiteral() != name {
-		t.Errorf("letStatement.Name not '%s'. got=%s", name, letStatement.Name)
+		t.Errorf("letStatement.Name not '%s'. got=%s", letStatement.Name, name)
 		return false
 	}
 

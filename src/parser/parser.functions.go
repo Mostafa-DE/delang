@@ -20,8 +20,11 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 		return nil
 	}
 
-	// TODO: We're skipping the expressions until we encounter a semicolon
-	for !p.currentTokenTypeIs(token.SEMICOLON) {
+	p.nextToken()
+
+	statement.Value = p.parseExpression(LOWEST)
+
+	if p.peekTokenTypeIs(token.SEMICOLON) {
 		p.nextToken()
 	}
 
@@ -31,12 +34,11 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 	statement := &ast.ReturnStatement{Token: p.currentToken}
 
-	// if !p.expectPeekType(token.RETURN) {
-	// return nil
-	// }
+	p.nextToken()
 
-	// TODO: We're skipping the expressions until we encounter a semicolon
-	for !p.currentTokenTypeIs(token.SEMICOLON) {
+	statement.ReturnValue = p.parseExpression(LOWEST)
+
+	if p.peekTokenTypeIs(token.SEMICOLON) {
 		p.nextToken()
 	}
 
