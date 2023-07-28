@@ -1,10 +1,10 @@
 package tests
 
 import (
-	"testing"
+	"ast"
 	"lexer"
 	"parser"
-	"ast"
+	"testing"
 )
 
 func TestLetStatements(t *testing.T) {
@@ -40,7 +40,7 @@ func TestLetStatements(t *testing.T) {
 	for idx, val := range tests {
 		statement := program.Statements[idx]
 
-		if !testLetStatement(t, statement, val.expectedIdentifier){
+		if !testLetStatement(t, statement, val.expectedIdentifier) {
 			return
 		}
 	}

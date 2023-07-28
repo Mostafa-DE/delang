@@ -1,10 +1,11 @@
 package tests
 
 import (
-	"testing"
+	"ast"
+	"fmt"
 	"lexer"
 	"parser"
-	"ast"
+	"testing"
 )
 
 func TestReturnStatements(t *testing.T) {
@@ -12,6 +13,7 @@ func TestReturnStatements(t *testing.T) {
 		return 5;
 		return 10;
 		return 1234;
+		return;
 	`
 
 	l := lexer.New(input)
@@ -25,11 +27,12 @@ func TestReturnStatements(t *testing.T) {
 		t.Fatalf("ParserProgram() returned nil :( ")
 	}
 
-	if len(program.Statements) != 3 {
+	if len(program.Statements) != 4 {
 		t.Fatalf("Return statement doesn't contain 3 statements. got=%d", len(program.Statements))
 	}
 
 	for _, statement := range program.Statements {
+		fmt.Println(statement)
 		returnStatement, ok := statement.(*ast.ReturnStatement) // type assertion to make sure we have a return statement
 
 		if !ok {
