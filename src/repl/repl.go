@@ -2,6 +2,7 @@ package repl
 
 import (
 	"bufio"
+	"evaluator"
 	"fmt"
 	"io"
 	"lexer"
@@ -31,7 +32,7 @@ func StartSession(input io.Reader, output io.Writer) {
 			continue
 		}
 
-		if lineText == "clear" {
+		if lineText == ".clear" {
 			clearConsole(output)
 			continue
 		}
@@ -46,7 +47,12 @@ func StartSession(input io.Reader, output io.Writer) {
 			continue
 		}
 
-		io.WriteString(output, program.String())
-		io.WriteString(output, "\n")
+		evaluated := evaluator.Eval(program)
+
+		if evaluated != nil {
+			io.WriteString(output, evaluated.Inspect())
+			io.WriteString(output, "\n")
+		}
+
 	}
 }
