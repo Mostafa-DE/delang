@@ -9,13 +9,12 @@ var (
 	NULL  = &object.Null{}
 	TRUE  = &object.Boolean{Value: true}
 	FALSE = &object.Boolean{Value: false}
-	ZERO  = &object.Integer{Value: 0}
 )
 
 func Eval(node ast.Node) object.Object {
 	switch node := node.(type) {
 	case *ast.Program: // Root node of every AST our parser produces
-		return evalStatements(node.Statements)
+		return evalProgram(node.Statements)
 
 	case *ast.ExpressionStatement:
 		return Eval(node.Expression)
@@ -40,21 +39,44 @@ func Eval(node ast.Node) object.Object {
 		return evalInfixExpression(node.Operator, left, right)
 
 	case *ast.BlockStatement:
-		return evalStatements(node.Statements)
+		return evalBlockStatement(node.Statements)
 
 	case *ast.IfExpression:
 		return evalIfExpression(node)
+
+	case *ast.ReturnStatement:
+		val := Eval(node.ReturnValue)
+
+		return &object.Return{Value: val}
 
 	}
 
 	return nil
 }
 
-func evalStatements(statements []ast.Statement) object.Object {
+func evalProgram(statements []ast.Statement) object.Object {
 	var result object.Object
 
 	for _, statement := range statements {
 		result = Eval(statement)
+
+		if returnValue, ok := result.(*object.Return); ok {
+			return returnValue.Value
+		}
+	}
+
+	return result
+}
+
+func evalBlockStatement(statements []ast.Statement) object.Object {
+	var result object.Object
+
+	for _, statement := range statements {
+		result = Eval(statement)
+
+		if result != nil && result.Type() == object.RETURN_OBJ {
+			return result
+		}
 	}
 
 	return result

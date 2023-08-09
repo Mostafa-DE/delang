@@ -47,7 +47,7 @@ func StartSession(input io.Reader, output io.Writer) {
 			continue
 		}
 
-		fmt.Printf("Parsed: %s\n", program.String())
+		// fmt.Printf("Parsed: %s\n", program.String())
 
 		evaluated := evaluator.Eval(program)
 
