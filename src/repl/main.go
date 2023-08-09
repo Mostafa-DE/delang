@@ -18,26 +18,26 @@ func StartSession(input io.Reader, output io.Writer) {
 		fmt.Print(PROMPT)
 		scanned := scanner.Scan()
 		if !scanned {
-			return
+			break
 		}
 
-		lineText := scanner.Text()
+		command := scanner.Text()
 
-		if lineText == ".exit" {
-			return
+		if command == ".exit" {
+			break
 		}
 
-		if lineText == ".help" {
+		if command == ".help" {
 			fmt.Printf("Help is on the way!\n")
 			continue
 		}
 
-		if lineText == ".clear" {
+		if command == ".clear" {
 			clearConsole(output)
 			continue
 		}
 
-		l := lexer.New(lineText)
+		l := lexer.New(command)
 		p := parser.New(l)
 
 		program := p.ParseProgram()
