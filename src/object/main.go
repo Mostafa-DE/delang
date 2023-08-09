@@ -17,11 +17,21 @@ type Boolean struct {
 	Value bool
 }
 
+type Return struct {
+	Value Object
+}
+
+type Error struct {
+	Msg string
+}
+
 type Null struct{}
 
 const (
 	INTEGER_OBJ = "INTEGER"
 	BOOLEAN_OBJ = "BOOLEAN"
+	RETURN_OBJ  = "RETURN"
+	ERROR_OBJ   = "ERROR"
 	NULL_OBJ    = "NULL"
 )
 
@@ -47,4 +57,20 @@ func (null *Null) Type() ObjectType {
 
 func (null *Null) Inspect() string {
 	return "null"
+}
+
+func (returnObj *Return) Type() ObjectType {
+	return RETURN_OBJ
+}
+
+func (returnObj *Return) Inspect() string {
+	return returnObj.Value.Inspect()
+}
+
+func (err *Error) Type() ObjectType {
+	return ERROR_OBJ
+}
+
+func (err *Error) Inspect() string {
+	return "ERROR: " + err.Msg
 }
