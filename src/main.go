@@ -2,9 +2,8 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"os/user"
-	"repl"
+	"server"
 )
 
 func main() {
@@ -18,5 +17,7 @@ func main() {
 	fmt.Printf("Type '.exit' to exit the REPL.\n")
 	fmt.Printf("Type '.help' to see a list of commands.\n")
 
-	repl.StartSession(os.Stdin, os.Stdout)
+	server.StartServer()
+
+	// repl.StartSession(os.Stdin, os.Stdout)
 }
