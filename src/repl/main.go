@@ -1,61 +1,162 @@
 package repl
 
 import (
-	"bufio"
 	"fmt"
-	"io"
+	"log"
 
 	"github.com/Mostafa-DE/delang/evaluator"
 	"github.com/Mostafa-DE/delang/lexer"
 	"github.com/Mostafa-DE/delang/parser"
+	"github.com/eiannone/keyboard"
 )
 
-const PROMPT = ">> "
+func StartSession() {
+	PROMPT := ">>> "
 
-func StartSession(input io.Reader, output io.Writer) {
-	scanner := bufio.NewScanner(input)
+	if err := keyboard.Open(); err != nil {
+		log.Fatal(err)
+	}
+	defer keyboard.Close()
+
+	fmt.Printf("Hi! Welcome to DE v0.0.1\n")
+	fmt.Printf("Type '.help' to see a list of commands.\n")
+
+	history := []string{}
+	historyIndex := 0
+	currentInput := ""
+	cursorPosition := 0
+
+	fmt.Print(PROMPT)
 
 	for {
-		fmt.Print(PROMPT)
-		scanned := scanner.Scan()
-		if !scanned {
+		char, key, err := keyboard.GetKey()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if key == keyboard.KeyCtrlC {
+			fmt.Println("\nBye!")
 			break
+
+		} else if key == keyboard.KeyEnter {
+			fmt.Println()
+			if currentInput != "" {
+				history = append(history, currentInput)
+				historyIndex = len(history)
+
+				startExec(currentInput)
+
+				currentInput = ""
+				cursorPosition = 0
+				fmt.Print(PROMPT)
+			}
+
 		}
 
-		command := scanner.Text()
+		if key == keyboard.KeyArrowUp {
+			if historyIndex > 0 {
+				historyIndex--
+				currentInput = history[historyIndex]
+				cursorPosition = len(currentInput)
+				clearCurrentLine()
+				fmt.Print(PROMPT)
+				fmt.Print(currentInput)
+			}
 
-		if command == ".exit" {
-			break
 		}
 
-		if command == ".help" {
-			fmt.Printf("Help is on the way!\n")
-			continue
+		if key == keyboard.KeyArrowDown {
+			if historyIndex < len(history)-1 {
+				historyIndex++
+				currentInput = history[historyIndex]
+				cursorPosition = len(currentInput)
+				clearCurrentLine()
+				fmt.Print(PROMPT)
+				fmt.Print(currentInput)
+
+			} else if historyIndex == len(history)-1 {
+				historyIndex++
+				currentInput = ""
+				cursorPosition = 0
+				clearCurrentLine()
+				fmt.Print(PROMPT)
+			}
 		}
 
-		if command == ".clear" {
-			clearConsole(output)
-			continue
+		if key == keyboard.KeyBackspace || key == keyboard.KeyBackspace2 {
+			if cursorPosition > 0 {
+				currentInput = currentInput[:cursorPosition-1] + currentInput[cursorPosition:]
+				cursorPosition--
+				clearCurrentLine()
+				fmt.Print(PROMPT)
+				fmt.Print(currentInput)
+				moveCursorLeft(len(currentInput) - cursorPosition - 1)
+			}
 		}
 
-		l := lexer.New(command)
-		p := parser.New(l)
-
-		program := p.ParseProgram()
-
-		if len(p.Errors()) != 0 {
-			printParserErrors(output, p.Errors())
-			continue
+		if key == keyboard.KeyArrowLeft {
+			if cursorPosition > 0 {
+				cursorPosition--
+				moveCursorLeft(1)
+			}
 		}
 
-		// fmt.Printf("Parsed: %s\n", program.String())
-
-		evaluated := evaluator.Eval(program)
-
-		if evaluated != nil {
-			io.WriteString(output, evaluated.Inspect())
-			io.WriteString(output, "\n")
+		if key == keyboard.KeyArrowRight {
+			if cursorPosition < len(currentInput) {
+				cursorPosition++
+				moveCursorRight(1)
+			}
 		}
 
+		if char != 0 {
+			currentInput = currentInput[:cursorPosition] + string(char) + currentInput[cursorPosition:]
+			cursorPosition++
+			clearCurrentLine()
+			fmt.Print(PROMPT)
+			fmt.Print(currentInput)
+			moveCursorLeft(len(currentInput) - cursorPosition - 1)
+		}
+
+		if key == keyboard.KeySpace {
+			currentInput = currentInput[:cursorPosition] + " " + currentInput[cursorPosition:]
+			cursorPosition++
+			clearCurrentLine()
+			fmt.Print(PROMPT)
+			fmt.Print(currentInput)
+			moveCursorLeft(len(currentInput) - cursorPosition - 1)
+		}
 	}
+}
+
+func startExec(command string) {
+	l := lexer.New(command)
+	p := parser.New(l)
+
+	if command == ".clear" {
+		fmt.Print("\033[H\033[2J")
+		return
+	}
+
+	if command == ".help" {
+		// This should be a separate function in the future
+		fmt.Println("Commands:")
+		fmt.Println("Ctrl+C: exit the REPL")
+		fmt.Println(".clear: clear the screen")
+		return
+	}
+
+	program := p.ParseProgram()
+
+	if parserErrors(p) {
+		return
+	}
+
+	eval := evaluator.Eval(program)
+
+	if eval != nil {
+		fmt.Println(eval.Inspect())
+	} else {
+		fmt.Println("null")
+	}
+
 }
