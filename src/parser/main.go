@@ -1,9 +1,9 @@
 package parser
 
 import (
-	"ast"
-	"lexer"
-	"token"
+	"github.com/Mostafa-DE/delang/ast"
+	"github.com/Mostafa-DE/delang/lexer"
+	"github.com/Mostafa-DE/delang/token"
 )
 
 func (p *Parser) parseExpression(precedence int) ast.Expression {

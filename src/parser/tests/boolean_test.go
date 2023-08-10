@@ -1,13 +1,15 @@
 package tests
 
 import (
-	"ast"
-	"lexer"
-	"parser"
 	"testing"
+
+	"github.com/Mostafa-DE/delang/parser"
+
+	"github.com/Mostafa-DE/delang/ast"
+	"github.com/Mostafa-DE/delang/lexer"
 )
 
-func TestBooleanExpression(t *testing.T) {
+func TestBooleanExpression1(t *testing.T) {
 	booleanTests := []struct {
 		input    string
 		expected bool

@@ -1,9 +1,11 @@
 package evaluator
 
 import (
-	"ast"
 	"fmt"
-	"object"
+
+	"github.com/Mostafa-DE/delang/object"
+
+	"github.com/Mostafa-DE/delang/ast"
 )
 
 var (

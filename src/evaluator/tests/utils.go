@@ -1,11 +1,12 @@
 package tests
 
 import (
-	"evaluator"
-	"lexer"
-	"object"
-	"parser"
 	"testing"
+
+	"github.com/Mostafa-DE/delang/evaluator"
+	"github.com/Mostafa-DE/delang/lexer"
+	"github.com/Mostafa-DE/delang/object"
+	"github.com/Mostafa-DE/delang/parser"
 )
 
 func testEval(input string) object.Object {

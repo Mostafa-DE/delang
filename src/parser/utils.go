@@ -2,7 +2,8 @@ package parser
 
 import (
 	"fmt"
-	"token"
+
+	"github.com/Mostafa-DE/delang/token"
 )
 
 func (p *Parser) Errors() []string {

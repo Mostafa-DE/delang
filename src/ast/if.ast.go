@@ -2,7 +2,8 @@ package ast
 
 import (
 	"bytes"
-	"token"
+
+	"github.com/Mostafa-DE/delang/token"
 )
 
 type IfExpression struct {

@@ -2,11 +2,12 @@ package repl
 
 import (
 	"bufio"
-	"evaluator"
 	"fmt"
 	"io"
-	"lexer"
-	"parser"
+
+	"github.com/Mostafa-DE/delang/evaluator"
+	"github.com/Mostafa-DE/delang/lexer"
+	"github.com/Mostafa-DE/delang/parser"
 )
 
 const PROMPT = ">> "

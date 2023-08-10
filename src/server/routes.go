@@ -2,10 +2,12 @@ package server
 
 import (
 	"encoding/json"
-	"evaluator"
-	"lexer"
 	"net/http"
-	"parser"
+
+	"github.com/Mostafa-DE/delang/lexer"
+	"github.com/Mostafa-DE/delang/parser"
+
+	"github.com/Mostafa-DE/delang/evaluator"
 )
 
 type RequestBody struct {

@@ -1,10 +1,11 @@
 package tests
 
 import (
-	"ast"
-	"lexer"
-	"parser"
 	"testing"
+
+	"github.com/Mostafa-DE/delang/ast"
+	"github.com/Mostafa-DE/delang/lexer"
+	"github.com/Mostafa-DE/delang/parser"
 )
 
 func TestIdentifierExpression(t *testing.T) {

@@ -1,10 +1,12 @@
 package tests
 
 import (
-	"ast"
 	"fmt"
-	"parser"
 	"testing"
+
+	"github.com/Mostafa-DE/delang/parser"
+
+	"github.com/Mostafa-DE/delang/ast"
 )
 
 func checkParserErrors(t *testing.T, p *parser.Parser) {

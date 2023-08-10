@@ -1,6 +1,6 @@
 package lexer
 
-import "token"
+import "github.com/Mostafa-DE/delang/token"
 
 type Lexer struct {
 	input            string

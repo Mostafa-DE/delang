@@ -3,7 +3,8 @@ package ast
 import (
 	"bytes"
 	"strings"
-	"token"
+
+	"github.com/Mostafa-DE/delang/token"
 )
 
 type CallFunction struct {

@@ -3,7 +3,8 @@ package main
 import (
 	"fmt"
 	"os/user"
-	"server"
+
+	"github.com/Mostafa-DE/delang/server"
 )
 
 func main() {

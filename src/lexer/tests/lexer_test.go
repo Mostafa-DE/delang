@@ -1,9 +1,10 @@
 package lexer
 
 import (
-	"lexer"
 	"testing"
-	"token"
+
+	"github.com/Mostafa-DE/delang/lexer"
+	"github.com/Mostafa-DE/delang/token"
 )
 
 func TestNextToken(t *testing.T) {

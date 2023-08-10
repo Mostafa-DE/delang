@@ -1,6 +1,6 @@
 package ast
 
-import "token"
+import "github.com/Mostafa-DE/delang/token"
 
 type ExpressionStatement struct {
 	// We need this because sometimes we have an expression act like a statement

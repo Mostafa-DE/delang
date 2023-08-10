@@ -1,9 +1,10 @@
 package parser
 
 import (
-	"ast"
-	"lexer"
-	"token"
+	"github.com/Mostafa-DE/delang/ast"
+	"github.com/Mostafa-DE/delang/token"
+
+	"github.com/Mostafa-DE/delang/lexer"
 )
 
 const (

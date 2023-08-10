@@ -1,10 +1,12 @@
 package tests
 
 import (
-	"ast"
-	"lexer"
-	"parser"
 	"testing"
+
+	"github.com/Mostafa-DE/delang/lexer"
+	"github.com/Mostafa-DE/delang/parser"
+
+	"github.com/Mostafa-DE/delang/ast"
 )
 
 func TestReturnStatements(t *testing.T) {

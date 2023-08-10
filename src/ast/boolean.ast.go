@@ -1,7 +1,7 @@
 package ast
 
 import (
-	"token"
+	"github.com/Mostafa-DE/delang/token"
 )
 
 type Boolean struct {

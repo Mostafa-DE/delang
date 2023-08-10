@@ -1,10 +1,11 @@
 package parser
 
 import (
-	"ast"
 	"fmt"
 	"strconv"
-	"token"
+
+	"github.com/Mostafa-DE/delang/ast"
+	"github.com/Mostafa-DE/delang/token"
 )
 
 func (p *Parser) parseLetStatement() *ast.LetStatement {

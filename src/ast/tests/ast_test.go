@@ -1,9 +1,10 @@
 package tests
 
 import (
-	"ast"
 	"testing"
-	"token"
+
+	"github.com/Mostafa-DE/delang/ast"
+	"github.com/Mostafa-DE/delang/token"
 )
 
 func TestString(t *testing.T) {

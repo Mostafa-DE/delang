@@ -1,8 +1,9 @@
 package tests
 
 import (
-	"object"
 	"testing"
+
+	"github.com/Mostafa-DE/delang/object"
 )
 
 func TestErrorHandling(t *testing.T) {

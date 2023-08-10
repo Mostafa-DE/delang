@@ -1,10 +1,12 @@
 package tests
 
 import (
-	"ast"
-	"lexer"
-	"parser"
 	"testing"
+
+	"github.com/Mostafa-DE/delang/parser"
+
+	"github.com/Mostafa-DE/delang/ast"
+	"github.com/Mostafa-DE/delang/lexer"
 )
 
 func TestCallFunction(t *testing.T) {

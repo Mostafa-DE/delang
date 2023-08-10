@@ -1,9 +1,10 @@
 package tests
 
 import (
-	"lexer"
-	"parser"
 	"testing"
+
+	"github.com/Mostafa-DE/delang/lexer"
+	"github.com/Mostafa-DE/delang/parser"
 )
 
 func TestOperatorPrecedence(t *testing.T) {
