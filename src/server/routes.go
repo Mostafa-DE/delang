@@ -34,6 +34,7 @@ func codeExecHandler(resW http.ResponseWriter, req *http.Request) {
 		}
 
 		json.NewEncoder(resW).Encode(response)
+		return
 	}
 
 	evaluated := evaluator.Eval(program)
