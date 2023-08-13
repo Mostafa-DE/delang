@@ -10,9 +10,7 @@ import (
 func parserErrors(p *parser.Parser) bool {
 	if len(p.Errors()) != 0 {
 		fmt.Println("Error parsing program:")
-		for _, msg := range p.Errors() {
-			fmt.Println(msg)
-		}
+		fmt.Println(p.Errors()[0])
 
 		return true
 	}

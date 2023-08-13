@@ -108,6 +108,11 @@ func StartSession() {
 			}
 		}
 
+		if key == keyboard.KeyCtrlL {
+			fmt.Print("\033[H\033[2J")
+			fmt.Print(PROMPT)
+		}
+
 		if char != 0 {
 			currentInput = currentInput[:cursorPosition] + string(char) + currentInput[cursorPosition:]
 			cursorPosition++
@@ -123,6 +128,8 @@ func StartSession() {
 			clearCurrentLine()
 			fmt.Print(PROMPT)
 			fmt.Print(currentInput)
+
+			// TODO: Fix the cursor position after adding a space
 			moveCursorLeft(len(currentInput) - cursorPosition - 1)
 		}
 	}

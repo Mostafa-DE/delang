@@ -33,18 +33,28 @@ func (l *Lexer) NextToken() token.Token {
 		} else {
 			tok = newToken(token.ASSIGN, l.currentChar)
 		}
+
 	case '+':
 		tok = newToken(token.PLUS, l.currentChar)
+
 	case '-':
 		tok = newToken(token.MINUS, l.currentChar)
+
 	case '{':
 		tok = newToken(token.LEFTBRAC, l.currentChar)
+
 	case '}':
 		tok = newToken(token.RIGHTBRAC, l.currentChar)
+
 	case '(':
 		tok = newToken(token.LEFTPAR, l.currentChar)
+
 	case ')':
 		tok = newToken(token.RIGHTPAR, l.currentChar)
+
+	case ':':
+		tok = newToken(token.COLON, l.currentChar)
+
 	case '!':
 		if l.peekChar() == '=' {
 			prevChar := l.currentChar // "!"
@@ -53,21 +63,29 @@ func (l *Lexer) NextToken() token.Token {
 		} else {
 			tok = newToken(token.EXCLAMATION, l.currentChar)
 		}
+
 	case '/':
 		tok = newToken(token.SLASH, l.currentChar)
+
 	case '*':
 		tok = newToken(token.ASTERISK, l.currentChar)
+
 	case '<':
 		tok = newToken(token.LESSTHAN, l.currentChar)
+
 	case '>':
 		tok = newToken(token.GREATERTHAN, l.currentChar)
+
 	case ';':
 		tok = newToken(token.SEMICOLON, l.currentChar)
+
 	case ',':
 		tok = newToken(token.COMMA, l.currentChar)
+
 	case 0: // End of the line
 		tok.Literal = ""
 		tok.Type = token.EOFILE
+
 	default:
 		if isLetter(l.currentChar) {
 			tok.Literal = l.readIdentifier()

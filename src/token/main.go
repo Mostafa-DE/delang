@@ -34,6 +34,7 @@ const (
 	RIGHTPAR  = ")"
 	LEFTBRAC  = "{"
 	RIGHTBRAC = "}"
+	COLON     = ":"
 
 	// Keywords
 	FUNCTION = "FUNCTION"

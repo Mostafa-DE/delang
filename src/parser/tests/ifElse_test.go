@@ -10,9 +10,9 @@ import (
 
 func TestIfElseStatements(t *testing.T) {
 	input := `
-		if (x < y) { x };
-		if (x < y) { x } else { y };
-		if (5 < 2) { return true } else { return 5 - 2 };
+		if x < y: { x; };
+		if x < y: { x } else { y; };
+		if 5 < 2: { return true; } else { return 5 - 2; };
 	`
 
 	l := lexer.New(input)

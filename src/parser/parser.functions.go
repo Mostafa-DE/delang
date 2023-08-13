@@ -128,18 +128,16 @@ func (p *Parser) parseIfExpression() ast.Expression {
 	// defer untrace(trace("parseIfExpression"))
 	expression := &ast.IfExpression{Token: p.currentToken}
 
-	if !p.expectPeekType(token.LEFTPAR) {
-		return nil
-	}
-
 	p.nextToken()
 	expression.Condition = p.parseExpression(LOWEST)
 
-	if !p.expectPeekType(token.RIGHTPAR) {
+	if !p.expectPeekType(token.COLON) {
+		p.errors = append(p.errors, "Expected ':' after if condition")
 		return nil
 	}
 
 	if !p.expectPeekType(token.LEFTBRAC) {
+		p.errors = append(p.errors, "Expected '{' after if condition")
 		return nil
 	}
 
@@ -149,6 +147,7 @@ func (p *Parser) parseIfExpression() ast.Expression {
 		p.nextToken()
 
 		if !p.expectPeekType(token.LEFTBRAC) {
+			p.errors = append(p.errors, "Expected '{' after else")
 			return nil
 		}
 
@@ -166,6 +165,11 @@ func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 	p.nextToken()
 
 	for !p.currentTokenTypeIs(token.RIGHTBRAC) && !p.currentTokenTypeIs(token.EOFILE) {
+		if p.currentTokenTypeIs(token.ELSE) {
+			p.errors = append(p.errors, "Unexpected 'else' statement, if block is not closed with '}'")
+			return nil
+		}
+
 		statement := p.parseStatement()
 		block.Statements = append(block.Statements, statement)
 
