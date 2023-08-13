@@ -1,9 +1,9 @@
 package main
 
-import "github.com/Mostafa-DE/delang/repl"
+import "github.com/Mostafa-DE/delang/server"
 
 func main() {
-	// server.StartServer()
+	server.StartServer()
 
-	repl.StartSession()
+	// repl.StartSession()
 }
