@@ -78,6 +78,27 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 	case *ast.Identifier:
 		return evalIdentifier(node, env)
 
+	case *ast.Function:
+		params := node.Parameters
+		body := node.Body
+
+		return &object.Function{Parameters: params, Body: body, Env: env}
+
+	case *ast.CallFunction:
+		function := Eval(node.Function, env)
+
+		if isError(function) {
+			return function
+		}
+
+		args := evalExpressions(node.Arguments, env)
+
+		if len(args) == 1 && isError(args[0]) {
+			return args[0]
+		}
+
+		return evalFunction(function, args)
+
 	}
 
 	return nil
@@ -114,6 +135,22 @@ func evalBlockStatement(statements []ast.Statement, env *object.Environment) obj
 				return result
 			}
 		}
+	}
+
+	return result
+}
+
+func evalExpressions(expressions []ast.Expression, env *object.Environment) []object.Object {
+	var result []object.Object
+
+	for _, e := range expressions {
+		evaluated := Eval(e, env)
+
+		if isError(evaluated) {
+			return []object.Object{evaluated}
+		}
+
+		result = append(result, evaluated)
 	}
 
 	return result

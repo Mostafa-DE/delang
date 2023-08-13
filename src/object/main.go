@@ -1,6 +1,11 @@
 package object
 
-import "fmt"
+import (
+	"bytes"
+	"fmt"
+
+	"github.com/Mostafa-DE/delang/ast"
+)
 
 type ObjectType string
 
@@ -27,12 +32,20 @@ type Error struct {
 
 type Null struct{}
 
+type Function struct {
+	Parameters []*ast.Identifier
+	Body       *ast.BlockStatement
+	// The environment in which the function was defined, This allow a closure
+	Env *Environment
+}
+
 const (
-	INTEGER_OBJ = "INTEGER"
-	BOOLEAN_OBJ = "BOOLEAN"
-	RETURN_OBJ  = "RETURN"
-	ERROR_OBJ   = "ERROR"
-	NULL_OBJ    = "NULL"
+	INTEGER_OBJ  = "INTEGER"
+	BOOLEAN_OBJ  = "BOOLEAN"
+	RETURN_OBJ   = "RETURN"
+	ERROR_OBJ    = "ERROR"
+	NULL_OBJ     = "NULL"
+	FUNCTION_OBJ = "FUNCTION"
 )
 
 func (integer *Integer) Type() ObjectType {
@@ -73,4 +86,26 @@ func (err *Error) Type() ObjectType {
 
 func (err *Error) Inspect() string {
 	return "ERROR: " + err.Msg
+}
+
+func (function *Function) Type() ObjectType {
+	return FUNCTION_OBJ
+}
+
+func (function *Function) Inspect() string {
+	var out bytes.Buffer
+
+	params := []string{}
+	for _, param := range function.Parameters {
+		params = append(params, param.String())
+	}
+
+	out.WriteString("fun")
+	out.WriteString("(")
+	out.WriteString(fmt.Sprintf("%s", params))
+	out.WriteString(") {\n")
+	out.WriteString(function.Body.String())
+	out.WriteString("\n}")
+
+	return out.String()
 }
