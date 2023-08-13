@@ -6,12 +6,15 @@ import (
 
 	"github.com/Mostafa-DE/delang/evaluator"
 	"github.com/Mostafa-DE/delang/lexer"
+	"github.com/Mostafa-DE/delang/object"
 	"github.com/Mostafa-DE/delang/parser"
 	"github.com/eiannone/keyboard"
 )
 
 func StartSession() {
 	PROMPT := ">>> "
+
+	env := object.NewEnvironment()
 
 	if err := keyboard.Open(); err != nil {
 		log.Fatal(err)
@@ -44,7 +47,7 @@ func StartSession() {
 				history = append(history, currentInput)
 				historyIndex = len(history)
 
-				startExec(currentInput)
+				startExec(currentInput, env)
 
 				currentInput = ""
 				cursorPosition = 0
@@ -135,7 +138,7 @@ func StartSession() {
 	}
 }
 
-func startExec(command string) {
+func startExec(command string, env *object.Environment) {
 	l := lexer.New(command)
 	p := parser.New(l)
 
@@ -158,7 +161,7 @@ func startExec(command string) {
 		return
 	}
 
-	eval := evaluator.Eval(program)
+	eval := evaluator.Eval(program, env)
 
 	if eval != nil {
 		fmt.Println(eval.Inspect())

@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/Mostafa-DE/delang/lexer"
+	"github.com/Mostafa-DE/delang/object"
 	"github.com/Mostafa-DE/delang/parser"
 
 	"github.com/Mostafa-DE/delang/evaluator"
@@ -37,7 +38,9 @@ func codeExecHandler(resW http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	evaluated := evaluator.Eval(program)
+	env := object.NewEnvironment()
+
+	evaluated := evaluator.Eval(program, env)
 
 	response = map[string]string{
 		"data": evaluated.Inspect(),

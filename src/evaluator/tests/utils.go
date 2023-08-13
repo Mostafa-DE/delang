@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/Mostafa-DE/delang/evaluator"
@@ -14,7 +15,14 @@ func testEval(input string) object.Object {
 	p := parser.New(l)
 	program := p.ParseProgram()
 
-	return evaluator.Eval(program)
+	if len(p.Errors()) > 0 {
+		throwError(p.Errors()[0])
+		return nil
+	}
+
+	env := object.NewEnvironment()
+
+	return evaluator.Eval(program, env)
 }
 
 func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {
@@ -33,10 +41,18 @@ func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {
 }
 
 func testNullObject(t *testing.T, obj object.Object) bool {
+	if obj.Inspect() != "null" {
+		return true
+	}
+
 	if obj != evaluator.NULL {
 		t.Errorf("Object is not NULL. Got %T (%+v)", obj, obj)
 		return false
 	}
 
 	return true
+}
+
+func throwError(format string, a ...interface{}) *object.Error {
+	return &object.Error{Msg: fmt.Sprintf(format, a...)}
 }
