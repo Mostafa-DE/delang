@@ -1,0 +1,26 @@
+package evaluator
+
+import "github.com/Mostafa-DE/delang/object"
+
+func evalInfixExpression(operator string, left object.Object, right object.Object) object.Object {
+	switch {
+	case left.Type() == object.INTEGER_OBJ && right.Type() == object.INTEGER_OBJ:
+		return evalIntegerInfixExpression(operator, left, right)
+
+	// This is pointer comparison because we only have one instance of TRUE and FALSE in memory
+	// This not the case for integers because we create a new object for every integer literal
+	// So we need to unwrap the object and compare the values, otherwise we would be comparing pointers
+	// and that would always return false or true
+	case operator == "==":
+		return getBooleanObject(left == right)
+
+	case operator == "!=":
+		return getBooleanObject(left != right)
+
+	case left.Type() != right.Type():
+		return throwError("type mismatch: %s %s %s", left.Type(), operator, right.Type())
+
+	default:
+		return throwError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
+	}
+}
