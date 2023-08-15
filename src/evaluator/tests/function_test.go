@@ -95,8 +95,8 @@ func TestFunctionApplication(t *testing.T) {
 			`, 2,
 		},
 	}
-	for _, tt := range tests {
-		testIntegerObject(t, testEval(tt.input), tt.expected)
+	for _, val := range tests {
+		testIntegerObject(t, testEval(val.input), val.expected)
 	}
 }
 
