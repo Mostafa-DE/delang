@@ -11,7 +11,7 @@ func initApp() {
 	initAppRoutes()
 
 	fmt.Printf("Server started on port %s\n", port)
-	err := http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
+	err := http.ListenAndServe(fmt.Sprintf(":%s", port), enableCORS(http.DefaultServeMux))
 
 	if err != nil {
 		fmt.Printf("Something went wrong while starting the server: %s", err)
