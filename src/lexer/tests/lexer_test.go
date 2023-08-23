@@ -32,6 +32,10 @@ func TestNextToken(t *testing.T) {
 		10 == 10;
 		
 		10 != 9;
+
+		"DELANG";
+
+		"DE!!";
 	`
 
 	tests := []struct {
@@ -111,6 +115,10 @@ func TestNextToken(t *testing.T) {
 		{token.NOTEQUAL, "!="},
 		{token.INT, "9"},
 		{token.SEMICOLON, ";"},
+		{token.STRING, "DELANG"},
+		{token.SEMICOLON, ";"},
+		{token.STRING, "DE!!"},
+		{token.SEMICOLON, ";"},
 		{token.EOFILE, ""},
 	}
 
@@ -122,14 +130,14 @@ func TestNextToken(t *testing.T) {
 		if tok.Type != val.expectedType {
 			t.Fatalf(
 				"Failed at index [%d] - tokenType wrong. expected=%q but got=%q",
-				idx, tok.Type, val.expectedType,
+				idx, val.expectedType, tok.Type,
 			)
 		}
 
 		if tok.Literal != val.expectedLiteral {
 			t.Fatalf(
 				"Failed at index [%d] - literal wrong. expected=%q but got=%q",
-				idx, tok.Literal, val.expectedLiteral,
+				idx, val.expectedLiteral, tok.Literal,
 			)
 		}
 

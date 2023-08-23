@@ -12,8 +12,9 @@ const (
 	EOFILE  = "EOFILE"  // Tells the parser that it should stop
 
 	// Identifiers + literals
-	IDENT = "IDENT" // add, foobar, x, y, ...
-	INT   = "INT"   // 1343456
+	IDENT  = "IDENT" // add, foobar, x, y, ...
+	INT    = "INT"   // 1343456
+	STRING = "STRING"
 
 	// Operators
 	ASSIGN      = "="

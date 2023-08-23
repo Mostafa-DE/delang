@@ -11,7 +11,7 @@ func (l *Lexer) skipWhiteSpace() {
 }
 
 func isNumber(char byte) bool {
-	// This is just for INT, consider adding (float, hex, octal) etc...
+	// This is just for INT, TODO: consider adding (float, hex, octal) etc...
 	return char >= '0' && char <= '9'
 }
 
@@ -56,4 +56,17 @@ func (l *Lexer) peekChar() byte {
 		return l.input[l.readNextPosition]
 	}
 
+}
+
+func (l *Lexer) readString() string {
+	// TODO: add support for character escaping
+	position := l.currentPosition + 1
+	for {
+		l.readChar()
+		if l.currentChar == '\n' || l.currentChar == '\r' || l.currentChar == 0 || l.currentChar == '"' {
+			break
+		}
+	}
+
+	return l.input[position:l.currentPosition]
 }

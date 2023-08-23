@@ -266,3 +266,8 @@ func (p *Parser) parseCallArguments() []ast.Expression {
 
 	return arguments
 }
+
+func (p *Parser) parseStringLiteral() ast.Expression {
+	// defer untrace(trace("parseStringLiteral"))
+	return &ast.StringLiteral{Token: p.currentToken, Value: p.currentToken.Literal}
+}

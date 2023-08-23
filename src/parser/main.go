@@ -58,6 +58,7 @@ func initRegisterPrefix(p *Parser) {
 		{token.RIGHTPAR, p.parseGroupedExpression},
 		{token.IF, p.parseIfExpression},
 		{token.FUNCTION, p.parseFunction},
+		{token.STRING, p.parseStringLiteral},
 	}
 
 	for _, val := range data {
@@ -89,7 +90,7 @@ func initRegisterInfix(p *Parser) {
 func New(l *lexer.Lexer) *Parser {
 	p := &Parser{lexerInstance: l, errors: []string{}}
 
-	// Read two tokens, so curToken and peekToken are both set
+	// Read two tokens, so currentToken and peekToken are both set
 	p.nextToken()
 	p.nextToken()
 

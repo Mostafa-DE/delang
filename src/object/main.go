@@ -32,6 +32,10 @@ type Error struct {
 
 type Null struct{}
 
+type String struct {
+	Value string
+}
+
 type Function struct {
 	Parameters []*ast.Identifier
 	Body       *ast.BlockStatement
@@ -46,6 +50,7 @@ const (
 	ERROR_OBJ    = "ERROR"
 	NULL_OBJ     = "NULL"
 	FUNCTION_OBJ = "FUNCTION"
+	STRING_OBJ   = "STRING"
 )
 
 func (integer *Integer) Type() ObjectType {
@@ -108,4 +113,12 @@ func (function *Function) Inspect() string {
 	out.WriteString("\n}")
 
 	return out.String()
+}
+
+func (string *String) Type() ObjectType {
+	return STRING_OBJ
+}
+
+func (string *String) Inspect() string {
+	return string.Value
 }

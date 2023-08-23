@@ -1,8 +1,6 @@
 package ast
 
-import (
-	"github.com/Mostafa-DE/delang/token"
-)
+import "github.com/Mostafa-DE/delang/token"
 
 type IntegerLiteral struct {
 	Token token.Token // token.INT

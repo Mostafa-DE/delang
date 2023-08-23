@@ -9,9 +9,9 @@ func evalFunction(fun object.Object, args []object.Object) object.Object {
 		return throwError("not a function: %s", fun.Type())
 	}
 
-	extendedEnv := createLocalEnv(function, args)
+	localEnv := createLocalEnv(function, args)
 
-	evaluated := Eval(function.Body, extendedEnv)
+	evaluated := Eval(function.Body, localEnv)
 
 	return unwrapReturnValue(evaluated)
 
