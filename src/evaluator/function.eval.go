@@ -3,17 +3,19 @@ package evaluator
 import "github.com/Mostafa-DE/delang/object"
 
 func evalFunction(fun object.Object, args []object.Object) object.Object {
-	function, ok := fun.(*object.Function)
+	switch fun := fun.(type) {
+	case *object.Function:
+		localEnv := createLocalEnv(fun, args)
+		evaluated := Eval(fun.Body, localEnv)
 
-	if !ok {
+		return unwrapReturnValue(evaluated)
+
+	case *object.Builtin:
+		return fun.Func(args...)
+
+	default:
 		return throwError("not a function: %s", fun.Type())
 	}
-
-	localEnv := createLocalEnv(function, args)
-
-	evaluated := Eval(function.Body, localEnv)
-
-	return unwrapReturnValue(evaluated)
 
 }
 

@@ -36,6 +36,10 @@ type String struct {
 	Value string
 }
 
+type Builtin struct {
+	Func func(args ...Object) Object
+}
+
 type Function struct {
 	Parameters []*ast.Identifier
 	Body       *ast.BlockStatement
@@ -51,6 +55,7 @@ const (
 	NULL_OBJ     = "NULL"
 	FUNCTION_OBJ = "FUNCTION"
 	STRING_OBJ   = "STRING"
+	BUILTIN_OBJ  = "BUILTIN"
 )
 
 func (integer *Integer) Type() ObjectType {
@@ -121,4 +126,12 @@ func (string *String) Type() ObjectType {
 
 func (string *String) Inspect() string {
 	return string.Value
+}
+
+func (builtin *Builtin) Type() ObjectType {
+	return BUILTIN_OBJ
+}
+
+func (builtin *Builtin) Inspect() string {
+	return "builtin function"
 }
