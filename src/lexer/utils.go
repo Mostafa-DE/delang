@@ -17,7 +17,7 @@ func isNumber(char byte) bool {
 
 func (l *Lexer) readIdentifier() string {
 	position := l.currentPosition
-	for isLetter(l.currentChar) {
+	for isLetter(l.currentChar) || isNumber(l.currentChar) {
 		l.readChar()
 	}
 
