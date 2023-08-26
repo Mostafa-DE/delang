@@ -39,6 +39,7 @@ type String struct {
 
 type Builtin struct {
 	Func func(args ...Object) Object
+	Doc  string
 }
 
 type Function struct {
