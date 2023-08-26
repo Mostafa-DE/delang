@@ -16,6 +16,7 @@ const (
 	MULDIV      //. *
 	PREFIX      // -X or !X
 	CALL        // myFunction(X)
+	INDEX       // array[index]
 )
 
 var precedences = map[token.TokenType]int{
@@ -27,7 +28,8 @@ var precedences = map[token.TokenType]int{
 	token.MINUS:       SUMSUB,
 	token.SLASH:       MULDIV,
 	token.ASTERISK:    MULDIV,
-	token.LEFTPAR:     CALL, // function call has the highest precedence
+	token.LEFTPAR:     CALL,
+	token.LEFTSQPRAC:  INDEX, // array indexing has the highest precedence
 }
 
 type (

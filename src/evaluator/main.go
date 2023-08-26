@@ -102,6 +102,30 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 	case *ast.StringLiteral:
 		return &object.String{Value: node.Value}
 
+	case *ast.Array:
+		elements := evalExpressions(node.Elements, env)
+
+		if len(elements) == 1 && isError(elements[0]) {
+			return elements[0]
+		}
+
+		return &object.Array{Elements: elements}
+
+	case *ast.IndexExpression:
+		ident := Eval(node.Ident, env)
+
+		if isError(ident) {
+			return ident
+		}
+
+		idx := Eval(node.Index, env)
+
+		if isError(idx) {
+			return idx
+		}
+
+		return evalIndexExpression(ident, idx)
+
 	}
 
 	return nil
@@ -157,4 +181,28 @@ func evalExpressions(expressions []ast.Expression, env *object.Environment) []ob
 	}
 
 	return result
+}
+
+func evalIndexExpression(ident object.Object, index object.Object) object.Object {
+	switch {
+	case ident.Type() == object.ARRAY_OBJ && index.Type() == object.INTEGER_OBJ:
+		return evalArrayIndex(ident, index)
+
+	default:
+		return throwError("index operator not supported: %s", ident.Type())
+
+	}
+}
+
+func evalArrayIndex(array object.Object, index object.Object) object.Object {
+	arrayObject := array.(*object.Array)
+	idx := index.(*object.Integer).Value
+	max := int64(len(arrayObject.Elements) - 1)
+
+	if idx < 0 || idx > max {
+		// TODO: For now we return NULL, but we need to return an error
+		return NULL
+	}
+
+	return arrayObject.Elements[idx]
 }

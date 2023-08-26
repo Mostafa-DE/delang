@@ -29,13 +29,15 @@ const (
 	NOTEQUAL    = "!="
 
 	// Delimiters
-	COMMA     = ","
-	SEMICOLON = ";"
-	LEFTPAR   = "("
-	RIGHTPAR  = ")"
-	LEFTBRAC  = "{"
-	RIGHTBRAC = "}"
-	COLON     = ":"
+	COMMA       = ","
+	SEMICOLON   = ";"
+	LEFTPAR     = "("
+	RIGHTPAR    = ")"
+	LEFTBRAC    = "{"
+	RIGHTBRAC   = "}"
+	COLON       = ":"
+	LEFTSQPRAC  = "["
+	RIGHTSQPRAC = "]"
 
 	// Keywords
 	FUNCTION = "FUNCTION"

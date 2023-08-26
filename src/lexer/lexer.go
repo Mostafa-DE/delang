@@ -86,6 +86,12 @@ func (l *Lexer) NextToken() token.Token {
 		tok.Type = token.STRING
 		tok.Literal = l.readString()
 
+	case '[':
+		tok = newToken(token.LEFTSQPRAC, l.currentChar)
+
+	case ']':
+		tok = newToken(token.RIGHTSQPRAC, l.currentChar)
+
 	case 0: // End of the line
 		tok.Literal = ""
 		tok.Type = token.EOFILE

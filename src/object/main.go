@@ -3,6 +3,7 @@ package object
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/Mostafa-DE/delang/ast"
 )
@@ -47,6 +48,10 @@ type Function struct {
 	Env *Environment
 }
 
+type Array struct {
+	Elements []Object
+}
+
 const (
 	INTEGER_OBJ  = "INTEGER"
 	BOOLEAN_OBJ  = "BOOLEAN"
@@ -56,6 +61,7 @@ const (
 	FUNCTION_OBJ = "FUNCTION"
 	STRING_OBJ   = "STRING"
 	BUILTIN_OBJ  = "BUILTIN"
+	ARRAY_OBJ    = "ARRAY"
 )
 
 func (integer *Integer) Type() ObjectType {
@@ -112,7 +118,7 @@ func (function *Function) Inspect() string {
 
 	out.WriteString("fun")
 	out.WriteString("(")
-	out.WriteString(fmt.Sprintf("%s", params))
+	out.WriteString(strings.Join(params, ", "))
 	out.WriteString(") {\n")
 	out.WriteString(function.Body.String())
 	out.WriteString("\n}")
@@ -133,5 +139,24 @@ func (builtin *Builtin) Type() ObjectType {
 }
 
 func (builtin *Builtin) Inspect() string {
-	return "builtin function"
+	return "builtin function" // TODO: add the name of the function
+}
+
+func (array *Array) Type() ObjectType {
+	return ARRAY_OBJ
+}
+
+func (array *Array) Inspect() string {
+	var out bytes.Buffer
+
+	elements := []string{}
+	for _, element := range array.Elements {
+		elements = append(elements, element.Inspect())
+	}
+
+	out.WriteString("[")
+	out.WriteString(strings.Join(elements, ", "))
+	out.WriteString("]")
+
+	return out.String()
 }

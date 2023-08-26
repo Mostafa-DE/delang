@@ -271,3 +271,58 @@ func (p *Parser) parseStringLiteral() ast.Expression {
 	// defer untrace(trace("parseStringLiteral"))
 	return &ast.StringLiteral{Token: p.currentToken, Value: p.currentToken.Literal}
 }
+
+func (p *Parser) parseArray() ast.Expression {
+	// defer untrace(trace("parseArray"))
+	array := &ast.Array{Token: p.currentToken}
+
+	array.Elements = p.parseArrayElements()
+
+	return array
+}
+
+func (p *Parser) parseArrayElements() []ast.Expression {
+	// defer untrace(trace("parseArrayElements"))
+	// TODO: This is a copy of parseCallArguments, refactor it
+	elements := []ast.Expression{}
+
+	if p.peekTokenTypeIs(token.RIGHTSQPRAC) {
+		// No elements
+		p.nextToken()
+		return elements
+	}
+
+	p.nextToken()
+	elements = append(elements, p.parseExpression(LOWEST))
+
+	for p.peekTokenTypeIs(token.COMMA) {
+		// Skip the comma
+		p.nextToken()
+		p.nextToken()
+
+		// Parse the element
+		elements = append(elements, p.parseExpression(LOWEST))
+	}
+
+	if !p.expectPeekType(token.RIGHTSQPRAC) {
+		p.errors = append(p.errors, "Array is not closed with ']'")
+		return nil
+	}
+
+	return elements
+}
+
+func (p *Parser) parseIndexExpression(Ident ast.Expression) ast.Expression {
+	// defer untrace(trace("parseIndexExpression"))
+	expression := &ast.IndexExpression{Token: p.currentToken, Ident: Ident}
+
+	p.nextToken()
+	expression.Index = p.parseExpression(LOWEST)
+
+	if !p.expectPeekType(token.RIGHTSQPRAC) {
+		p.errors = append(p.errors, "Index expression is not closed with ']'")
+		return nil
+	}
+
+	return expression
+}

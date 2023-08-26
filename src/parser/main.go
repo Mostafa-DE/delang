@@ -59,6 +59,7 @@ func initRegisterPrefix(p *Parser) {
 		{token.IF, p.parseIfExpression},
 		{token.FUNCTION, p.parseFunction},
 		{token.STRING, p.parseStringLiteral},
+		{token.LEFTSQPRAC, p.parseArray},
 	}
 
 	for _, val := range data {
@@ -80,6 +81,7 @@ func initRegisterInfix(p *Parser) {
 		{token.LESSTHAN, p.parseInfixExpression},
 		{token.GREATERTHAN, p.parseInfixExpression},
 		{token.LEFTPAR, p.parseCallFunction},
+		{token.LEFTSQPRAC, p.parseIndexExpression},
 	}
 
 	for _, val := range data {

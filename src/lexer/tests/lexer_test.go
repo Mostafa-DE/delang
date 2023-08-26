@@ -36,6 +36,8 @@ func TestNextToken(t *testing.T) {
 		"DELANG";
 
 		"DE!!";
+
+		[1, 2];
 	`
 
 	tests := []struct {
@@ -118,6 +120,12 @@ func TestNextToken(t *testing.T) {
 		{token.STRING, "DELANG"},
 		{token.SEMICOLON, ";"},
 		{token.STRING, "DE!!"},
+		{token.SEMICOLON, ";"},
+		{token.LEFTSQPRAC, "["},
+		{token.INT, "1"},
+		{token.COMMA, ","},
+		{token.INT, "2"},
+		{token.RIGHTSQPRAC, "]"},
 		{token.SEMICOLON, ";"},
 		{token.EOFILE, ""},
 	}
