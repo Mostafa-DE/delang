@@ -60,6 +60,7 @@ func initRegisterPrefix(p *Parser) {
 		{token.FUNCTION, p.parseFunction},
 		{token.STRING, p.parseStringLiteral},
 		{token.LEFTSQPRAC, p.parseArray},
+		{token.LEFTBRAC, p.parseHash},
 	}
 
 	for _, val := range data {

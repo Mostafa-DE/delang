@@ -326,3 +326,36 @@ func (p *Parser) parseIndexExpression(Ident ast.Expression) ast.Expression {
 
 	return expression
 }
+
+func (p *Parser) parseHash() ast.Expression {
+	// defer untrace(trace("parseHash"))
+	hash := &ast.Hash{Token: p.currentToken}
+	hash.Pairs = make(map[ast.Expression]ast.Expression)
+
+	for !p.peekTokenTypeIs(token.RIGHTBRAC) {
+		p.nextToken()
+		key := p.parseExpression(LOWEST)
+
+		if !p.expectPeekType(token.COLON) {
+			p.errors = append(p.errors, "Hash key is not followed by ':'")
+			return nil
+		}
+
+		p.nextToken()
+		value := p.parseExpression(LOWEST)
+
+		hash.Pairs[key] = value
+
+		if !p.peekTokenTypeIs(token.RIGHTBRAC) && !p.expectPeekType(token.COMMA) {
+			p.errors = append(p.errors, "Hash is not closed with '}'")
+			return nil
+		}
+	}
+
+	if !p.expectPeekType(token.RIGHTBRAC) {
+		p.errors = append(p.errors, "Hash is not closed with '}'")
+		return nil
+	}
+
+	return hash
+}

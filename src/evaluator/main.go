@@ -126,6 +126,9 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 		return evalIndexExpression(ident, idx)
 
+	case *ast.Hash:
+		return evalHash(node, env)
+
 	}
 
 	return nil
@@ -188,6 +191,9 @@ func evalIndexExpression(ident object.Object, index object.Object) object.Object
 	case ident.Type() == object.ARRAY_OBJ && index.Type() == object.INTEGER_OBJ:
 		return evalArrayIndex(ident, index)
 
+	case ident.Type() == object.HASH_OBJ:
+		return evalHashIndex(ident, index)
+
 	default:
 		return throwError("index operator not supported: %s", ident.Type())
 
@@ -205,4 +211,53 @@ func evalArrayIndex(array object.Object, index object.Object) object.Object {
 	}
 
 	return arrayObject.Elements[idx]
+}
+
+func evalHashIndex(hash object.Object, index object.Object) object.Object {
+	hashObject := hash.(*object.Hash)
+
+	key, ok := index.(object.Hashable)
+
+	if !ok {
+		return throwError("Type %s is not hashable", index.Type())
+	}
+
+	pair, ok := hashObject.Pairs[key.HashKey()]
+
+	if !ok {
+		return NULL
+	}
+
+	return pair.Value
+}
+
+func evalHash(node *ast.Hash, env *object.Environment) object.Object {
+	pairs := make(map[object.HashKey]object.HashPair)
+
+	for key, val := range node.Pairs {
+		key := Eval(key, env)
+
+		if isError(key) {
+			return key
+		}
+
+		// Check if the key is hashable
+		hashKey, ok := key.(object.Hashable)
+
+		if !ok {
+			return throwError("Type %s is not hashable", key.Type())
+		}
+
+		value := Eval(val, env)
+
+		if isError(value) {
+			return value
+		}
+
+		hashed := hashKey.HashKey()
+
+		pairs[hashed] = object.HashPair{Key: key, Value: value}
+	}
+
+	return &object.Hash{Pairs: pairs}
 }

@@ -38,6 +38,8 @@ func TestNextToken(t *testing.T) {
 		"DE!!";
 
 		[1, 2];
+
+		{"name": "Mostafa"};
 	`
 
 	tests := []struct {
@@ -126,6 +128,12 @@ func TestNextToken(t *testing.T) {
 		{token.COMMA, ","},
 		{token.INT, "2"},
 		{token.RIGHTSQPRAC, "]"},
+		{token.SEMICOLON, ";"},
+		{token.LEFTBRAC, "{"},
+		{token.STRING, "name"},
+		{token.COLON, ":"},
+		{token.STRING, "Mostafa"},
+		{token.RIGHTBRAC, "}"},
 		{token.SEMICOLON, ";"},
 		{token.EOFILE, ""},
 	}

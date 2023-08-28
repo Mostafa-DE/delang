@@ -13,18 +13,18 @@ func TestString(t *testing.T) {
 			&ast.LetStatement{
 				Token: token.Token{Type: token.LET, Literal: "let"},
 				Name: &ast.Identifier{
-					Token: token.Token{Type: token.IDENT, Literal: "myVar"},
-					Value: "myVar",
+					Token: token.Token{Type: token.IDENT, Literal: "name"},
+					Value: "name",
 				},
 				Value: &ast.Identifier{
-					Token: token.Token{Type: token.IDENT, Literal: "anotherVar"},
-					Value: "anotherVar",
+					Token: token.Token{Type: token.IDENT, Literal: "anotherName"},
+					Value: "anotherName",
 				},
 			},
 		},
 	}
 
-	if program.String() != "let myVar = anotherVar;" {
+	if program.String() != "let name = anotherName;" {
 		t.Errorf("program.String() wrong. got=%q", program.String())
 	}
 }
