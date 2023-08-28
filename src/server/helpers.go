@@ -18,8 +18,15 @@ func prepareReqBody(req *http.Request) RequestBody {
 		panic(err)
 	}
 
+	// Remove the new lines
 	cleanedBody := strings.ReplaceAll(buf.String(), "\n", "")
+
 	json.Unmarshal([]byte(cleanedBody), &requestBody)
+
+	// Replace the single quotes with double quotes
+	// This is because single quotes in Go used to represent runes (characters) not strings
+	// But in our language we want to allow single double quotes to represent strings
+	requestBody.Code = strings.ReplaceAll(requestBody.Code, "'", "\"")
 
 	return requestBody
 }

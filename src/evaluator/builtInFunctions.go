@@ -1,6 +1,10 @@
 package evaluator
 
-import "github.com/Mostafa-DE/delang/object"
+import (
+	"fmt"
+
+	"github.com/Mostafa-DE/delang/object"
+)
 
 // TODO: Revisit this file and refactor it
 
@@ -23,7 +27,8 @@ var builtins = map[string]*object.Builtin{
 
 			}
 		},
-		Doc: "len, returns the length of a string or an array",
+		Doc:  "len, returns the length of a string or an array",
+		Name: "len",
 	},
 
 	"first": {
@@ -44,7 +49,8 @@ var builtins = map[string]*object.Builtin{
 
 			return NULL
 		},
-		Doc: "first, returns the first element of an array",
+		Doc:  "first, returns the first element of an array",
+		Name: "first",
 	},
 
 	"last": {
@@ -67,7 +73,8 @@ var builtins = map[string]*object.Builtin{
 
 			return NULL
 		},
-		Doc: "last, returns the last element of an array",
+		Doc:  "last, returns the last element of an array",
+		Name: "last",
 	},
 
 	"skipFirst": {
@@ -93,7 +100,8 @@ var builtins = map[string]*object.Builtin{
 
 			return NULL
 		},
-		Doc: "skipFirst, returns an array with the first element removed",
+		Doc:  "skipFirst, returns an array with the first element removed",
+		Name: "skipFirst",
 	},
 
 	"skipLast": {
@@ -119,7 +127,8 @@ var builtins = map[string]*object.Builtin{
 
 			return NULL
 		},
-		Doc: "skipLast, returns an array with the last element removed",
+		Doc:  "skipLast, returns an array with the last element removed",
+		Name: "skipLast",
 	},
 
 	"push": {
@@ -138,7 +147,8 @@ var builtins = map[string]*object.Builtin{
 
 			return array
 		},
-		Doc: "push, pushes an element to the end of an array",
+		Doc:  "push, pushes an element to the end of an array",
+		Name: "push",
 	},
 
 	"pop": {
@@ -163,16 +173,19 @@ var builtins = map[string]*object.Builtin{
 
 			return NULL
 		},
-		Doc: "pop, removes the last element of an array",
+		Doc:  "pop, removes the last element of an array",
+		Name: "pop",
 	},
+
 	"logs": {
 		Func: func(args ...object.Object) object.Object {
 			for _, arg := range args {
-				println(arg.Inspect())
+				fmt.Println(arg.Inspect())
 			}
 
 			return NULL
 		},
-		Doc: "logs, prints the result to the console",
+		Doc:  "logs, prints the result to the console",
+		Name: "logs",
 	},
 }

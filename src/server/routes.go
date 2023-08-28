@@ -3,6 +3,7 @@ package server
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 
 	"github.com/Mostafa-DE/delang/lexer"
 	"github.com/Mostafa-DE/delang/object"
@@ -22,9 +23,18 @@ func initAppRoutes() {
 func codeExecHandler(resW http.ResponseWriter, req *http.Request) {
 	var response map[string]string
 
-	requestBody := prepareReqBody(req)
+	reqBody := prepareReqBody(req)
 
-	l := lexer.New(requestBody.Code)
+	if strings.TrimSpace(reqBody.Code) == "" {
+		response = map[string]string{
+			"error": "code is required",
+		}
+
+		json.NewEncoder(resW).Encode(response)
+		return
+	}
+
+	l := lexer.New(reqBody.Code)
 	p := parser.New(l)
 
 	program := p.ParseProgram()
@@ -40,10 +50,17 @@ func codeExecHandler(resW http.ResponseWriter, req *http.Request) {
 
 	env := object.NewEnvironment()
 
-	evaluated := evaluator.Eval(program, env)
+	eval := evaluator.Eval(program, env)
+
+	logs, ok := env.Get("bufferLogs")
+
+	if !ok {
+		logs = &object.Buffer{}
+	}
 
 	response = map[string]string{
-		"data": evaluated.Inspect(),
+		"logs": logs.Inspect(),
+		"data": eval.Inspect(),
 	}
 
 	resW.Header().Set("Content-Type", "application/json")

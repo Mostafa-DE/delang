@@ -97,7 +97,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			return args[0]
 		}
 
-		return evalFunction(function, args)
+		return evalFunction(function, args, env)
 
 	case *ast.StringLiteral:
 		return &object.String{Value: node.Value}

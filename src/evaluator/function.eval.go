@@ -1,8 +1,12 @@
 package evaluator
 
-import "github.com/Mostafa-DE/delang/object"
+import (
+	"bytes"
 
-func evalFunction(fun object.Object, args []object.Object) object.Object {
+	"github.com/Mostafa-DE/delang/object"
+)
+
+func evalFunction(fun object.Object, args []object.Object, env *object.Environment) object.Object {
 	switch fun := fun.(type) {
 	case *object.Function:
 		localEnv := createLocalEnv(fun, args)
@@ -11,6 +15,24 @@ func evalFunction(fun object.Object, args []object.Object) object.Object {
 		return unwrapReturnValue(evaluated)
 
 	case *object.Builtin:
+		// TODO: This should be handled in a better way
+		// TODO: consider moving this to logs builtin function
+		if fun.Name == "logs" {
+			var buffer []bytes.Buffer
+
+			for _, arg := range args {
+				buffer = append(buffer, bytes.Buffer{})
+				buffer[len(buffer)-1].WriteString(arg.Inspect())
+			}
+
+			if logs, ok := env.Get("bufferLogs"); ok {
+				logs.(*object.Buffer).Value = append(logs.(*object.Buffer).Value, buffer...)
+			} else {
+				env.Set("bufferLogs", &object.Buffer{Value: buffer})
+			}
+
+		}
+
 		return fun.Func(args...)
 
 	default:

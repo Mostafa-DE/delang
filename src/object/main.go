@@ -40,6 +40,11 @@ type String struct {
 type Builtin struct {
 	Func func(args ...Object) Object
 	Doc  string
+	Name string
+}
+
+type Buffer struct {
+	Value []bytes.Buffer
 }
 
 type Function struct {
@@ -158,6 +163,21 @@ func (array *Array) Inspect() string {
 	out.WriteString("[")
 	out.WriteString(strings.Join(elements, ", "))
 	out.WriteString("]")
+
+	return out.String()
+}
+
+func (buffer *Buffer) Type() ObjectType {
+	return "BUFFER"
+}
+
+func (buffer *Buffer) Inspect() string {
+	var out bytes.Buffer
+
+	for _, buffer := range buffer.Value {
+		out.WriteString(buffer.String())
+		out.WriteString("\n")
+	}
 
 	return out.String()
 }
