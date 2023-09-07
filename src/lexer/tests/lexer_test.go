@@ -40,6 +40,8 @@ func TestNextToken(t *testing.T) {
 		[1, 2];
 
 		{"name": "Mostafa"};
+
+		const x = 3;
 	`
 
 	tests := []struct {
@@ -134,6 +136,11 @@ func TestNextToken(t *testing.T) {
 		{token.COLON, ":"},
 		{token.STRING, "Mostafa"},
 		{token.RIGHTBRAC, "}"},
+		{token.SEMICOLON, ";"},
+		{token.CONST, "const"},
+		{token.IDENT, "x"},
+		{token.ASSIGN, "="},
+		{token.INT, "3"},
 		{token.SEMICOLON, ";"},
 		{token.EOFILE, ""},
 	}

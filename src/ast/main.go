@@ -2,6 +2,8 @@ package ast
 
 import (
 	"bytes"
+
+	"github.com/Mostafa-DE/delang/token"
 )
 
 type Node interface {
@@ -21,6 +23,13 @@ type Expression interface {
 
 type Program struct { // Root Node
 	Statements []Statement
+}
+
+type VariableStatement struct {
+	Token token.Token // token.LET or token.CONST
+	Type  string      // "let" or "const"
+	Name  *Identifier
+	Value Expression
 }
 
 func (p *Program) TokenLiteral() string { // used only for debugging and testing

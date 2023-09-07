@@ -28,7 +28,7 @@ func evalFunction(fun object.Object, args []object.Object, env *object.Environme
 			if logs, ok := env.Get("bufferLogs"); ok {
 				logs.(*object.Buffer).Value = append(logs.(*object.Buffer).Value, buffer...)
 			} else {
-				env.Set("bufferLogs", &object.Buffer{Value: buffer})
+				env.Set("bufferLogs", &object.Buffer{Value: buffer}, false)
 			}
 
 		}
@@ -45,7 +45,7 @@ func createLocalEnv(fun *object.Function, args []object.Object) *object.Environm
 	env := object.NewLocalEnvironment(fun.Env)
 
 	for idx, param := range fun.Parameters {
-		env.Set(param.Value, args[idx])
+		env.Set(param.Value, args[idx], false)
 	}
 
 	return env

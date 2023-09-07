@@ -29,6 +29,7 @@ func StartSession() {
 	currentInput := ""
 	cursorPosition := 0
 
+	fmt.Print("\n")
 	fmt.Print(PROMPT)
 
 	for {
@@ -150,8 +151,8 @@ func startExec(command string, env *object.Environment) {
 	if command == ".help" {
 		// This should be a separate function in the future
 		fmt.Println("Commands:")
-		fmt.Println("Ctrl+C: exit the REPL")
-		fmt.Println(".clear: clear the screen")
+		fmt.Println(" ctrl + c: Exit the REPL")
+		fmt.Println(" .clear: Clear the terminal screen")
 		return
 	}
 

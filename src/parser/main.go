@@ -110,8 +110,13 @@ func (p *Parser) parseStatement() ast.Statement {
 	switch p.currentToken.Type {
 	case token.LET:
 		return p.parseLetStatement()
+
+	case token.CONST:
+		return p.parseConstStatement()
+
 	case token.RETURN:
 		return p.parseReturnStatement()
+
 	default:
 		return p.parseExpressionStatement()
 	}

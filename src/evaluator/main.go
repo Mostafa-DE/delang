@@ -25,7 +25,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 	case *ast.Boolean:
 		// This is because we don't need to create a new object for every boolean literal
-		// We can just return the same object
+		// Comparing the pointer address is enough
 		return getBooleanObject(node.Value)
 
 	case *ast.PrefixExpression:
@@ -73,7 +73,20 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			return val
 		}
 
-		env.Set(node.Name.Value, val)
+		env.Set(node.Name.Value, val, false)
+
+	case *ast.ConstStatement:
+		val := Eval(node.Value, env)
+
+		if isError(val) {
+			return val
+		}
+
+		returnValue := env.Set(node.Name.Value, val, true)
+
+		if isError(returnValue) {
+			return returnValue
+		}
 
 	case *ast.Identifier:
 		return evalIdentifier(node, env)

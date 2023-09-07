@@ -8,8 +8,8 @@ import (
 	"github.com/Mostafa-DE/delang/token"
 )
 
-func (p *Parser) parseLetStatement() *ast.LetStatement {
-	statement := &ast.LetStatement{Token: p.currentToken}
+func (p *Parser) parseVariableStatement(statementType string) *ast.VariableStatement {
+	statement := &ast.VariableStatement{Token: p.currentToken, Type: statementType}
 
 	if !p.expectPeekType(token.IDENT) {
 		return nil
@@ -28,6 +28,28 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 	if p.peekTokenTypeIs(token.SEMICOLON) {
 		p.nextToken()
 	}
+
+	return statement
+}
+
+func (p *Parser) parseLetStatement() *ast.LetStatement {
+	statement := &ast.LetStatement{Token: p.currentToken}
+
+	letStatement := p.parseVariableStatement("let")
+
+	statement.Name = letStatement.Name
+	statement.Value = letStatement.Value
+
+	return statement
+}
+
+func (p *Parser) parseConstStatement() *ast.ConstStatement {
+	statement := &ast.ConstStatement{Token: p.currentToken}
+
+	constStatement := p.parseVariableStatement("const")
+
+	statement.Name = constStatement.Name
+	statement.Value = constStatement.Value
 
 	return statement
 }
