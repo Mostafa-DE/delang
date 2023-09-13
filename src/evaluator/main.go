@@ -73,7 +73,11 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			return val
 		}
 
-		env.Set(node.Name.Value, val, false)
+		returnValue := env.Set(node.Name.Value, val, false)
+
+		if isError(returnValue) {
+			return returnValue
+		}
 
 	case *ast.ConstStatement:
 		val := Eval(node.Value, env)
@@ -142,9 +146,40 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 	case *ast.Hash:
 		return evalHash(node, env)
 
+	case *ast.AssignExpression:
+		eval := evalAssignExpression(node, env)
+
+		if isError(eval) {
+			return eval
+		}
+
+		return eval
+
 	}
 
 	return nil
+}
+
+func evalAssignExpression(node *ast.AssignExpression, env *object.Environment) object.Object {
+	val := Eval(node.Value, env)
+
+	if isError(val) {
+		return val
+	}
+
+	_, ok := env.Get(node.Ident.Value)
+
+	if !ok {
+		return throwError("identifier not found: %s", node.Ident.Value)
+	}
+
+	envVal := env.Set(node.Ident.Value, val, false)
+
+	if isError(envVal) {
+		return envVal
+	}
+
+	return val
 }
 
 func evalProgram(statements []ast.Statement, env *object.Environment) object.Object {

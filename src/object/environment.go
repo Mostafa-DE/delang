@@ -6,14 +6,15 @@ package object
 type StoreType map[string]Object
 
 type Environment struct {
-	store StoreType
-	outer *Environment
+	store       StoreType
+	constValues map[string]struct{}
+	outer       *Environment
 }
 
 func NewEnvironment() *Environment {
 	s := make(StoreType)
 
-	return &Environment{store: s, outer: nil}
+	return &Environment{store: s, outer: nil, constValues: make(map[string]struct{})}
 }
 
 func NewLocalEnvironment(outer *Environment) *Environment {
@@ -39,6 +40,16 @@ func (e *Environment) Set(name string, val Object, isConst bool) Object {
 			return throwError("Cannot redeclare constant '%s'", name)
 		}
 	}
+
+	if _, ok := e.constValues[name]; ok {
+		return throwError("Cannot reassign constant '%s'", name)
+	}
+
 	e.store[name] = val
+
+	if isConst {
+		e.constValues[name] = struct{}{}
+	}
+
 	return val
 }

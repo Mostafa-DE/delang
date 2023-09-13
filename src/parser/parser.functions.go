@@ -110,6 +110,14 @@ func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
 }
 
 func (p *Parser) parseIdentifier() ast.Expression {
+	if p.peekTokenTypeIs(token.ASSIGN) {
+		return p.parseAssignExpression(p.parseIdentifierExpression())
+	}
+
+	return p.parseIdentifierExpression()
+}
+
+func (p *Parser) parseIdentifierExpression() ast.Expression {
 	return &ast.Identifier{Token: p.currentToken, Value: p.currentToken.Literal}
 }
 
@@ -380,4 +388,20 @@ func (p *Parser) parseHash() ast.Expression {
 	}
 
 	return hash
+}
+
+func (p *Parser) parseAssignExpression(ident ast.Expression) ast.Expression {
+	// defer untrace(trace("parseAssignExpression"))
+
+	ident, _ = ident.(*ast.Identifier)
+
+	p.nextToken()
+
+	expression := &ast.AssignExpression{Token: p.currentToken, Ident: ident.(*ast.Identifier)}
+
+	p.nextToken()
+
+	expression.Value = p.parseExpression(LOWEST)
+
+	return expression
 }

@@ -81,6 +81,20 @@ func TestErrorHandling(t *testing.T) {
 			`,
 			"Cannot redeclare constant 'f'",
 		},
+		{
+			`
+				const PI = 3;
+				PI = 4;
+			`,
+			"Cannot reassign constant 'PI'",
+		},
+		{
+			`
+				const PI = 3;
+				let PI = 4;
+			`,
+			"Cannot reassign constant 'PI'",
+		},
 	}
 
 	for _, val := range tests {
