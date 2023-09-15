@@ -23,7 +23,7 @@ func (hash *Hash) String() string {
 	pairs := []string{}
 
 	for key, value := range hash.Pairs {
-		pairs = append(pairs, key.String()+":"+value.String())
+		pairs = append(pairs, key.String()+": "+value.String())
 	}
 
 	out.WriteString("{")

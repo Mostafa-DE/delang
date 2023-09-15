@@ -29,7 +29,7 @@ func (f *Function) String() string {
 	out.WriteString("(")
 	out.WriteString(strings.Join(params, ", "))
 	out.WriteString(") ")
-	out.WriteString(f.Body.String())
+	out.WriteString(f.Body.String() + ";")
 
 	return out.String()
 }

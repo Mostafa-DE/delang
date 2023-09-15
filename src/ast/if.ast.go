@@ -10,7 +10,7 @@ type IfExpression struct {
 	token.Token // token.IF
 	Condition   Expression
 	Consequence *BlockStatement // If block
-	Alternative *BlockStatement // (Optional) Else block
+	Alternative *BlockStatement // Else block
 }
 
 func (ifExpression *IfExpression) expressionNode() {}
@@ -22,13 +22,13 @@ func (ifExpression *IfExpression) String() string {
 
 	out.WriteString("if")
 	out.WriteString(" ")
-	out.WriteString(ifExpression.Condition.String())
+	out.WriteString(ifExpression.Condition.String() + ":")
 	out.WriteString(" ")
-	out.WriteString(ifExpression.Consequence.String())
+	out.WriteString(ifExpression.Consequence.String() + ";")
 
 	if ifExpression.Alternative != nil {
 		out.WriteString(" else ")
-		out.WriteString(ifExpression.Alternative.String())
+		out.WriteString(ifExpression.Alternative.String() + ";")
 	}
 
 	return out.String()
