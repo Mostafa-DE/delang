@@ -1,4 +1,4 @@
-![alt text](https://res.cloudinary.com/dcj3o6yi5/image/upload/v1694814823/delang-rocks_lvj0zm.png)
+![alt text](https://res.cloudinary.com/dcj3o6yi5/image/upload/v1694817428/delang_ir5crh.gif)
 
 # What is delang?
 Delang (DE) is a user-friendly programming language developed as a graduate project.
