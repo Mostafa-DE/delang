@@ -30,7 +30,7 @@ For a closer look at DE's syntax and to learn more about the language, visit the
 
 > [!NOTE]
 > DE is still under development and lacks some features. 
-> If you encounter any issues in the DE playground, please don't hesitate to open an issue in this repository.
+> If you encounter any issues, please don't hesitate to open an issue in this repository.
 
 <br />
 
