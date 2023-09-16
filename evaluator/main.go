@@ -201,7 +201,7 @@ func evalProgram(statements []ast.Statement, env *object.Environment) object.Obj
 }
 
 func evalBlockStatement(statements []ast.Statement, env *object.Environment) object.Object {
-	var result object.Object
+	var result object.Object = &object.Null{}
 
 	for _, statement := range statements {
 		result = Eval(statement, env)

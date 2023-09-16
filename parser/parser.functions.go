@@ -165,13 +165,11 @@ func (p *Parser) parseIfExpression() ast.Expression {
 	expression.Condition = p.parseExpression(LOWEST)
 
 	if !p.expectPeekType(token.COLON) {
-		fmt.Println("inside if")
 		p.errors = append(p.errors, "Expected ':' after if condition")
 		return &ast.IfExpression{}
 	}
 
 	if !p.expectPeekType(token.LEFTBRAC) {
-		fmt.Println("inside if")
 		p.errors = append(p.errors, "Expected '{' after if condition")
 		return &ast.IfExpression{}
 	}
@@ -179,7 +177,6 @@ func (p *Parser) parseIfExpression() ast.Expression {
 	expression.Consequence = p.parseBlockStatement()
 
 	if p.peekTokenTypeIs(token.ELSE) {
-		fmt.Println("inside else")
 		p.nextToken()
 
 		if !p.expectPeekType(token.LEFTBRAC) {
