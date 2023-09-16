@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func initApp() {
+func StartServer() {
 	port := getPort()
 
 	initAppRoutes()
@@ -16,8 +16,4 @@ func initApp() {
 	if err != nil {
 		fmt.Printf("Something went wrong while starting the server: %s", err)
 	}
-}
-
-func StartServer() {
-	initApp()
 }

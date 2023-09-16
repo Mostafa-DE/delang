@@ -29,7 +29,6 @@ func getFileContent() []byte {
 }
 
 func Run() {
-
 	fileContent := getFileContent()
 
 	l := lexer.New(string(fileContent))
@@ -44,21 +43,9 @@ func Run() {
 	}
 
 	eval := evaluator.Eval(program, env)
-	const DE = `
-  ____       ________
- |  _ \     /|_______|
- | | | |   | |			
- | | | |   | |_______
- | | | |   | |_______|
- | | | |   | |			
- | |_| /   | |_______
- |____/     \|_______|
- `
+
 	if eval != nil {
-		fmt.Println(DE)
 		fmt.Println(eval.Inspect())
-	} else {
-		fmt.Println("null")
 	}
 }
 
@@ -72,3 +59,14 @@ func parserErrors(p *parser.Parser) bool {
 
 	return false
 }
+
+// const DE = `
+//   ____       ________
+//  |  _ \     /|_______|
+//  | | | |   | |
+//  | | | |   | |_______
+//  | | | |   | |_______|
+//  | | | |   | |
+//  | |_| /   | |_______
+//  |____/     \|_______|
+//  `

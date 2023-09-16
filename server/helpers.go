@@ -2,14 +2,16 @@ package server
 
 import (
 	"bytes"
-	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/google/uuid"
 )
 
-func prepareReqBody(req *http.Request) RequestBody {
-	var requestBody RequestBody
+func createFileToExecFromReqBody(req *http.Request) string {
 	var buf bytes.Buffer
 
 	_, err := buf.ReadFrom(req.Body)
@@ -18,17 +20,48 @@ func prepareReqBody(req *http.Request) RequestBody {
 		panic(err)
 	}
 
-	// Remove the new lines
-	cleanedBody := strings.ReplaceAll(buf.String(), "\n", "")
+	fileName := fmt.Sprintf("index_%s.de", uuid.New().String())
+	ioutil.WriteFile(fileName, buf.Bytes(), 0644)
 
-	json.Unmarshal([]byte(cleanedBody), &requestBody)
+	fileContents, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		fmt.Println("Failed to read the file:", err)
+		os.Remove(fileName)
+		return ""
+	}
+
+	fileContentString := string(fileContents)
 
 	// Replace the single quotes with double quotes
 	// This is because single quotes in Go used to represent runes (characters) not strings
 	// But in our language we want to allow single double quotes to represent strings
-	requestBody.Code = strings.ReplaceAll(requestBody.Code, "'", "\"")
+	fileContentString = strings.ReplaceAll(fileContentString, `'`, `"`)
 
-	return requestBody
+	ioutil.WriteFile(fileName, []byte(fileContentString), 0644)
+
+	if isFileEmpty(fileName) {
+		fmt.Println("Code is required")
+		os.Remove(fileName)
+		return ""
+	}
+
+	return fileName
+}
+
+func isFileEmpty(fileName string) bool {
+	fileContents, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		fmt.Println("Failed to read the file:", err)
+		os.Remove(fileName)
+		return false
+	}
+
+	fileContentString := string(fileContents)
+
+	fileContentString = strings.ReplaceAll(fileContentString, " ", "")
+	fileContentString = strings.ReplaceAll(fileContentString, "\n", "")
+
+	return len(fileContentString) == 0
 }
 
 func getPort() string {

@@ -2,14 +2,14 @@ package server
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
-	"strings"
+	"os"
 
+	"github.com/Mostafa-DE/delang/evaluator"
 	"github.com/Mostafa-DE/delang/lexer"
 	"github.com/Mostafa-DE/delang/object"
 	"github.com/Mostafa-DE/delang/parser"
-
-	"github.com/Mostafa-DE/delang/evaluator"
 )
 
 type RequestBody struct {
@@ -23,18 +23,33 @@ func initAppRoutes() {
 func codeExecHandler(resW http.ResponseWriter, req *http.Request) {
 	var response map[string]string
 
-	reqBody := prepareReqBody(req)
+	fileName := createFileToExecFromReqBody(req)
 
-	if strings.TrimSpace(reqBody.Code) == "" {
+	if fileName == "" {
 		response = map[string]string{
-			"error": "code is required",
+			"error": "Something went wrong while executing the code",
 		}
 
+		os.Remove(fileName)
 		json.NewEncoder(resW).Encode(response)
 		return
 	}
 
-	l := lexer.New(reqBody.Code)
+	fileContents, err := ioutil.ReadFile(fileName)
+
+	if err != nil {
+		response = map[string]string{
+			"error": "Something went wrong while executing the code",
+		}
+
+		os.Remove(fileName)
+		json.NewEncoder(resW).Encode(response)
+		return
+	}
+
+	fileContentString := string(fileContents)
+
+	l := lexer.New(fileContentString)
 	p := parser.New(l)
 
 	program := p.ParseProgram()
@@ -43,7 +58,7 @@ func codeExecHandler(resW http.ResponseWriter, req *http.Request) {
 		response = map[string]string{
 			"error": p.Errors()[0],
 		}
-
+		os.Remove(fileName)
 		json.NewEncoder(resW).Encode(response)
 		return
 	}
@@ -65,4 +80,5 @@ func codeExecHandler(resW http.ResponseWriter, req *http.Request) {
 
 	resW.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(resW).Encode(response)
+	os.Remove(fileName)
 }

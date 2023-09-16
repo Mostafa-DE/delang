@@ -12,13 +12,15 @@ func (p *Parser) parseVariableStatement(statementType string) *ast.VariableState
 	statement := &ast.VariableStatement{Token: p.currentToken, Type: statementType}
 
 	if !p.expectPeekType(token.IDENT) {
-		return nil
+		p.errors = append(p.errors, fmt.Sprintf("Expected identifier after '%s'", statementType))
+		return &ast.VariableStatement{}
 	}
 
 	statement.Name = &ast.Identifier{Token: p.currentToken, Value: p.currentToken.Literal}
 
 	if !p.expectPeekType(token.ASSIGN) {
-		return nil
+		p.errors = append(p.errors, "Expected '=' after variable name")
+		return &ast.VariableStatement{}
 	}
 
 	p.nextToken()
@@ -129,7 +131,7 @@ func (p *Parser) parseIntegerLiteral() ast.Expression {
 	if err != nil {
 		msg := fmt.Sprintf("Could not parse %q as integer", p.currentToken.Literal)
 		p.errors = append(p.errors, msg)
-		return nil
+		return &ast.IntegerLiteral{}
 	}
 
 	literal.Value = value
@@ -148,6 +150,7 @@ func (p *Parser) parseGroupedExpression() ast.Expression {
 	expression := p.parseExpression(LOWEST)
 
 	if !p.expectPeekType(token.RIGHTPAR) {
+		p.errors = append(p.errors, "Grouped expression is not closed with ')'")
 		return nil
 	}
 
@@ -162,23 +165,26 @@ func (p *Parser) parseIfExpression() ast.Expression {
 	expression.Condition = p.parseExpression(LOWEST)
 
 	if !p.expectPeekType(token.COLON) {
+		fmt.Println("inside if")
 		p.errors = append(p.errors, "Expected ':' after if condition")
-		return nil
+		return &ast.IfExpression{}
 	}
 
 	if !p.expectPeekType(token.LEFTBRAC) {
+		fmt.Println("inside if")
 		p.errors = append(p.errors, "Expected '{' after if condition")
-		return nil
+		return &ast.IfExpression{}
 	}
 
 	expression.Consequence = p.parseBlockStatement()
 
 	if p.peekTokenTypeIs(token.ELSE) {
+		fmt.Println("inside else")
 		p.nextToken()
 
 		if !p.expectPeekType(token.LEFTBRAC) {
 			p.errors = append(p.errors, "Expected '{' after else")
-			return nil
+			return &ast.IfExpression{}
 		}
 
 		expression.Alternative = p.parseBlockStatement()
@@ -197,7 +203,7 @@ func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 	for !p.currentTokenTypeIs(token.RIGHTBRAC) && !p.currentTokenTypeIs(token.EOFILE) {
 		if p.currentTokenTypeIs(token.ELSE) {
 			p.errors = append(p.errors, "Unexpected 'else' statement, if block is not closed with '}'")
-			return nil
+			return block
 		}
 
 		statement := p.parseStatement()
@@ -214,13 +220,15 @@ func (p *Parser) parseFunction() ast.Expression {
 	function := &ast.Function{Token: p.currentToken}
 
 	if !p.expectPeekType(token.LEFTPAR) {
-		return nil
+		p.errors = append(p.errors, "Function is not started with '('")
+		return &ast.Function{}
 	}
 
 	function.Parameters = p.parseFunctionParameters()
 
 	if !p.expectPeekType(token.LEFTBRAC) {
-		return nil
+		p.errors = append(p.errors, "Function is not started with '{'")
+		return &ast.Function{}
 	}
 
 	function.Body = p.parseBlockStatement()
@@ -291,6 +299,7 @@ func (p *Parser) parseCallArguments() []ast.Expression {
 	}
 
 	if !p.expectPeekType(token.RIGHTPAR) {
+		p.errors = append(p.errors, "Function call is not closed with ')'")
 		return nil
 	}
 
@@ -368,7 +377,7 @@ func (p *Parser) parseHash() ast.Expression {
 
 		if !p.expectPeekType(token.COLON) {
 			p.errors = append(p.errors, "Hash key is not followed by ':'")
-			return nil
+			return &ast.Hash{}
 		}
 
 		p.nextToken()
@@ -378,13 +387,13 @@ func (p *Parser) parseHash() ast.Expression {
 
 		if !p.peekTokenTypeIs(token.RIGHTBRAC) && !p.expectPeekType(token.COMMA) {
 			p.errors = append(p.errors, "Hash is not closed with '}'")
-			return nil
+			return &ast.Hash{}
 		}
 	}
 
 	if !p.expectPeekType(token.RIGHTBRAC) {
 		p.errors = append(p.errors, "Hash is not closed with '}'")
-		return nil
+		return &ast.Hash{}
 	}
 
 	return hash

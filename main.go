@@ -9,10 +9,10 @@ import (
 )
 
 func main() {
-	if env := os.Getenv("ENV"); env == "PROD" {
-		server.StartServer()
-		return
-	}
+	// if env := os.Getenv("ENV"); env == "PROD" {
+	server.StartServer()
+	return
+	// }
 
 	if len(os.Args) == 1 {
 		repl.StartSession()

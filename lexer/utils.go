@@ -70,3 +70,9 @@ func (l *Lexer) readString() string {
 
 	return l.input[position:l.currentPosition]
 }
+
+func (l *Lexer) skipComment() {
+	for l.currentChar != '\n' && l.currentChar != 0 {
+		l.readChar()
+	}
+}
