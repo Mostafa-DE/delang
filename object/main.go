@@ -40,7 +40,7 @@ type String struct {
 
 type Builtin struct {
 	Func func(args ...Object) Object
-	Doc  string
+	Desc string
 	Name string
 }
 

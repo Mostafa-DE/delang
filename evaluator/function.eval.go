@@ -25,6 +25,10 @@ func evalFunction(fun object.Object, args []object.Object, env *object.Environme
 				buffer[len(buffer)-1].WriteString(arg.Inspect())
 			}
 
+			if env.GetOuterEnv() != nil {
+				env = env.GetMainEnv()
+			}
+
 			if logs, ok := env.Get("bufferLogs"); ok {
 				logs.(*object.Buffer).Value = append(logs.(*object.Buffer).Value, buffer...)
 			} else {

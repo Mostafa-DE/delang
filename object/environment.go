@@ -53,3 +53,15 @@ func (e *Environment) Set(name string, val Object, isConst bool) Object {
 
 	return val
 }
+
+func (e *Environment) GetOuterEnv() *Environment {
+	return e.outer
+}
+
+func (e *Environment) GetMainEnv() *Environment {
+	if e.outer != nil {
+		return e.outer.GetMainEnv()
+	}
+
+	return e
+}

@@ -27,7 +27,7 @@ var builtins = map[string]*object.Builtin{
 
 			}
 		},
-		Doc:  "len, returns the length of a string or an array",
+		Desc: "Returns the length of a string or an array",
 		Name: "len",
 	},
 
@@ -49,7 +49,7 @@ var builtins = map[string]*object.Builtin{
 
 			return NULL
 		},
-		Doc:  "first, returns the first element of an array",
+		Desc: "Returns the first element of an array",
 		Name: "first",
 	},
 
@@ -73,7 +73,7 @@ var builtins = map[string]*object.Builtin{
 
 			return NULL
 		},
-		Doc:  "last, returns the last element of an array",
+		Desc: "Returns the last element of an array",
 		Name: "last",
 	},
 
@@ -100,7 +100,7 @@ var builtins = map[string]*object.Builtin{
 
 			return NULL
 		},
-		Doc:  "skipFirst, returns an array with the first element removed",
+		Desc: "Returns an array with the first element removed",
 		Name: "skipFirst",
 	},
 
@@ -127,7 +127,7 @@ var builtins = map[string]*object.Builtin{
 
 			return NULL
 		},
-		Doc:  "skipLast, returns an array with the last element removed",
+		Desc: "Returns an array with the last element removed",
 		Name: "skipLast",
 	},
 
@@ -147,7 +147,7 @@ var builtins = map[string]*object.Builtin{
 
 			return array
 		},
-		Doc:  "push, pushes an element to the end of an array",
+		Desc: "Pushes an element to the end of an array",
 		Name: "push",
 	},
 
@@ -173,7 +173,7 @@ var builtins = map[string]*object.Builtin{
 
 			return NULL
 		},
-		Doc:  "pop, removes the last element of an array",
+		Desc: "Removes the last element of an array",
 		Name: "pop",
 	},
 
@@ -185,7 +185,7 @@ var builtins = map[string]*object.Builtin{
 
 			return NULL
 		},
-		Doc:  "logs, prints the result to the console",
+		Desc: "Prints the result to the console",
 		Name: "logs",
 	},
 }
