@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"time"
 
 	"github.com/Mostafa-DE/delang/evaluator"
 	"github.com/Mostafa-DE/delang/lexer"
@@ -55,58 +54,32 @@ func examplesHandler(resW http.ResponseWriter, req *http.Request) {
 }
 
 func codeExecHandler(resW http.ResponseWriter, req *http.Request) {
-	res := make(chan map[string]string)
-
-	go func() {
-		res <- codeExec(resW, req)
-	}()
-
-	timeout := time.After(5 * time.Second)
-
-	select {
-	case <-timeout:
-		result := map[string]string{
-			"error": "Program execution timeout due to the 5 seconds limit",
-		}
-
-		resW.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(resW).Encode(result)
-
-		time.AfterFunc(1*time.Second, func() {
-			// This is to make sure that the response is sent before exiting.
-			os.Exit(0)
-		})
-
-	case result := <-res:
-		resW.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(resW).Encode(result)
-	}
-}
-
-func codeExec(resW http.ResponseWriter, req *http.Request) map[string]string {
-	var response map[string]string
+	var res map[string]string
 
 	fileName := createFileToExecFromReqBody(req)
 
 	if fileName == "" {
-		response = map[string]string{
+		res = map[string]string{
 			"error": "Something went wrong while executing the code",
 		}
 
 		os.Remove(fileName)
-		return response
+
+		resW.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(resW).Encode(res)
 	}
 
 	fileContents, err := ioutil.ReadFile(fileName)
 
 	if err != nil {
-		response = map[string]string{
+		res = map[string]string{
 			"error": "Something went wrong while executing the code",
 		}
 
 		os.Remove(fileName)
 
-		return response
+		resW.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(resW).Encode(res)
 	}
 
 	fileContentString := string(fileContents)
@@ -117,29 +90,39 @@ func codeExec(resW http.ResponseWriter, req *http.Request) map[string]string {
 	program := p.ParseProgram()
 
 	if len(p.Errors()) != 0 {
-		response = map[string]string{
+		res = map[string]string{
 			"error": p.Errors()[0],
 		}
 		os.Remove(fileName)
-		return response
+
+		resW.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(resW).Encode(res)
 	}
 
 	env := object.NewEnvironment()
+	env.Set("timeoutLoop", &object.Boolean{Value: true}, false)
 
 	eval := evaluator.Eval(program, env)
 
-	logs, ok := env.Get("bufferLogs")
+	logs, logsOk := env.Get("bufferLogs")
+	timeOutExceeded, timeoutOk := env.Get("timeoutExceeded")
 
-	if !ok {
+	if !logsOk {
 		logs = &object.Buffer{}
 	}
 
-	response = map[string]string{
-		"logs": logs.Inspect(),
-		"data": eval.Inspect(),
+	if !timeoutOk {
+		timeOutExceeded = &object.Boolean{Value: false}
+	}
+
+	res = map[string]string{
+		"logs":    logs.Inspect(),
+		"data":    eval.Inspect(),
+		"timeout": fmt.Sprintf("%t", timeOutExceeded.(*object.Boolean).Value),
 	}
 
 	os.Remove(fileName)
 
-	return response
+	resW.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(resW).Encode(res)
 }
