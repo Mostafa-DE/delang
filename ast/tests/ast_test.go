@@ -395,39 +395,66 @@ func TestExpressionStatement(t *testing.T) {
 	testString(t, program, "de1")
 }
 
-// func TestWhileStatement(t *testing.T) {
-// 	program := &ast.Program{
-// 		Statements: []ast.Statement{
-// 			&ast.ExpressionStatement{
-// 				Expression: &ast.WhileExpression{
-// 					Token: token.Token{Type: token.WHILE, Literal: "while"},
-// 					Condition: &ast.InfixExpression{
-// 						Token: token.Token{Type: token.INT, Literal: "1"},
-// 						Left: &ast.IntegerLiteral{
-// 							Token: token.Token{Type: token.INT, Literal: "1"},
-// 							Value: 1,
-// 						},
-// 						Operator: ">",
-// 						Right: &ast.IntegerLiteral{
-// 							Token: token.Token{Type: token.INT, Literal: "2"},
-// 							Value: 2,
-// 						},
-// 					},
-// 					Body: &ast.BlockStatement{
-// 						Token: token.Token{Type: token.LEFTBRAC, Literal: "{"},
-// 						Statements: []ast.Statement{
-// 							&ast.ExpressionStatement{
-// 								Expression: &ast.Identifier{
-// 									Token: token.Token{Type: token.IDENT, Literal: "de2"},
-// 									Value: "de2",
-// 								},
-// 							},
-// 						},
-// 					},
-// 				},
-// 			},
-// 		},
-// 	}
+func TestDuringStatement(t *testing.T) {
+	program := &ast.Program{
+		Statements: []ast.Statement{
+			&ast.ExpressionStatement{
+				Expression: &ast.DuringExpression{
+					Token: token.Token{Type: token.DURING, Literal: "during"},
+					Condition: &ast.InfixExpression{
+						Token: token.Token{Type: token.INT, Literal: "1"},
+						Left: &ast.IntegerLiteral{
+							Token: token.Token{Type: token.INT, Literal: "1"},
+							Value: 1,
+						},
+						Operator: ">",
+						Right: &ast.IntegerLiteral{
+							Token: token.Token{Type: token.INT, Literal: "2"},
+							Value: 2,
+						},
+					},
+					Body: &ast.BlockStatement{
+						Token: token.Token{Type: token.LEFTBRAC, Literal: "{"},
+						Statements: []ast.Statement{
+							&ast.ExpressionStatement{
+								Expression: &ast.Identifier{
+									Token: token.Token{Type: token.IDENT, Literal: "de2"},
+									Value: "de2",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	testString(t, program, "during (1 > 2): de2;")
+}
+
+func TestBreakStatement(t *testing.T) {
+	program := &ast.Program{
+		Statements: []ast.Statement{
+			&ast.BreakStatement{
+				Token: token.Token{Type: token.BREAK, Literal: "break"},
+			},
+		},
+	}
+
+	testString(t, program, "break")
+}
+
+func TestSkipStatement(t *testing.T) {
+	program := &ast.Program{
+		Statements: []ast.Statement{
+			&ast.SkipStatement{
+				Token: token.Token{Type: token.SKIP, Literal: "skip"},
+			},
+		},
+	}
+
+	testString(t, program, "skip")
+}
 
 // func TestForStatement(t *testing.T) {
 // 	program := &ast.Program{

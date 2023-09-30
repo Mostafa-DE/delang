@@ -13,7 +13,7 @@ const (
 	EQUAL       // ==
 	LESSGREATER // > or <
 	SUMSUB      // + or -
-	MULDIV      //. *
+	MULDIVMOD   // * or / or %
 	PREFIX      // -X or !X
 	CALL        // myFunction(X)
 	INDEX       // array[index]
@@ -26,8 +26,9 @@ var precedences = map[token.TokenType]int{
 	token.GREATERTHAN: LESSGREATER,
 	token.PLUS:        SUMSUB,
 	token.MINUS:       SUMSUB,
-	token.SLASH:       MULDIV,
-	token.ASTERISK:    MULDIV,
+	token.SLASH:       MULDIVMOD,
+	token.ASTERISK:    MULDIVMOD,
+	token.MOD:         MULDIVMOD,
 	token.LEFTPAR:     CALL,
 	token.LEFTSQPRAC:  INDEX, // array indexing has the highest precedence
 }

@@ -411,3 +411,45 @@ func (p *Parser) parseAssignExpression(ident ast.Expression) ast.Expression {
 
 	return expression
 }
+
+func (p *Parser) parseDuringExpression() ast.Expression {
+	// defer untrace(trace("parseDuringExpression"))
+	expression := &ast.DuringExpression{Token: p.currentToken}
+
+	p.nextToken()
+	expression.Condition = p.parseExpression(LOWEST)
+
+	if !p.expectPeekType(token.COLON) {
+		p.errors = append(p.errors, "Expected ':' after (during) condition")
+		return &ast.DuringExpression{}
+	}
+
+	if !p.expectPeekType(token.LEFTBRAC) {
+		p.errors = append(p.errors, "Expected '{' after (during) condition")
+		return &ast.DuringExpression{}
+	}
+
+	expression.Body = p.parseBlockStatement()
+
+	return expression
+}
+
+func (p *Parser) parseBreakStatement() *ast.BreakStatement {
+	statement := &ast.BreakStatement{Token: p.currentToken}
+
+	if p.peekTokenTypeIs(token.SEMICOLON) {
+		p.nextToken()
+	}
+
+	return statement
+}
+
+func (p *Parser) parseSkipStatement() *ast.SkipStatement {
+	statement := &ast.SkipStatement{Token: p.currentToken}
+
+	if p.peekTokenTypeIs(token.SEMICOLON) {
+		p.nextToken()
+	}
+
+	return statement
+}

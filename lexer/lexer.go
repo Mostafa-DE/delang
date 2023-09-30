@@ -96,6 +96,9 @@ func (l *Lexer) NextToken() token.Token {
 	case ']':
 		tok = newToken(token.RIGHTSQPRAC, l.currentChar)
 
+	case '%':
+		tok = newToken(token.MOD, l.currentChar)
+
 	case 0: // End of the line
 		tok.Literal = ""
 		tok.Type = token.EOFILE

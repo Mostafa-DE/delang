@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/Mostafa-DE/delang/evaluator"
 	"github.com/Mostafa-DE/delang/lexer"
@@ -54,6 +55,35 @@ func examplesHandler(resW http.ResponseWriter, req *http.Request) {
 }
 
 func codeExecHandler(resW http.ResponseWriter, req *http.Request) {
+	res := make(chan map[string]string)
+
+	go func() {
+		res <- codeExec(resW, req)
+	}()
+
+	timeout := time.After(5 * time.Second)
+
+	select {
+	case <-timeout:
+		result := map[string]string{
+			"error": "Program execution timeout due to the 5 seconds limit",
+		}
+
+		resW.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(resW).Encode(result)
+
+		time.AfterFunc(1*time.Second, func() {
+			// This is to make sure that the response is sent before exiting.
+			os.Exit(0)
+		})
+
+	case result := <-res:
+		resW.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(resW).Encode(result)
+	}
+}
+
+func codeExec(resW http.ResponseWriter, req *http.Request) map[string]string {
 	var response map[string]string
 
 	fileName := createFileToExecFromReqBody(req)
@@ -64,8 +94,7 @@ func codeExecHandler(resW http.ResponseWriter, req *http.Request) {
 		}
 
 		os.Remove(fileName)
-		json.NewEncoder(resW).Encode(response)
-		return
+		return response
 	}
 
 	fileContents, err := ioutil.ReadFile(fileName)
@@ -76,8 +105,8 @@ func codeExecHandler(resW http.ResponseWriter, req *http.Request) {
 		}
 
 		os.Remove(fileName)
-		json.NewEncoder(resW).Encode(response)
-		return
+
+		return response
 	}
 
 	fileContentString := string(fileContents)
@@ -92,8 +121,7 @@ func codeExecHandler(resW http.ResponseWriter, req *http.Request) {
 			"error": p.Errors()[0],
 		}
 		os.Remove(fileName)
-		json.NewEncoder(resW).Encode(response)
-		return
+		return response
 	}
 
 	env := object.NewEnvironment()
@@ -111,7 +139,7 @@ func codeExecHandler(resW http.ResponseWriter, req *http.Request) {
 		"data": eval.Inspect(),
 	}
 
-	resW.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(resW).Encode(response)
 	os.Remove(fileName)
+
+	return response
 }

@@ -57,6 +57,7 @@ func initRegisterPrefix(p *Parser) {
 		{token.LEFTPAR, p.parseGroupedExpression},
 		{token.RIGHTPAR, p.parseGroupedExpression},
 		{token.IF, p.parseIfExpression},
+		{token.DURING, p.parseDuringExpression},
 		{token.FUNCTION, p.parseFunction},
 		{token.STRING, p.parseStringLiteral},
 		{token.LEFTSQPRAC, p.parseArray},
@@ -77,6 +78,7 @@ func initRegisterInfix(p *Parser) {
 		{token.MINUS, p.parseInfixExpression},
 		{token.SLASH, p.parseInfixExpression},
 		{token.ASTERISK, p.parseInfixExpression},
+		{token.MOD, p.parseInfixExpression},
 		{token.EQUAL, p.parseInfixExpression},
 		{token.NOTEQUAL, p.parseInfixExpression},
 		{token.LESSTHAN, p.parseInfixExpression},
@@ -116,6 +118,12 @@ func (p *Parser) parseStatement() ast.Statement {
 
 	case token.RETURN:
 		return p.parseReturnStatement()
+
+	case token.BREAK:
+		return p.parseBreakStatement()
+
+	case token.SKIP:
+		return p.parseSkipStatement()
 
 	default:
 		return p.parseExpressionStatement()

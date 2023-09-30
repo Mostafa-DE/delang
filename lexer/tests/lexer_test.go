@@ -42,6 +42,12 @@ func TestNextToken(t *testing.T) {
 		{"name": "Mostafa"};
 
 		const x = 3;
+
+		during x < 10: {
+			logs(x);
+			skip;
+			break;
+		}
 	`
 
 	tests := []struct {
@@ -142,6 +148,22 @@ func TestNextToken(t *testing.T) {
 		{token.ASSIGN, "="},
 		{token.INT, "3"},
 		{token.SEMICOLON, ";"},
+		{token.DURING, "during"},
+		{token.IDENT, "x"},
+		{token.LESSTHAN, "<"},
+		{token.INT, "10"},
+		{token.COLON, ":"},
+		{token.LEFTBRAC, "{"},
+		{token.IDENT, "logs"},
+		{token.LEFTPAR, "("},
+		{token.IDENT, "x"},
+		{token.RIGHTPAR, ")"},
+		{token.SEMICOLON, ";"},
+		{token.SKIP, "skip"},
+		{token.SEMICOLON, ";"},
+		{token.BREAK, "break"},
+		{token.SEMICOLON, ";"},
+		{token.RIGHTBRAC, "}"},
 		{token.EOFILE, ""},
 	}
 

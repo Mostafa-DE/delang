@@ -155,6 +155,15 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 		return eval
 
+	case *ast.DuringExpression:
+		return evalDuringExpression(node, env)
+
+	case *ast.BreakStatement:
+		return &object.Break{}
+
+	case *ast.SkipStatement:
+		return &object.Skip{}
+
 	}
 
 	return nil
@@ -209,7 +218,10 @@ func evalBlockStatement(statements []ast.Statement, env *object.Environment) obj
 		if result != nil {
 			resultType := result.Type()
 
-			if resultType == object.RETURN_OBJ || resultType == object.ERROR_OBJ {
+			if resultType == object.RETURN_OBJ ||
+				resultType == object.ERROR_OBJ ||
+				resultType == object.BREAK_OBJ ||
+				resultType == object.SKIP_OBJ {
 				return result
 			}
 		}

@@ -77,6 +77,10 @@ type Hashable interface {
 	HashKey() HashKey
 }
 
+type Break struct{}
+
+type Skip struct{}
+
 const (
 	INTEGER_OBJ  = "INTEGER"
 	BOOLEAN_OBJ  = "BOOLEAN"
@@ -88,6 +92,8 @@ const (
 	BUILTIN_OBJ  = "BUILTIN"
 	ARRAY_OBJ    = "ARRAY"
 	HASH_OBJ     = "HASH"
+	BREAK_OBJ    = "BREAK"
+	SKIP_OBJ     = "SKIP"
 )
 
 func (integer *Integer) Type() ObjectType {
@@ -244,4 +250,20 @@ func (str *String) HashKey() HashKey {
 	h.Write([]byte(str.Value))
 
 	return HashKey{Type: str.Type(), Value: h.Sum64()}
+}
+
+func (b *Break) Type() ObjectType {
+	return BREAK_OBJ
+}
+
+func (b *Break) Inspect() string {
+	return "break"
+}
+
+func (s *Skip) Type() ObjectType {
+	return SKIP_OBJ
+}
+
+func (s *Skip) Inspect() string {
+	return "skip"
 }
