@@ -2,23 +2,17 @@
 
 <br />
 
-Variables are used to store values. When creating a variable for the first time it is assigned a value.
+In DE, variables are like containers that hold information. When you first make a variable, you also give it a value.
 
 <br />
 
-The variable name can contain `letters`, `digits`, `underscores`. It must start with a `letter` or an `underscore`.
-And it is case sensitive. But it can't be a keyword.
+Here are some important things to know about DE variables:
+
+- Variable names can have **letters**, **numbers**, and **underscores**, but they have to start with a **letter** or **underscore**.
+- DE is picky about **uppercase** and **lowercase** letters in variable names. You can't use special words as variable names.
+- DE has two types of variables: **Mutable** and **Immutable**. **Mutable** ones can change once you've made them, while **Immutable** ones stay the same.
+- To create a **Mutable** variable, you use the `let` keyword. For an **Immutable** variable, you use the `const` keyword.
 
 <br />
 
-There are two types of variables in DE: `Mutable` and `Immutable`.
-<br/>
-The `Mutable` variables can be changed after they are created. The `Immutable` variables can't be changed after they are created.
-
-<br />
-
-The `Mutable` variables are created with the `let` keyword. The `Immutable` variables are created with the `const` keyword.
-
-<br />
-
-See the code on the right. The variable `x` is a `Mutable` variable. The variable `y` is an `Immutable` variable. We can change the value of `x`, but we can't change the value of `y`.
+Look at the code on the right. `x` is a **Mutable** variable, which means you can change its value. But `y` is an **Immutable** variable, so once you set its value, it can't be changed.
