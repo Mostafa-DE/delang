@@ -14,7 +14,7 @@ func evalDuringExpression(node *ast.DuringExpression, env *object.Environment) o
 	var timeout <-chan time.Time
 
 	if timeoutLoop != nil {
-		timeout = time.After(8 * time.Second)
+		timeout = time.After(5 * time.Second)
 	}
 
 loop:
@@ -33,13 +33,15 @@ loop:
 				return result
 			}
 
-			if result.Type() == object.BREAK_OBJ {
-				break loop
-			}
+			if result != nil {
+				if result.Type() == object.BREAK_OBJ {
+					break loop
+				}
 
-			if result.Type() == object.SKIP_OBJ {
-				condition = Eval(node.Condition, env)
-				continue loop
+				if result.Type() == object.SKIP_OBJ {
+					condition = Eval(node.Condition, env)
+					continue loop
+				}
 			}
 
 			condition = Eval(node.Condition, env)
