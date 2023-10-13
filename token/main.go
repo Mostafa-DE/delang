@@ -52,6 +52,7 @@ const (
 	DURING   = "DURING"
 	BREAK    = "BREAK"
 	SKIP     = "SKIP"
+	FOR      = "FOR"
 )
 
 var keywords = map[string]TokenType{
@@ -66,6 +67,7 @@ var keywords = map[string]TokenType{
 	"during": DURING,
 	"break":  BREAK,
 	"skip":   SKIP,
+	"for":    FOR,
 }
 
 func LookupIdent(ident string) TokenType {

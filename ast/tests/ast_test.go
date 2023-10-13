@@ -13,76 +13,80 @@ func testString(t *testing.T, program ast.Node, expected string) {
 	}
 }
 
-func TestLetString(t *testing.T) {
+func TestLetStatement(t *testing.T) {
 	program := &ast.Program{
 		Statements: []ast.Statement{
 			&ast.LetStatement{
 				Token: token.Token{Type: token.LET, Literal: "let"},
 				Name: &ast.Identifier{
-					Token: token.Token{Type: token.IDENT, Literal: "de1"},
-					Value: "de1",
+					Token: token.Token{Type: token.IDENT, Literal: "name"},
+					Value: "name",
 				},
 				Value: &ast.Identifier{
-					Token: token.Token{Type: token.IDENT, Literal: "de2"},
-					Value: "de2",
+					Token: token.Token{Type: token.IDENT, Literal: "'DE!'"},
+					Value: "'DE!'",
 				},
 			},
 		},
 	}
 
-	testString(t, program, "let de1 = de2;")
+	testString(t, program, "let name = 'DE!';")
 }
 
-func TestConstString(t *testing.T) {
+func TestConstStatement(t *testing.T) {
 	program := &ast.Program{
 		Statements: []ast.Statement{
-			&ast.LetStatement{
+			&ast.ConstStatement{
 				Token: token.Token{Type: token.CONST, Literal: "const"},
 				Name: &ast.Identifier{
-					Token: token.Token{Type: token.IDENT, Literal: "de1"},
-					Value: "de1",
+					Token: token.Token{Type: token.IDENT, Literal: "PI"},
+					Value: "PI",
 				},
-				Value: &ast.Identifier{
-					Token: token.Token{Type: token.IDENT, Literal: "de2"},
-					Value: "de2",
+				Value: &ast.StringLiteral{
+					Token: token.Token{Type: token.IDENT, Literal: "'3.14'"},
+					Value: "'3.14'",
 				},
 			},
 		},
 	}
 
-	testString(t, program, "const de1 = de2;")
+	testString(t, program, "const PI = '3.14';")
 }
 
-func TestReturnString(t *testing.T) {
+func TestReturnStatement(t *testing.T) {
 	program := &ast.Program{
 		Statements: []ast.Statement{
 			&ast.ReturnStatement{
 				Token: token.Token{Type: token.RETURN, Literal: "return"},
-				ReturnValue: &ast.Identifier{
-					Token: token.Token{Type: token.IDENT, Literal: "de1"},
-					Value: "de1",
+				ReturnValue: &ast.IntegerLiteral{
+					Token: token.Token{Type: token.IDENT, Literal: "100"},
+					Value: 100,
 				},
 			},
 		},
 	}
 
-	testString(t, program, "return de1;")
+	testString(t, program, "return 100;")
 }
 
-func TestArrayString(t *testing.T) {
+func TestArray(t *testing.T) {
 	program := &ast.Program{
 		Statements: []ast.Statement{
 			&ast.ExpressionStatement{
 				Expression: &ast.Array{
 					Token: token.Token{Type: token.LEFTBRAC, Literal: "["},
 					Elements: []ast.Expression{
-						&ast.Identifier{
-							Token: token.Token{Type: token.IDENT, Literal: "de1"},
-							Value: "de1",
+						&ast.IntegerLiteral{
+							Token: token.Token{Type: token.IDENT, Literal: "1"},
+							Value: 1,
 						},
-						&ast.Identifier{
-							Token: token.Token{Type: token.IDENT, Literal: "de2"},
-							Value: "de2",
+						&ast.IntegerLiteral{
+							Token: token.Token{Type: token.IDENT, Literal: "2"},
+							Value: 2,
+						},
+						&ast.IntegerLiteral{
+							Token: token.Token{Type: token.IDENT, Literal: "3"},
+							Value: 3,
 						},
 					},
 				},
@@ -90,32 +94,69 @@ func TestArrayString(t *testing.T) {
 		},
 	}
 
-	testString(t, program, "[de1, de2]")
+	testString(t, program, "[1, 2, 3]")
 }
 
-func TestIndexExpressionString(t *testing.T) {
+func TestArrayIndex(t *testing.T) {
 	program := &ast.Program{
 		Statements: []ast.Statement{
 			&ast.ExpressionStatement{
 				Expression: &ast.IndexExpression{
 					Token: token.Token{Type: token.LEFTBRAC, Literal: "["},
 					Ident: &ast.Identifier{
-						Token: token.Token{Type: token.IDENT, Literal: "de1"},
-						Value: "de1",
+						Token: token.Token{Type: token.IDENT, Literal: "arr"},
+						Value: "arr",
 					},
-					Index: &ast.Identifier{
-						Token: token.Token{Type: token.IDENT, Literal: "de2"},
-						Value: "de2",
+					Index: &ast.IntegerLiteral{
+						Token: token.Token{Type: token.IDENT, Literal: "0"},
+						Value: 0,
 					},
 				},
 			},
 		},
 	}
 
-	testString(t, program, "(de1[de2])")
+	testString(t, program, "(arr[0])")
 }
 
-func TestHashString(t *testing.T) {
+func TestHashIndex(t *testing.T) {
+	program := &ast.Program{
+		Statements: []ast.Statement{
+			&ast.ExpressionStatement{
+				Expression: &ast.IndexExpression{
+					Token: token.Token{Type: token.LEFTBRAC, Literal: "["},
+					Ident: &ast.Hash{
+						Token: token.Token{Type: token.LEFTBRAC, Literal: "{"},
+						Pairs: map[ast.Expression]ast.Expression{
+							&ast.Identifier{
+								Token: token.Token{Type: token.IDENT, Literal: "name"},
+								Value: "name",
+							}: &ast.Identifier{
+								Token: token.Token{Type: token.IDENT, Literal: "DE!"},
+								Value: "DE!",
+							},
+							&ast.Identifier{
+								Token: token.Token{Type: token.IDENT, Literal: "age"},
+								Value: "age",
+							}: &ast.Identifier{
+								Token: token.Token{Type: token.IDENT, Literal: "10"},
+								Value: "10",
+							},
+						},
+					},
+					Index: &ast.StringLiteral{
+						Token: token.Token{Type: token.STRING, Literal: "'name'"},
+						Value: "'name'",
+					},
+				},
+			},
+		},
+	}
+
+	testString(t, program, "({name: DE!, age: 10}['name'])")
+}
+
+func TestHash(t *testing.T) {
 	program := &ast.Program{
 		Statements: []ast.Statement{
 			&ast.ExpressionStatement{
@@ -123,18 +164,18 @@ func TestHashString(t *testing.T) {
 					Token: token.Token{Type: token.LEFTBRAC, Literal: "{"},
 					Pairs: map[ast.Expression]ast.Expression{
 						&ast.Identifier{
-							Token: token.Token{Type: token.IDENT, Literal: "de1"},
-							Value: "de1",
+							Token: token.Token{Type: token.IDENT, Literal: "name"},
+							Value: "name",
 						}: &ast.Identifier{
-							Token: token.Token{Type: token.IDENT, Literal: "de2"},
-							Value: "de2",
+							Token: token.Token{Type: token.IDENT, Literal: "DE!"},
+							Value: "DE!",
 						},
 						&ast.Identifier{
-							Token: token.Token{Type: token.IDENT, Literal: "de3"},
-							Value: "de3",
+							Token: token.Token{Type: token.IDENT, Literal: "age"},
+							Value: "age",
 						}: &ast.Identifier{
-							Token: token.Token{Type: token.IDENT, Literal: "de4"},
-							Value: "de4",
+							Token: token.Token{Type: token.IDENT, Literal: "10"},
+							Value: "10",
 						},
 					},
 				},
@@ -142,10 +183,10 @@ func TestHashString(t *testing.T) {
 		},
 	}
 
-	testString(t, program, "{de1: de2, de3: de4}")
+	testString(t, program, "{name: DE!, age: 10}")
 }
 
-func TestFunctionString(t *testing.T) {
+func TestFunction(t *testing.T) {
 	program := &ast.Program{
 		Statements: []ast.Statement{
 			&ast.ExpressionStatement{
@@ -153,12 +194,12 @@ func TestFunctionString(t *testing.T) {
 					Token: token.Token{Type: token.FUNCTION, Literal: "fun"},
 					Parameters: []*ast.Identifier{
 						{
-							Token: token.Token{Type: token.IDENT, Literal: "de1"},
-							Value: "de1",
+							Token: token.Token{Type: token.IDENT, Literal: "param1"},
+							Value: "param1",
 						},
 						{
-							Token: token.Token{Type: token.IDENT, Literal: "de2"},
-							Value: "de2",
+							Token: token.Token{Type: token.IDENT, Literal: "param2"},
+							Value: "param2",
 						},
 					},
 					Body: &ast.BlockStatement{
@@ -166,8 +207,8 @@ func TestFunctionString(t *testing.T) {
 						Statements: []ast.Statement{
 							&ast.ExpressionStatement{
 								Expression: &ast.Identifier{
-									Token: token.Token{Type: token.IDENT, Literal: "de3"},
-									Value: "de3",
+									Token: token.Token{Type: token.IDENT, Literal: "logs(param1, param2)"},
+									Value: "logs(param1, param2)",
 								},
 							},
 						},
@@ -177,27 +218,27 @@ func TestFunctionString(t *testing.T) {
 		},
 	}
 
-	testString(t, program, "fun(de1, de2) de3;")
+	testString(t, program, "fun(param1, param2) {logs(param1, param2);}")
 }
 
-func TestCallExpressionString(t *testing.T) {
+func TestFuncCall(t *testing.T) {
 	program := &ast.Program{
 		Statements: []ast.Statement{
 			&ast.ExpressionStatement{
 				Expression: &ast.CallFunction{
 					Token: token.Token{Type: token.LEFTPAR, Literal: "("},
 					Function: &ast.Identifier{
-						Token: token.Token{Type: token.IDENT, Literal: "de1"},
-						Value: "de1",
+						Token: token.Token{Type: token.IDENT, Literal: "func"},
+						Value: "func",
 					},
 					Arguments: []ast.Expression{
 						&ast.Identifier{
-							Token: token.Token{Type: token.IDENT, Literal: "de2"},
-							Value: "de2",
+							Token: token.Token{Type: token.IDENT, Literal: "arg1"},
+							Value: "arg1",
 						},
 						&ast.Identifier{
-							Token: token.Token{Type: token.IDENT, Literal: "de3"},
-							Value: "de3",
+							Token: token.Token{Type: token.IDENT, Literal: "arg2"},
+							Value: "arg2",
 						},
 					},
 				},
@@ -205,7 +246,7 @@ func TestCallExpressionString(t *testing.T) {
 		},
 	}
 
-	testString(t, program, "de1(de2, de3)")
+	testString(t, program, "func(arg1, arg2)")
 }
 
 func TestIfStatement(t *testing.T) {
@@ -231,8 +272,8 @@ func TestIfStatement(t *testing.T) {
 						Statements: []ast.Statement{
 							&ast.ExpressionStatement{
 								Expression: &ast.Identifier{
-									Token: token.Token{Type: token.IDENT, Literal: "de2"},
-									Value: "de2",
+									Token: token.Token{Type: token.IDENT, Literal: "logs('Awesome!')"},
+									Value: "logs('Awesome!')",
 								},
 							},
 						},
@@ -242,8 +283,8 @@ func TestIfStatement(t *testing.T) {
 						Statements: []ast.Statement{
 							&ast.ExpressionStatement{
 								Expression: &ast.Identifier{
-									Token: token.Token{Type: token.IDENT, Literal: "de3"},
-									Value: "de3",
+									Token: token.Token{Type: token.IDENT, Literal: "logs('Not Awesome!')"},
+									Value: "logs('Not Awesome!')",
 								},
 							},
 						},
@@ -253,7 +294,7 @@ func TestIfStatement(t *testing.T) {
 		},
 	}
 
-	testString(t, program, "if (1 > 2): de2; else de3;")
+	testString(t, program, "if (1 > 2): {logs('Awesome!');} else {logs('Not Awesome!');}")
 }
 
 func TestAssignStatement(t *testing.T) {
@@ -263,19 +304,19 @@ func TestAssignStatement(t *testing.T) {
 				Expression: &ast.AssignExpression{
 					Token: token.Token{Type: token.ASSIGN, Literal: "="},
 					Ident: &ast.Identifier{
-						Token: token.Token{Type: token.IDENT, Literal: "de1"},
-						Value: "de1",
+						Token: token.Token{Type: token.IDENT, Literal: "var1"},
+						Value: "var1",
 					},
 					Value: &ast.Identifier{
-						Token: token.Token{Type: token.IDENT, Literal: "de2"},
-						Value: "de2",
+						Token: token.Token{Type: token.IDENT, Literal: "var2"},
+						Value: "var2",
 					},
 				},
 			},
 		},
 	}
 
-	testString(t, program, "de1 = de2;")
+	testString(t, program, "var1 = var2;")
 }
 
 func TestPrefixExpression(t *testing.T) {
@@ -336,6 +377,9 @@ func TestBooleanExpression(t *testing.T) {
 }
 
 func TestIntegerLiteralExpression(t *testing.T) {
+	// The expression is anything that returns a value
+	// 1 as an expression returns 1, also true, false, etc.
+
 	program := &ast.Program{
 		Statements: []ast.Statement{
 			&ast.ExpressionStatement{
@@ -355,14 +399,14 @@ func TestStringLiteralExpression(t *testing.T) {
 		Statements: []ast.Statement{
 			&ast.ExpressionStatement{
 				Expression: &ast.StringLiteral{
-					Token: token.Token{Type: token.STRING, Literal: ""},
-					Value: "",
+					Token: token.Token{Type: token.STRING, Literal: "This is a string"},
+					Value: "This is a string",
 				},
 			},
 		},
 	}
 
-	testString(t, program, "")
+	testString(t, program, "This is a string")
 }
 
 func TestIdentifierExpression(t *testing.T) {
@@ -370,29 +414,14 @@ func TestIdentifierExpression(t *testing.T) {
 		Statements: []ast.Statement{
 			&ast.ExpressionStatement{
 				Expression: &ast.Identifier{
-					Token: token.Token{Type: token.IDENT, Literal: "de1"},
-					Value: "de1",
+					Token: token.Token{Type: token.IDENT, Literal: "var"},
+					Value: "var",
 				},
 			},
 		},
 	}
 
-	testString(t, program, "de1")
-}
-
-func TestExpressionStatement(t *testing.T) {
-	program := &ast.Program{
-		Statements: []ast.Statement{
-			&ast.ExpressionStatement{
-				Expression: &ast.Identifier{
-					Token: token.Token{Type: token.IDENT, Literal: "de1"},
-					Value: "de1",
-				},
-			},
-		},
-	}
-
-	testString(t, program, "de1")
+	testString(t, program, "var")
 }
 
 func TestDuringStatement(t *testing.T) {
@@ -418,8 +447,8 @@ func TestDuringStatement(t *testing.T) {
 						Statements: []ast.Statement{
 							&ast.ExpressionStatement{
 								Expression: &ast.Identifier{
-									Token: token.Token{Type: token.IDENT, Literal: "de2"},
-									Value: "de2",
+									Token: token.Token{Type: token.IDENT, Literal: "logs('Awesome!')"},
+									Value: "logs('Awesome!')",
 								},
 							},
 						},
@@ -429,7 +458,7 @@ func TestDuringStatement(t *testing.T) {
 		},
 	}
 
-	testString(t, program, "during (1 > 2): de2;")
+	testString(t, program, "during (1 > 2): {logs('Awesome!');}")
 }
 
 func TestBreakStatement(t *testing.T) {
@@ -456,39 +485,50 @@ func TestSkipStatement(t *testing.T) {
 	testString(t, program, "skip")
 }
 
-// func TestForStatement(t *testing.T) {
-// 	program := &ast.Program{
-// 		Statements: []ast.Statement{
-// 			&ast.ExpressionStatement{
-// 				Expression: &ast.ForExpression{
-// 					Token: token.Token{Type: token.FOR, Literal: "for"},
-// 					Condition: &ast.InfixExpression{
-// 						Token: token.Token{Type: token.INT, Literal: "1"},
-// 						Left: &ast.IntegerLiteral{
-// 							Token: token.Token{Type: token.INT, Literal: "1"},
-// 							Value: 1,
-// 						},
-// 						Operator: ">",
-// 						Right: &ast.IntegerLiteral{
-// 							Token: token.Token{Type: token.INT, Literal: "2"},
-// 							Value: 2,
-// 						},
-// 					},
-// 					Body: &ast.BlockStatement{
-// 						Token: token.Token{Type: token.LEFTBRAC, Literal: "{"},
-// 						Statements: []ast.Statement{
-// 							&ast.ExpressionStatement{
-// 								Expression: &ast.Identifier{
-// 									Token: token.Token{Type: token.IDENT, Literal: "de2"},
-// 									Value: "de2",
-// 								},
-// 							},
-// 						},
-// 					},
-// 				},
-// 			},
-// 		},
-// 	}
+func TestForStatement(t *testing.T) {
+	program := &ast.Program{
+		Statements: []ast.Statement{
+			&ast.ForStatement{
+				Token: token.Token{Type: token.FOR, Literal: "for"},
+				IdxIdent: &ast.Identifier{
+					Token: token.Token{Type: token.IDENT, Literal: "idx"},
+					Value: "idx",
+				},
+				VarIdent: &ast.Identifier{
+					Token: token.Token{Type: token.IDENT, Literal: "num"},
+					Value: "num",
+				},
+				Expression: &ast.Array{
+					Token: token.Token{Type: token.LEFTBRAC, Literal: "["},
+					Elements: []ast.Expression{
+						&ast.IntegerLiteral{
+							Token: token.Token{Type: token.INT, Literal: "1"},
+							Value: 1,
+						},
+						&ast.IntegerLiteral{
+							Token: token.Token{Type: token.INT, Literal: "2"},
+							Value: 2,
+						},
+						&ast.IntegerLiteral{
+							Token: token.Token{Type: token.INT, Literal: "3"},
+							Value: 3,
+						},
+					},
+				},
+				Body: &ast.BlockStatement{
+					Token: token.Token{Type: token.LEFTBRAC, Literal: "{"},
+					Statements: []ast.Statement{
+						&ast.ExpressionStatement{
+							Expression: &ast.Identifier{
+								Token: token.Token{Type: token.IDENT, Literal: "logs(num)"},
+								Value: "logs(num)",
+							},
+						},
+					},
+				},
+			},
+		},
+	}
 
-// 	testString(t, program, "for (1 > 2): de2;")
-// }
+	testString(t, program, "for idx, num in [1, 2, 3]: {logs(num);}")
+}

@@ -23,8 +23,9 @@ func (duringExpression *DuringExpression) String() string {
 	out.WriteString("during")
 	out.WriteString(" ")
 	out.WriteString(duringExpression.Condition.String() + ":")
-	out.WriteString(" ")
+	out.WriteString(" {")
 	out.WriteString(duringExpression.Body.String() + ";")
+	out.WriteString("}")
 
 	return out.String()
 }

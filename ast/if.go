@@ -23,12 +23,15 @@ func (ifExpression *IfExpression) String() string {
 	out.WriteString("if")
 	out.WriteString(" ")
 	out.WriteString(ifExpression.Condition.String() + ":")
-	out.WriteString(" ")
+	out.WriteString(" {")
 	out.WriteString(ifExpression.Consequence.String() + ";")
+	out.WriteString("}")
 
 	if ifExpression.Alternative != nil {
 		out.WriteString(" else ")
+		out.WriteString("{")
 		out.WriteString(ifExpression.Alternative.String() + ";")
+		out.WriteString("}")
 	}
 
 	return out.String()
