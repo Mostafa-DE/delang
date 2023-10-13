@@ -9,9 +9,65 @@ func TestAssignExpression(t *testing.T) {
 		input    string
 		expected interface{}
 	}{
-		{"let y = true; y = false; y", false},
-		{"let foobar = 838383; foobar = 123; foobar;", int64(123)},
-		{"let foobar = 838383; foobar = 123; foobar = 321; foobar;", int64(321)},
+		{
+			`
+				let y = true;
+				y = false;
+				return y;
+			`,
+			false,
+		},
+		{
+			`
+				let foobar = 838383;
+				foobar = 123;
+				return foobar;
+			`,
+			int64(123),
+		},
+		{
+			`
+				let foobar = 838383;
+				foobar = 123;
+				foobar = 321;
+				return foobar;
+			`,
+			int64(321),
+		},
+		{
+			`
+				const dict = {"key": 5};
+				dict["key"] = 10;
+				return dict["key"];
+			`,
+			int64(10),
+		},
+		{
+			`
+				const dict = {"key": 5};
+				dict["key"] = 10;
+				dict["key"] = 20;
+				return dict["key"];
+			`,
+			int64(20),
+		},
+		{
+			`
+				const arr = [1, 2, 3];
+				arr[0] = 10;
+				return arr[0];
+			`,
+			int64(10),
+		},
+		{
+			`
+				const arr = [1, 2, 3];
+				arr[0] = 10;
+				arr[0] = 20;
+				return arr[0];
+			`,
+			int64(20),
+		},
 	}
 
 	for _, val := range tests {

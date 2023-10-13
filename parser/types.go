@@ -8,15 +8,15 @@ import (
 )
 
 const (
-	_ int = iota // iota is a special constant that can be used to increment values
-	LOWEST
-	EQUAL       // ==
-	LESSGREATER // > or <
-	SUMSUB      // + or -
-	MULDIVMOD   // * or / or %
-	PREFIX      // -X or !X
-	CALL        // myFunction(X)
-	INDEX       // array[index]
+	_           int = iota
+	LOWEST          // Lowest precedence
+	EQUAL           // ==
+	LESSGREATER     // > or <
+	SUMSUB          // + or -
+	MULDIVMOD       // * or / or %
+	PREFIX          // -X or !X
+	CALL            // myFunction(X)
+	INDEX           // array[index]
 )
 
 var precedences = map[token.TokenType]int{

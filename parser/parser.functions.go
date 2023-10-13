@@ -353,11 +353,22 @@ func (p *Parser) parseIndexExpression(Ident ast.Expression) ast.Expression {
 	expression := &ast.IndexExpression{Token: p.currentToken, Ident: Ident}
 
 	p.nextToken()
-	expression.Index = p.parseExpression(LOWEST)
+
+	if p.peekTokenTypeIs(token.STRING) {
+		expression.Index = p.parseStringLiteral()
+	} else {
+		expression.Index = p.parseExpression(LOWEST)
+	}
 
 	if !p.expectPeekType(token.RIGHTSQPRAC) {
 		p.errors = append(p.errors, "Index expression is not closed with ']'")
 		return nil
+	}
+
+	if p.peekTokenTypeIs(token.ASSIGN) {
+		p.nextToken() // Skip the '='
+		p.nextToken()
+		expression.Value = p.parseExpression(LOWEST)
 	}
 
 	return expression

@@ -31,21 +31,21 @@ func TestArrayIndexExpression(t *testing.T) {
 		expected interface{}
 	}{
 		{
-			"[1, 2, 3][0]",
+			"[1, 2, 3][0];",
 			1,
 		},
 		{
-			"[1, 2, 3][1]",
+			"[1, 2, 3][1];",
 			2,
 		},
 		{
-			"[1, 2, 3][2]",
+			"[1, 2, 3][2];",
 			3,
 		},
 		{
 			`
-				let i = 0; 
-				[1][i];
+				let i = 0;
+				return [1][i];
 			`,
 			1,
 		},
@@ -56,7 +56,7 @@ func TestArrayIndexExpression(t *testing.T) {
 		{
 			`
 				let myArray = [1, 2, 3];
-				myArray[2];
+				return myArray[2];
 			`,
 			3,
 		},
@@ -69,18 +69,26 @@ func TestArrayIndexExpression(t *testing.T) {
 		},
 		{
 			`
-				let myArray = [1, 2, 3];
-				let i = myArray[0];
-			 	myArray[i];
+				let arr = [1, 2, 3];
+				let i = arr[0];
+
+				arr[i];
 			`,
 			2,
 		},
 		{
-			"[1, 2, 3][3]",
+			`
+				let arr = [1, 2, [1, 2], 3];
+				arr[2][1];
+			`,
+			2,
+		},
+		{
+			"[1, 2, 3][3];",
 			nil,
 		},
 		{
-			"[1, 2, 3][-1]",
+			"[1, 2, 3][-1];",
 			nil,
 		},
 	}
