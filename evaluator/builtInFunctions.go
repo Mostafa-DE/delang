@@ -180,7 +180,7 @@ var builtins = map[string]*object.Builtin{
 	"logs": {
 		Func: func(args ...object.Object) object.Object {
 			for _, arg := range args {
-				fmt.Println(arg.Inspect())
+				fmt.Printf("'%s'\n", arg.Inspect())
 			}
 
 			return NULL

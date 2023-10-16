@@ -17,6 +17,9 @@ func testEval(input string) object.Object {
 
 	if len(p.Errors()) > 0 {
 		throwError(p.Errors()[0])
+		for _, err := range p.Errors() {
+			fmt.Println(err)
+		}
 		return nil
 	}
 
@@ -47,6 +50,21 @@ func testNullObject(t *testing.T, obj object.Object) bool {
 
 	if obj != evaluator.NULL {
 		t.Errorf("Object is not NULL. Got %T (%+v)", obj, obj)
+		return false
+	}
+
+	return true
+}
+
+func testStringObject(t *testing.T, obj object.Object, expected string) bool {
+	result, ok := obj.(*object.String)
+	if !ok {
+		t.Errorf("Object is not a string. Got %T (%+v)", obj, obj)
+		return false
+	}
+
+	if result.Value != expected {
+		t.Errorf("Object has wrong value. Got %s, expected %s", result.Value, expected)
 		return false
 	}
 

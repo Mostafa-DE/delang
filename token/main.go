@@ -39,6 +39,7 @@ const (
 	COLON       = ":"
 	LEFTSQPRAC  = "["
 	RIGHTSQPRAC = "]"
+	UNDERSCORE  = "_"
 
 	// Keywords
 	FUNCTION = "FUNCTION"
@@ -53,6 +54,7 @@ const (
 	BREAK    = "BREAK"
 	SKIP     = "SKIP"
 	FOR      = "FOR"
+	IN       = "IN"
 )
 
 var keywords = map[string]TokenType{
@@ -68,6 +70,7 @@ var keywords = map[string]TokenType{
 	"break":  BREAK,
 	"skip":   SKIP,
 	"for":    FOR,
+	"in":     IN,
 }
 
 func LookupIdent(ident string) TokenType {

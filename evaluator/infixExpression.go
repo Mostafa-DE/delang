@@ -12,6 +12,14 @@ func evalInfixExpression(operator string, left object.Object, right object.Objec
 	case left.Type() == object.STRING_OBJ && right.Type() == object.STRING_OBJ:
 		return evalStringInfixExpression(operator, left, right)
 
+	case left.Type() == object.STRING_OBJ && right.Type() == object.INTEGER_OBJ:
+		right = &object.String{Value: right.Inspect()}
+		return evalStringInfixExpression(operator, left, right)
+
+	case left.Type() == object.INTEGER_OBJ && right.Type() == object.STRING_OBJ:
+		left = &object.String{Value: left.Inspect()}
+		return evalStringInfixExpression(operator, left, right)
+
 	// This is pointer comparison because we only have one instance of TRUE and FALSE in memory
 	// This not the case for integers because we create a new object for every integer literal
 	// So we need to unwrap the object and compare the values, otherwise we would be comparing pointers

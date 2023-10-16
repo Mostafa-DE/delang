@@ -1,6 +1,10 @@
 package lexer
 
-import "github.com/Mostafa-DE/delang/token"
+import (
+	"strings"
+
+	"github.com/Mostafa-DE/delang/token"
+)
 
 type Lexer struct {
 	input            string
@@ -10,6 +14,11 @@ type Lexer struct {
 }
 
 func New(input string) *Lexer {
+	// Replace the single quotes with double quotes
+	// This is because single quotes in Go used to represent runes (characters) not strings
+	// But in our language we want to allow single double quotes to represent strings
+	input = strings.ReplaceAll(input, `'`, `"`)
+
 	l := &Lexer{input: input}
 	l.readChar()
 	return l
@@ -98,6 +107,9 @@ func (l *Lexer) NextToken() token.Token {
 
 	case '%':
 		tok = newToken(token.MOD, l.currentChar)
+
+	case '_':
+		tok = newToken(token.UNDERSCORE, l.currentChar)
 
 	case 0: // End of the line
 		tok.Literal = ""

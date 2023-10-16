@@ -35,11 +35,6 @@ func createFileToExecFromReqBody(req *http.Request) string {
 
 	fileContentString := string(fileContents)
 
-	// Replace the single quotes with double quotes
-	// This is because single quotes in Go used to represent runes (characters) not strings
-	// But in our language we want to allow single double quotes to represent strings
-	fileContentString = strings.ReplaceAll(fileContentString, `'`, `"`)
-
 	ioutil.WriteFile(fileName, []byte(fileContentString), 0644)
 
 	if isFileEmpty(fileName) {

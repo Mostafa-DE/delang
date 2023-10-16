@@ -165,7 +165,11 @@ func startExec(command string, env *object.Environment) {
 	eval := evaluator.Eval(program, env)
 
 	if eval != nil {
-		fmt.Println(eval.Inspect())
+		if eval.Type() == object.STRING_OBJ {
+			fmt.Printf("'%s'\n", eval.Inspect())
+		} else {
+			fmt.Println(eval.Inspect())
+		}
 	} else {
 		fmt.Println("null")
 	}
