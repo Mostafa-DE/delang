@@ -9,7 +9,7 @@ import (
 	"github.com/Mostafa-DE/delang/ast"
 )
 
-func TestIntegerLiteralExpression(t *testing.T) {
+func TestIntegerExpression(t *testing.T) {
 	input := "5;"
 	l := lexer.New(input)
 	p := parser.New(l)
@@ -30,5 +30,5 @@ func TestIntegerLiteralExpression(t *testing.T) {
 		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T", program.Statements[0])
 	}
 
-	testIntegerLiteral(t, statement.Expression, 5)
+	testInteger(t, statement.Expression, 5)
 }

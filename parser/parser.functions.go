@@ -123,18 +123,33 @@ func (p *Parser) parseIdentifierExpression() ast.Expression {
 	return &ast.Identifier{Token: p.currentToken, Value: p.currentToken.Literal}
 }
 
-func (p *Parser) parseIntegerLiteral() ast.Expression {
-	// defer untrace(trace("parseIntegerLiteral"))
-	literal := &ast.IntegerLiteral{Token: p.currentToken}
+func (p *Parser) parseInteger() ast.Expression {
+	// defer untrace(trace("parseInteger"))
+	literal := &ast.Integer{Token: p.currentToken}
 
 	value, err := strconv.ParseInt(p.currentToken.Literal, 0, 64)
 	if err != nil {
 		msg := fmt.Sprintf("Could not parse %q as integer", p.currentToken.Literal)
 		p.errors = append(p.errors, msg)
-		return &ast.IntegerLiteral{}
+		return &ast.Integer{}
 	}
 
 	literal.Value = value
+	return literal
+}
+
+func (p *Parser) parseFloat() ast.Expression {
+	literal := &ast.Float{Token: p.currentToken}
+
+	value, err := strconv.ParseFloat(p.currentToken.Literal, 64)
+
+	if err != nil {
+		p.errors = append(p.errors, err.Error())
+		return &ast.Float{}
+	}
+
+	literal.Value = value
+
 	return literal
 }
 

@@ -658,3 +658,82 @@ func TestPopFunction(t *testing.T) {
 		}
 	}
 }
+
+func TestRangeFunction(t *testing.T) {
+	tests := []struct {
+		description string
+		input       string
+		expected    interface{}
+	}{
+		{
+			"It should return an array of numbers from 0 to the given number",
+			`
+				range(5);
+			`,
+			[]int{0, 1, 2, 3, 4},
+		},
+		{
+			"It should return an empty array if the given number is 0",
+			`
+				range(0);
+			`,
+			[]int{},
+		},
+		{
+			"It should return an empty array if the given number is negative",
+			`
+				range(-1);
+			`,
+			[]int{},
+		},
+		{
+			"It should return error if the argument is not an integer",
+			`
+				range("1");
+			`,
+			"argument to `range` must be INTEGER, got STRING",
+		},
+		{
+			"It should return error if the number of arguments is not 1",
+			`
+				range(1, 2);
+			`,
+			"wrong number of arguments passed to range(). got=2, want=1",
+		},
+	}
+
+	for _, val := range tests {
+		evaluated := testEval(val.input)
+
+		switch expected := val.expected.(type) {
+		case []int:
+			array, ok := evaluated.(*object.Array)
+
+			if !ok {
+				t.Errorf("object is not Array. got=%T (%+v)", evaluated, evaluated)
+				continue
+			}
+
+			if len(array.Elements) != len(expected) {
+				t.Errorf("Mismatch number of elements in the array. want=%d, got=%d", len(expected), len(array.Elements))
+				continue
+			}
+
+			for idx, element := range array.Elements {
+				testIntegerObject(t, element, int64(expected[idx]))
+			}
+
+		case string:
+			errObj, ok := evaluated.(*object.Error)
+
+			if !ok {
+				t.Errorf("object is not Error. got=%T (%+v)", evaluated, evaluated)
+				continue
+			}
+
+			if errObj.Msg != expected {
+				t.Errorf("wrong error message. expected=%q, got=%q", expected, errObj.Msg)
+			}
+		}
+	}
+}

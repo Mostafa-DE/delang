@@ -60,7 +60,7 @@ func TestHashStringKeys(t *testing.T) {
 		expectedValue := expected[stringKey.String()]
 
 		if intVal, ok := expectedValue.(int); ok {
-			testIntegerLiteral(t, value, int64(intVal))
+			testInteger(t, value, int64(intVal))
 		} else {
 			if value.String() != expectedValue {
 				t.Errorf("value is not %s. got=%s", expectedValue, value.String())

@@ -58,7 +58,7 @@ func TestReturnStatement(t *testing.T) {
 		Statements: []ast.Statement{
 			&ast.ReturnStatement{
 				Token: token.Token{Type: token.RETURN, Literal: "return"},
-				ReturnValue: &ast.IntegerLiteral{
+				ReturnValue: &ast.Integer{
 					Token: token.Token{Type: token.IDENT, Literal: "100"},
 					Value: 100,
 				},
@@ -76,15 +76,15 @@ func TestArray(t *testing.T) {
 				Expression: &ast.Array{
 					Token: token.Token{Type: token.LEFTBRAC, Literal: "["},
 					Elements: []ast.Expression{
-						&ast.IntegerLiteral{
+						&ast.Integer{
 							Token: token.Token{Type: token.IDENT, Literal: "1"},
 							Value: 1,
 						},
-						&ast.IntegerLiteral{
+						&ast.Integer{
 							Token: token.Token{Type: token.IDENT, Literal: "2"},
 							Value: 2,
 						},
-						&ast.IntegerLiteral{
+						&ast.Integer{
 							Token: token.Token{Type: token.IDENT, Literal: "3"},
 							Value: 3,
 						},
@@ -107,7 +107,7 @@ func TestArrayIndex(t *testing.T) {
 						Token: token.Token{Type: token.IDENT, Literal: "arr"},
 						Value: "arr",
 					},
-					Index: &ast.IntegerLiteral{
+					Index: &ast.Integer{
 						Token: token.Token{Type: token.IDENT, Literal: "0"},
 						Value: 0,
 					},
@@ -257,12 +257,12 @@ func TestIfStatement(t *testing.T) {
 					Token: token.Token{Type: token.IF, Literal: "if"},
 					Condition: &ast.InfixExpression{
 						Token: token.Token{Type: token.INT, Literal: "1"},
-						Left: &ast.IntegerLiteral{
+						Left: &ast.Integer{
 							Token: token.Token{Type: token.INT, Literal: "1"},
 							Value: 1,
 						},
 						Operator: ">",
-						Right: &ast.IntegerLiteral{
+						Right: &ast.Integer{
 							Token: token.Token{Type: token.INT, Literal: "2"},
 							Value: 2,
 						},
@@ -326,7 +326,7 @@ func TestPrefixExpression(t *testing.T) {
 				Expression: &ast.PrefixExpression{
 					Token:    token.Token{Type: token.MINUS, Literal: "-"},
 					Operator: "-",
-					Right: &ast.IntegerLiteral{
+					Right: &ast.Integer{
 						Token: token.Token{Type: token.INT, Literal: "1"},
 						Value: 1,
 					},
@@ -344,12 +344,12 @@ func TestInfixExpression(t *testing.T) {
 			&ast.ExpressionStatement{
 				Expression: &ast.InfixExpression{
 					Token: token.Token{Type: token.INT, Literal: "1"},
-					Left: &ast.IntegerLiteral{
+					Left: &ast.Integer{
 						Token: token.Token{Type: token.INT, Literal: "1"},
 						Value: 1,
 					},
 					Operator: ">",
-					Right: &ast.IntegerLiteral{
+					Right: &ast.Integer{
 						Token: token.Token{Type: token.INT, Literal: "2"},
 						Value: 2,
 					},
@@ -376,14 +376,14 @@ func TestBooleanExpression(t *testing.T) {
 	testString(t, program, "true")
 }
 
-func TestIntegerLiteralExpression(t *testing.T) {
+func TestIntegerExpression(t *testing.T) {
 	// The expression is anything that returns a value
 	// 1 as an expression returns 1, also true, false, etc.
 
 	program := &ast.Program{
 		Statements: []ast.Statement{
 			&ast.ExpressionStatement{
-				Expression: &ast.IntegerLiteral{
+				Expression: &ast.Integer{
 					Token: token.Token{Type: token.INT, Literal: "1"},
 					Value: 1,
 				},
@@ -392,6 +392,21 @@ func TestIntegerLiteralExpression(t *testing.T) {
 	}
 
 	testString(t, program, "1")
+}
+
+func TestFloatExpression(t *testing.T) {
+	program := &ast.Program{
+		Statements: []ast.Statement{
+			&ast.ExpressionStatement{
+				Expression: &ast.Float{
+					Token: token.Token{Type: token.FLOAT, Literal: "1.1"},
+					Value: 1.1,
+				},
+			},
+		},
+	}
+
+	testString(t, program, "1.1")
 }
 
 func TestStringLiteralExpression(t *testing.T) {
@@ -432,12 +447,12 @@ func TestDuringStatement(t *testing.T) {
 					Token: token.Token{Type: token.DURING, Literal: "during"},
 					Condition: &ast.InfixExpression{
 						Token: token.Token{Type: token.INT, Literal: "1"},
-						Left: &ast.IntegerLiteral{
+						Left: &ast.Integer{
 							Token: token.Token{Type: token.INT, Literal: "1"},
 							Value: 1,
 						},
 						Operator: ">",
-						Right: &ast.IntegerLiteral{
+						Right: &ast.Integer{
 							Token: token.Token{Type: token.INT, Literal: "2"},
 							Value: 2,
 						},
@@ -501,15 +516,15 @@ func TestForStatement(t *testing.T) {
 				Expression: &ast.Array{
 					Token: token.Token{Type: token.LEFTBRAC, Literal: "["},
 					Elements: []ast.Expression{
-						&ast.IntegerLiteral{
+						&ast.Integer{
 							Token: token.Token{Type: token.INT, Literal: "1"},
 							Value: 1,
 						},
-						&ast.IntegerLiteral{
+						&ast.Integer{
 							Token: token.Token{Type: token.INT, Literal: "2"},
 							Value: 2,
 						},
-						&ast.IntegerLiteral{
+						&ast.Integer{
 							Token: token.Token{Type: token.INT, Literal: "3"},
 							Value: 3,
 						},

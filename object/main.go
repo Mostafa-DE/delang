@@ -20,6 +20,10 @@ type Integer struct {
 	Value int64
 }
 
+type Float struct {
+	Value float64
+}
+
 type Boolean struct {
 	Value bool
 }
@@ -83,6 +87,7 @@ type Skip struct{}
 
 const (
 	INTEGER_OBJ  = "INTEGER"
+	FLOAT_OBJ    = "FLOAT"
 	BOOLEAN_OBJ  = "BOOLEAN"
 	RETURN_OBJ   = "RETURN"
 	ERROR_OBJ    = "ERROR"
@@ -102,6 +107,14 @@ func (integer *Integer) Type() ObjectType {
 
 func (integer *Integer) Inspect() string {
 	return fmt.Sprintf("%d", integer.Value)
+}
+
+func (float *Float) Type() ObjectType {
+	return FLOAT_OBJ
+}
+
+func (float *Float) Inspect() string {
+	return fmt.Sprintf("%v", float.Value)
 }
 
 func (boolean *Boolean) Type() ObjectType {

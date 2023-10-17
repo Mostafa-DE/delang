@@ -176,16 +176,46 @@ var builtins = map[string]*object.Builtin{
 		Desc: "Removes the last element of an array",
 		Name: "pop",
 	},
-
 	"logs": {
 		Func: func(args ...object.Object) object.Object {
 			for _, arg := range args {
-				fmt.Printf("'%s'\n", arg.Inspect())
+				if arg.Type() == object.STRING_OBJ {
+					fmt.Printf("'%s'\n", arg.Inspect())
+				} else {
+					fmt.Println(arg.Inspect())
+				}
 			}
 
 			return NULL
 		},
 		Desc: "Prints the result to the console",
 		Name: "logs",
+	},
+	"range": {
+		Func: func(args ...object.Object) object.Object {
+			if len(args) != 1 {
+				return throwError("wrong number of arguments passed to range(). got=%d, want=1", len(args))
+			}
+
+			integer, ok := args[0].(*object.Integer)
+
+			if !ok {
+				return throwError("argument to `range` must be INTEGER, got %s", args[0].Type())
+			}
+
+			if integer.Value < 0 || integer.Value == 0 {
+				return &object.Array{}
+			}
+
+			elements := make([]object.Object, integer.Value)
+
+			for i := 0; i < int(integer.Value); i++ {
+				elements[i] = &object.Integer{Value: int64(i)}
+			}
+
+			return &object.Array{Elements: elements}
+		},
+		Desc: "Returns an array of integers from 0 to the given number, excluding the given number",
+		Name: "range",
 	},
 }

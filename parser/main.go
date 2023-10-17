@@ -49,7 +49,8 @@ func initRegisterPrefix(p *Parser) {
 		fn        prefixParseFunc
 	}{
 		{token.IDENT, p.parseIdentifier},
-		{token.INT, p.parseIntegerLiteral},
+		{token.INT, p.parseInteger},
+		{token.FLOAT, p.parseFloat},
 		{token.EXCLAMATION, p.parsePrefixExpression},
 		{token.MINUS, p.parsePrefixExpression},
 		{token.TRUE, p.parseBoolean},

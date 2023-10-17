@@ -20,8 +20,11 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 	case *ast.ExpressionStatement:
 		return Eval(node.Expression, env)
 
-	case *ast.IntegerLiteral:
+	case *ast.Integer:
 		return &object.Integer{Value: node.Value}
+
+	case *ast.Float:
+		return &object.Float{Value: node.Value}
 
 	case *ast.Boolean:
 		// This is because we don't need to create a new object for every boolean literal

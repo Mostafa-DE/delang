@@ -35,8 +35,8 @@ func TestParseArray(t *testing.T) {
 		t.Fatalf("len(array.Elements) not 3. got=%d", len(array.Elements))
 	}
 
-	testIntegerLiteral(t, array.Elements[0], 1)
-	testIntegerLiteral(t, array.Elements[1], 2)
+	testInteger(t, array.Elements[0], 1)
+	testInteger(t, array.Elements[1], 2)
 	testInfixExpression(t, array.Elements[2], 2, "*", 2)
 }
 

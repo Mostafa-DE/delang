@@ -119,11 +119,20 @@ func (l *Lexer) NextToken() token.Token {
 		if isLetter(l.currentChar) {
 			tok.Literal = l.readIdentifier()
 			tok.Type = token.LookupIdent(tok.Literal)
+
 			return tok // This return is important because we don't want to call readChar() again
+
 		} else if isNumber(l.currentChar) {
 			tok.Literal = l.readNumber()
+			if strings.Contains(tok.Literal, ".") {
+				tok.Type = token.FLOAT
+				return tok
+			}
+
 			tok.Type = token.INT
+
 			return tok
+
 		} else {
 			tok = newToken(token.ILLEGAL, l.currentChar)
 		}

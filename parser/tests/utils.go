@@ -45,20 +45,20 @@ func testIdentifier(t *testing.T, expression ast.Expression, value string) bool 
 	return true
 }
 
-func testIntegerLiteral(t *testing.T, expression ast.Expression, value int64) bool {
-	integerLiteral, ok := expression.(*ast.IntegerLiteral)
+func testInteger(t *testing.T, expression ast.Expression, value int64) bool {
+	integer, ok := expression.(*ast.Integer)
 	if !ok {
-		t.Errorf("expression not *ast.IntegerLiteral. got=%T", expression)
+		t.Errorf("expression not *ast.Integer. got=%T", expression)
 		return false
 	}
 
-	if integerLiteral.Value != value {
-		t.Errorf("integerLiteral.Value not %d. got=%d", integerLiteral.Value, value)
+	if integer.Value != value {
+		t.Errorf("integer.Value not %d. got=%d", integer.Value, value)
 		return false
 	}
 
-	if integerLiteral.TokenLiteral() != fmt.Sprintf("%d", value) {
-		t.Errorf("integerLiteral.TokenLiteral not %d. got=%s", value, integerLiteral.TokenLiteral())
+	if integer.TokenLiteral() != fmt.Sprintf("%d", value) {
+		t.Errorf("integer.TokenLiteral not %d. got=%s", value, integer.TokenLiteral())
 		return false
 	}
 
@@ -92,9 +92,9 @@ func testLiteralExpression(
 ) bool {
 	switch v := expected.(type) {
 	case int:
-		return testIntegerLiteral(t, expression, int64(v))
+		return testInteger(t, expression, int64(v))
 	case int64:
-		return testIntegerLiteral(t, expression, v)
+		return testInteger(t, expression, v)
 	case string:
 		return testIdentifier(t, expression, v)
 	case bool:

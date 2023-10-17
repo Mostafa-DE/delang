@@ -30,6 +30,10 @@ func (l *Lexer) readNumber() string {
 		l.readChar()
 	}
 
+	for l.currentChar == '.' || isNumber(l.currentChar) {
+		l.readChar()
+	}
+
 	return l.input[position:l.currentPosition]
 }
 

@@ -43,6 +43,21 @@ func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {
 	return true
 }
 
+func testFloatObject(t *testing.T, obj object.Object, expected float64) bool {
+	result, ok := obj.(*object.Float)
+	if !ok {
+		t.Errorf("Object is not a float. Got %T (%+v)", obj, obj)
+		return false
+	}
+
+	if result.Value != expected {
+		t.Errorf("Object has wrong value. Got %f, expected %f", result.Value, expected)
+		return false
+	}
+
+	return true
+}
+
 func testNullObject(t *testing.T, obj object.Object) bool {
 	if obj.Inspect() != "null" {
 		return true
