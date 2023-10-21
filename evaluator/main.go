@@ -185,28 +185,6 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 	return nil
 }
 
-func evalAssignExpression(node *ast.AssignExpression, env *object.Environment) object.Object {
-	val := Eval(node.Value, env)
-
-	if isError(val) {
-		return val
-	}
-
-	_, ok := env.Get(node.Ident.Value)
-
-	if !ok {
-		return throwError("identifier not found: %s", node.Ident.Value)
-	}
-
-	envVal := env.Set(node.Ident.Value, val, false)
-
-	if isError(envVal) {
-		return envVal
-	}
-
-	return val
-}
-
 func evalProgram(statements []ast.Statement, env *object.Environment) object.Object {
 	var result object.Object
 
@@ -230,6 +208,10 @@ func evalBlockStatement(statements []ast.Statement, env *object.Environment) obj
 
 	for _, statement := range statements {
 		result = Eval(statement, env)
+
+		if err, ok := result.(*object.Error); ok {
+			return err
+		}
 
 		if result != nil {
 			resultType := result.Type()
@@ -260,149 +242,4 @@ func evalExpressions(expressions []ast.Expression, env *object.Environment) []ob
 	}
 
 	return result
-}
-
-func evalIndexExpression(ident object.Object, index object.Object) object.Object {
-	switch {
-	case ident.Type() == object.ARRAY_OBJ && index.Type() == object.INTEGER_OBJ:
-		return evalArrayIndex(ident, index)
-
-	case ident.Type() == object.HASH_OBJ:
-		return evalHashIndex(ident, index)
-
-	default:
-		return throwError("index operator not supported: %s", ident.Type())
-
-	}
-}
-
-func setIndexExpression(ident object.Object, index object.Object, value object.Object) object.Object {
-	switch {
-	case ident.Type() == object.ARRAY_OBJ && index.Type() == object.INTEGER_OBJ:
-		return setArrayIndex(ident, index, value)
-
-	case ident.Type() == object.HASH_OBJ:
-		return setHashIndex(ident, index, value)
-
-	default:
-		return throwError("index operator not supported: %s", ident.Type())
-
-	}
-}
-
-func setArrayIndex(array object.Object, index object.Object, value object.Object) object.Object {
-	arrayObject := array.(*object.Array)
-
-	idx := index.(*object.Integer).Value
-
-	if idx < 0 || idx > int64(len(arrayObject.Elements)-1) {
-		return throwError("index out of bounds")
-	}
-
-	arrayObject.Elements[idx] = value
-
-	return NULL
-}
-
-func setHashIndex(hash object.Object, index object.Object, value object.Object) object.Object {
-	hashObject := hash.(*object.Hash)
-
-	key, ok := index.(object.Hashable)
-
-	if !ok {
-		return throwError("Type %s is not hashable", index.Type())
-	}
-
-	pair, ok := hashObject.Pairs[key.HashKey()]
-
-	if !ok {
-		return throwError("Index not found")
-	}
-
-	pair.Value = value
-
-	hashObject.Pairs[key.HashKey()] = pair
-
-	return NULL
-}
-
-func evalForStatement(node *ast.ForStatement, env *object.Environment) object.Object {
-	idxIdent := node.IdxIdent.Value
-	varIdent := node.VarIdent.Value
-	body := node.Body
-
-	if idxIdent == varIdent {
-		return throwError("Index identifier and variable identifier cannot be the same")
-	}
-
-	if node.Expression == nil {
-		return throwError("Expected an expression after for statement")
-	}
-
-	eval := Eval(node.Expression, env)
-
-	if isError(eval) {
-		return eval
-	}
-
-	iterable := eval
-
-	switch iterable.Type() {
-	case object.STRING_OBJ:
-		stringLoop(iterable.(*object.String), idxIdent, varIdent, body, env)
-
-	case object.ARRAY_OBJ:
-		arrayLoop(iterable.(*object.Array), idxIdent, varIdent, body, env)
-
-	default:
-		return throwError("Type %s is not iterable", iterable.Type())
-	}
-
-	return NULL
-}
-
-func arrayLoop(array *object.Array, idxIdent string, varIdent string, body *ast.BlockStatement, env *object.Environment) {
-	for idx, val := range array.Elements {
-		env.Set(idxIdent, &object.Integer{Value: int64(idx)}, false)
-		env.Set(varIdent, val, false)
-
-		result := evalBlockStatement(body.Statements, env)
-
-		if isError(result) {
-			return
-		}
-
-		if result != nil {
-			if result.Type() == object.BREAK_OBJ {
-				break
-			}
-
-			if result.Type() == object.SKIP_OBJ {
-				continue
-			}
-		}
-	}
-}
-
-func stringLoop(str *object.String, idxIdent string, varIdent string, body *ast.BlockStatement, env *object.Environment) {
-	for idx, val := range str.Value {
-		env.Set(idxIdent, &object.Integer{Value: int64(idx)}, false)
-		env.Set(varIdent, &object.String{Value: string(val)}, false)
-
-		result := evalBlockStatement(body.Statements, env)
-
-		if isError(result) {
-			return
-		}
-
-		if result != nil {
-			if result.Type() == object.BREAK_OBJ {
-				break
-			}
-
-			if result.Type() == object.SKIP_OBJ {
-				continue
-			}
-		}
-	}
 }

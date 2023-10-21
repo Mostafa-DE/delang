@@ -6,4 +6,4 @@ You have successfully finished the basics section of the tour. You have learned 
 
 <br />
 
-Click here to continue the tour: [Flow Control Section](https://delang.mostafade.com/play/flowControl/welcome)
+Click here to continue the tour: <a href="https://delang.mostafade.com/play/flowControl/welcome">Flow Control Section</a>

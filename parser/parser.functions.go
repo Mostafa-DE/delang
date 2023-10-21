@@ -479,3 +479,85 @@ func (p *Parser) parseSkipStatement() *ast.SkipStatement {
 
 	return statement
 }
+
+func (p *Parser) parseForStatement() *ast.ForStatement {
+	fs := &ast.ForStatement{Token: p.currentToken}
+	/*
+		Steps to parse a for statement:
+		- current token is "for token"
+
+		- Check if the next token is an identifier
+			- If it is, go to the next token (identifier) // p.nextToken()
+			- Check if the next token is a comma
+					- If it is, now we know for sure we have an index identifier
+				- If it is not, then we have a variable identifier
+
+		- Otherwise check if the next token is an underscore
+		* Underscore can be used to omit the index identifier but not the variable identifier
+		* The variable identifier has to be there
+		    - If it is, go to the next token (underscore) // p.nextToken()
+			- Until this point the second token has to be COMMA.
+				- If it is not, then throw an error
+			- Skip the COMMA
+			- Now the current token is the variable identifier
+
+		- Otherwise throw an error
+
+	*/
+	if p.peekTokenTypeIs(token.IDENT) {
+		p.nextToken()
+		if p.peekTokenTypeIs(token.COMMA) {
+			fs.IdxIdent = &ast.Identifier{Token: p.currentToken, Value: p.currentToken.Literal}
+			p.nextToken()
+			p.nextToken()
+			fs.VarIdent = &ast.Identifier{Token: p.currentToken, Value: p.currentToken.Literal}
+		} else {
+			fs.IdxIdent = nil
+			fs.VarIdent = &ast.Identifier{Token: p.currentToken, Value: p.currentToken.Literal}
+		}
+	} else if p.peekTokenTypeIs(token.UNDERSCORE) {
+		p.nextToken()
+
+		if !p.peekTokenTypeIs(token.COMMA) {
+			p.errors = append(p.errors, "Expected a comma after underscore")
+			return nil
+		}
+
+		p.nextToken()
+		p.nextToken()
+
+		if p.currentTokenTypeIs(token.IN) {
+			p.errors = append(p.errors, "Expected an identifier after underscore")
+			return nil
+		}
+
+		fs.IdxIdent = nil
+		fs.VarIdent = &ast.Identifier{Token: p.currentToken, Value: p.currentToken.Literal}
+	} else {
+		p.errors = append(p.errors, "Expected an identifier or underscore after for statement")
+		return nil
+	}
+
+	if !p.expectPeekType(token.IN) {
+		p.errors = append(p.errors, "Expected an in keyword after variable identifier")
+		return nil
+	}
+
+	p.nextToken()
+
+	fs.Expression = p.parseExpression(LOWEST)
+
+	if !p.expectPeekType(token.COLON) {
+		p.errors = append(p.errors, "Expected a colon after array")
+		return nil
+	}
+
+	if !p.expectPeekType(token.LEFTBRAC) {
+		p.errors = append(p.errors, "Expected a block statement after colon")
+		return nil
+	}
+
+	fs.Body = p.parseBlockStatement()
+
+	return fs
+}

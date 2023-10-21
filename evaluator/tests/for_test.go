@@ -13,6 +13,14 @@ func TestForEval(t *testing.T) {
 	}{
 		{
 			`
+				for num in [1, 2, 3, 4, 5]: {
+					logs(num);
+				}
+			`,
+			nil,
+		},
+		{
+			`
 				const arr = [1, 2, 3, 4, 5];
 				for idx, num in arr: {
 					logs(num);
@@ -113,7 +121,7 @@ func TestForEval(t *testing.T) {
 			[]int{0, 1, 2, 3},
 		},
 		{
-			`	
+			`
 				const arr = [];
 				for idx, num in [1, 2, 3, 4, 5]: {
 					push(arr, "Index: " + idx + " Number: " + num);
@@ -134,8 +142,9 @@ func TestForEval(t *testing.T) {
 	for _, val := range tests {
 		evaluated := testEval(val.input)
 
-		if evaluated == nil {
-			t.Errorf("Expected %v, got nil", val.expected)
+		if evaluated.Type() == object.ERROR_OBJ {
+			t.Errorf("Expected no error, got %s", evaluated.Inspect())
+			continue
 		}
 
 		if evaluated != nil {

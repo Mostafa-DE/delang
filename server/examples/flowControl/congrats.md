@@ -6,4 +6,4 @@ You have successfully finished the **Flow Control** section of the tour. You hav
 
 <br />
 
-Click here to continue the tour: [Data structure Section](https://delang.mostafade.com/play/dataStructures/welcome)
+Click here to continue the tour: <a href="https://delang.mostafade.com/play/dataStructures/welcome">Data Structures Section</a>
