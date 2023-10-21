@@ -41,3 +41,19 @@ func isTruthy(obj object.Object) bool {
 
 	return true
 }
+
+func boolToInt(val bool) int64 {
+	if val {
+		return 1
+	}
+
+	return 0
+}
+
+func intToBool(val int64) bool {
+	if val != 0 {
+		return true
+	}
+
+	return false
+}

@@ -14,8 +14,8 @@ func TestNextToken(t *testing.T) {
 		let ten = 10;
 		
 		let add = fun(x, y) {
-			x + y;
-		};
+			return x + y;
+		}
 		
 		let result = add(five, ten);
 		
@@ -23,7 +23,7 @@ func TestNextToken(t *testing.T) {
 
 		5 < 10 > 5;
 
-		if (5 < 10) {
+		if 5 < 10: {
 			return true;
 		} else {
 			return false;
@@ -48,6 +48,23 @@ func TestNextToken(t *testing.T) {
 			skip;
 			break;
 		}
+
+		for num in [1, 2]: {
+			logs(num);
+		}
+
+		for idx, num in [1, 2]: {
+			logs(idx);
+			logs(num);
+		}
+
+		if 1 < 2 and 2 < 3: {
+			logs("DE!");
+		}
+
+		if 1 < 2 or 2 < 3: {
+			logs("DE!");
+		}
 	`
 
 	tests := []struct {
@@ -59,11 +76,13 @@ func TestNextToken(t *testing.T) {
 		{token.ASSIGN, "="},
 		{token.INT, "5"},
 		{token.SEMICOLON, ";"},
+
 		{token.LET, "let"},
 		{token.IDENT, "ten"},
 		{token.ASSIGN, "="},
 		{token.INT, "10"},
 		{token.SEMICOLON, ";"},
+
 		{token.LET, "let"},
 		{token.IDENT, "add"},
 		{token.ASSIGN, "="},
@@ -74,12 +93,13 @@ func TestNextToken(t *testing.T) {
 		{token.IDENT, "y"},
 		{token.RIGHTPAR, ")"},
 		{token.LEFTBRAC, "{"},
+		{token.RETURN, "return"},
 		{token.IDENT, "x"},
 		{token.PLUS, "+"},
 		{token.IDENT, "y"},
 		{token.SEMICOLON, ";"},
 		{token.RIGHTBRAC, "}"},
-		{token.SEMICOLON, ";"},
+
 		{token.LET, "let"},
 		{token.IDENT, "result"},
 		{token.ASSIGN, "="},
@@ -90,24 +110,26 @@ func TestNextToken(t *testing.T) {
 		{token.IDENT, "ten"},
 		{token.RIGHTPAR, ")"},
 		{token.SEMICOLON, ";"},
+
 		{token.EXCLAMATION, "!"},
 		{token.MINUS, "-"},
 		{token.SLASH, "/"},
 		{token.ASTERISK, "*"},
 		{token.INT, "5"},
 		{token.SEMICOLON, ";"},
+
 		{token.INT, "5"},
 		{token.LESSTHAN, "<"},
 		{token.INT, "10"},
 		{token.GREATERTHAN, ">"},
 		{token.INT, "5"},
 		{token.SEMICOLON, ";"},
+
 		{token.IF, "if"},
-		{token.LEFTPAR, "("},
 		{token.INT, "5"},
 		{token.LESSTHAN, "<"},
 		{token.INT, "10"},
-		{token.RIGHTPAR, ")"},
+		{token.COLON, ":"},
 		{token.LEFTBRAC, "{"},
 		{token.RETURN, "return"},
 		{token.TRUE, "true"},
@@ -119,35 +141,43 @@ func TestNextToken(t *testing.T) {
 		{token.FALSE, "false"},
 		{token.SEMICOLON, ";"},
 		{token.RIGHTBRAC, "}"},
+
 		{token.INT, "10"},
 		{token.EQUAL, "=="},
 		{token.INT, "10"},
 		{token.SEMICOLON, ";"},
+
 		{token.INT, "10"},
 		{token.NOTEQUAL, "!="},
 		{token.INT, "9"},
 		{token.SEMICOLON, ";"},
+
 		{token.STRING, "DELANG"},
 		{token.SEMICOLON, ";"},
+
 		{token.STRING, "DE!!"},
 		{token.SEMICOLON, ";"},
+
 		{token.LEFTSQPRAC, "["},
 		{token.INT, "1"},
 		{token.COMMA, ","},
 		{token.INT, "2"},
 		{token.RIGHTSQPRAC, "]"},
 		{token.SEMICOLON, ";"},
+
 		{token.LEFTBRAC, "{"},
 		{token.STRING, "name"},
 		{token.COLON, ":"},
 		{token.STRING, "Mostafa"},
 		{token.RIGHTBRAC, "}"},
 		{token.SEMICOLON, ";"},
+
 		{token.CONST, "const"},
 		{token.IDENT, "x"},
 		{token.ASSIGN, "="},
 		{token.INT, "3"},
 		{token.SEMICOLON, ";"},
+
 		{token.DURING, "during"},
 		{token.IDENT, "x"},
 		{token.LESSTHAN, "<"},
@@ -162,6 +192,81 @@ func TestNextToken(t *testing.T) {
 		{token.SKIP, "skip"},
 		{token.SEMICOLON, ";"},
 		{token.BREAK, "break"},
+		{token.SEMICOLON, ";"},
+		{token.RIGHTBRAC, "}"},
+
+		{token.FOR, "for"},
+		{token.IDENT, "num"},
+		{token.IN, "in"},
+		{token.LEFTSQPRAC, "["},
+		{token.INT, "1"},
+		{token.COMMA, ","},
+		{token.INT, "2"},
+		{token.RIGHTSQPRAC, "]"},
+		{token.COLON, ":"},
+		{token.LEFTBRAC, "{"},
+		{token.IDENT, "logs"},
+		{token.LEFTPAR, "("},
+		{token.IDENT, "num"},
+		{token.RIGHTPAR, ")"},
+		{token.SEMICOLON, ";"},
+		{token.RIGHTBRAC, "}"},
+
+		{token.FOR, "for"},
+		{token.IDENT, "idx"},
+		{token.COMMA, ","},
+		{token.IDENT, "num"},
+		{token.IN, "in"},
+		{token.LEFTSQPRAC, "["},
+		{token.INT, "1"},
+		{token.COMMA, ","},
+		{token.INT, "2"},
+		{token.RIGHTSQPRAC, "]"},
+		{token.COLON, ":"},
+		{token.LEFTBRAC, "{"},
+		{token.IDENT, "logs"},
+		{token.LEFTPAR, "("},
+		{token.IDENT, "idx"},
+		{token.RIGHTPAR, ")"},
+		{token.SEMICOLON, ";"},
+		{token.IDENT, "logs"},
+		{token.LEFTPAR, "("},
+		{token.IDENT, "num"},
+		{token.RIGHTPAR, ")"},
+		{token.SEMICOLON, ";"},
+		{token.RIGHTBRAC, "}"},
+
+		{token.IF, "if"},
+		{token.INT, "1"},
+		{token.LESSTHAN, "<"},
+		{token.INT, "2"},
+		{token.AND, "and"},
+		{token.INT, "2"},
+		{token.LESSTHAN, "<"},
+		{token.INT, "3"},
+		{token.COLON, ":"},
+		{token.LEFTBRAC, "{"},
+		{token.IDENT, "logs"},
+		{token.LEFTPAR, "("},
+		{token.STRING, "DE!"},
+		{token.RIGHTPAR, ")"},
+		{token.SEMICOLON, ";"},
+		{token.RIGHTBRAC, "}"},
+
+		{token.IF, "if"},
+		{token.INT, "1"},
+		{token.LESSTHAN, "<"},
+		{token.INT, "2"},
+		{token.OR, "or"},
+		{token.INT, "2"},
+		{token.LESSTHAN, "<"},
+		{token.INT, "3"},
+		{token.COLON, ":"},
+		{token.LEFTBRAC, "{"},
+		{token.IDENT, "logs"},
+		{token.LEFTPAR, "("},
+		{token.STRING, "DE!"},
+		{token.RIGHTPAR, ")"},
 		{token.SEMICOLON, ";"},
 		{token.RIGHTBRAC, "}"},
 		{token.EOFILE, ""},

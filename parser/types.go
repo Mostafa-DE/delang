@@ -8,27 +8,30 @@ import (
 )
 
 const (
-	_           int = iota
-	LOWEST          // Lowest precedence
-	EQUAL           // ==
-	LESSGREATER     // > or <
-	SUMSUB          // + or -
-	MULDIVMOD       // * or / or %
-	PREFIX          // -X or !X
-	CALL            // myFunction(X)
-	INDEX           // array[index]
+	_            int = iota
+	LOWEST           // Lowest precedence
+	AND_OR           // and or or
+	EQUAL            // ==
+	LESS_GREATER     // > or <
+	SUM_SUB          // + or -
+	MUL_DIV_MOD      // * or / or %
+	PREFIX           // -X or !X
+	CALL             // myFunction(X)
+	INDEX            // array[index]
 )
 
 var precedences = map[token.TokenType]int{
 	token.EQUAL:       EQUAL,
 	token.NOTEQUAL:    EQUAL,
-	token.LESSTHAN:    LESSGREATER,
-	token.GREATERTHAN: LESSGREATER,
-	token.PLUS:        SUMSUB,
-	token.MINUS:       SUMSUB,
-	token.SLASH:       MULDIVMOD,
-	token.ASTERISK:    MULDIVMOD,
-	token.MOD:         MULDIVMOD,
+	token.LESSTHAN:    LESS_GREATER,
+	token.GREATERTHAN: LESS_GREATER,
+	token.AND:         AND_OR,
+	token.OR:          AND_OR,
+	token.PLUS:        SUM_SUB,
+	token.MINUS:       SUM_SUB,
+	token.SLASH:       MUL_DIV_MOD,
+	token.ASTERISK:    MUL_DIV_MOD,
+	token.MOD:         MUL_DIV_MOD,
 	token.LEFTPAR:     CALL,
 	token.LEFTSQPRAC:  INDEX, // array indexing has the highest precedence
 }

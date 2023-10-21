@@ -108,8 +108,29 @@ func (l *Lexer) NextToken() token.Token {
 	case '%':
 		tok = newToken(token.MOD, l.currentChar)
 
-	case '_':
-		tok = newToken(token.UNDERSCORE, l.currentChar)
+	case 'a':
+		if l.peekNChar(1) == 'n' && l.peekNChar(2) == 'd' {
+			tok = token.Token{Type: token.AND, Literal: "and"}
+			l.readChar()
+			l.readChar()
+		} else {
+			tok.Literal = l.readIdentifier()
+			tok.Type = token.LookupIdent(tok.Literal)
+
+			return tok
+		}
+
+	case 'o':
+		if l.peekNChar(1) == 'r' {
+			tok = token.Token{Type: token.OR, Literal: "or"}
+			l.readChar()
+		} else {
+			tok.Literal = l.readIdentifier()
+			tok.Type = token.LookupIdent(tok.Literal)
+
+			return tok
+
+		}
 
 	case 0: // End of the line
 		tok.Literal = ""

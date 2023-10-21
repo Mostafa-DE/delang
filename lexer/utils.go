@@ -62,6 +62,14 @@ func (l *Lexer) peekChar() byte {
 
 }
 
+func (l *Lexer) peekNChar(NumCharToLook int64) byte {
+	if l.currentPosition+int(NumCharToLook) >= len(l.input) {
+		return 0
+	} else {
+		return l.input[l.currentPosition+int(NumCharToLook)]
+	}
+}
+
 func (l *Lexer) readString() string {
 	// TODO: add support for character escaping
 	position := l.currentPosition + 1

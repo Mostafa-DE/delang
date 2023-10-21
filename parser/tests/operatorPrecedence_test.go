@@ -58,6 +58,50 @@ func TestOperatorPrecedence(t *testing.T) {
 			"1 % 2",
 			"(1 % 2)",
 		},
+		{
+			"true and false",
+			"(true and false)",
+		},
+		{
+			"1 and 2",
+			"(1 and 2)",
+		},
+		{
+			"1 == 1 and 2 == 2",
+			"((1 == 1) and (2 == 2))",
+		},
+		{
+			"1 < 2 and 2 < 3",
+			"((1 < 2) and (2 < 3))",
+		},
+		{
+			"1 < 2 and 2 < 3 and 3 < 4",
+			"(((1 < 2) and (2 < 3)) and (3 < 4))",
+		},
+		{
+			"true or false",
+			"(true or false)",
+		},
+		{
+			"1 or 2",
+			"(1 or 2)",
+		},
+		{
+			"1 == 1 or 2 == 2",
+			"((1 == 1) or (2 == 2))",
+		},
+		{
+			"1 < 2 or 2 < 3",
+			"((1 < 2) or (2 < 3))",
+		},
+		{
+			"1 < 2 or 2 < 3 or 3 < 4",
+			"(((1 < 2) or (2 < 3)) or (3 < 4))",
+		},
+		{
+			"1 and 2 or 3",
+			"((1 and 2) or 3)",
+		},
 	}
 
 	for _, val := range tests {

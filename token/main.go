@@ -30,6 +30,10 @@ const (
 	NOTEQUAL    = "!="
 	MOD         = "%"
 
+	// Logical Operators
+	AND = "and"
+	OR  = "or"
+
 	// Delimiters
 	COMMA       = ","
 	SEMICOLON   = ";"

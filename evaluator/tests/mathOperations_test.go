@@ -84,3 +84,46 @@ func TestAddStringToNumber(t *testing.T) {
 		testStringObject(t, evaluated, val.expected)
 	}
 }
+
+func TestAnd_OrLogical(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{"true and true", true},
+		{"true and false", false},
+		{"false and true", false},
+		{"false and false", false},
+		{"true or true", true},
+		{"true or false", true},
+		{"false or true", true},
+		{"false or false", false},
+		{"1 and 1", 1},
+		{"1 and 0", 0},
+		{"0 and 1", 1},
+		{"0 and 0", 0},
+		{"1 or 1", 1},
+		{"1 or 0", 1},
+		{"0 or 1", 0},
+		{"0 or 0", 0},
+		{"1 and true", true},
+		{"1 and false", false},
+		{"0 and true", false},
+		{"0 and false", false},
+		{"1 or true", true},
+		{"1 or false", true},
+		{"0 or true", true},
+		{"0 or false", false},
+	}
+
+	for _, val := range tests {
+		evaluated := testEval(val.input)
+
+		switch val.expected.(type) {
+		case bool:
+			testBooleanObject(t, evaluated, val.expected.(bool))
+		case int64:
+			testIntegerObject(t, evaluated, val.expected.(int64))
+		}
+	}
+}

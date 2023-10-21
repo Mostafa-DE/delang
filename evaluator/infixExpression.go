@@ -41,15 +41,45 @@ func evalInfixExpression(operator string, left object.Object, right object.Objec
 		right = &object.String{Value: right.Inspect()}
 		return evalStringInfixExpression(operator, left, right)
 
-	// This is pointer comparison because we only have one instance of TRUE and FALSE in memory
-	// This not the case for integers because we create a new object for every integer literal
-	// So we need to unwrap the object and compare the values, otherwise we would be comparing pointers
-	// and that would always return false or true
+	/*
+		- This is pointer comparison because we only have one instance of TRUE and FALSE in memory
+		- This not the case for integers because we create a new object for every integer literal
+		- So we need to unwrap the object and compare the values.
+		- otherwise we would be comparing pointers and that would always return false or true
+	*/
 	case operator == "==":
 		return getBooleanObject(left == right)
 
 	case operator == "!=":
 		return getBooleanObject(left != right)
+
+	case operator == "and":
+		/*
+			- If the 'and' operator is used with booleans and integers.
+				- First we convert the integer to boolean
+				- Then we compare the two booleans
+		*/
+		if left.Type() == object.INTEGER_OBJ && right.Type() == object.BOOLEAN_OBJ {
+			left = getBooleanObject(intToBool(left.(*object.Integer).Value))
+		} else if left.Type() == object.BOOLEAN_OBJ && right.Type() == object.INTEGER_OBJ {
+			right = getBooleanObject(intToBool(right.(*object.Integer).Value))
+		}
+
+		return getBooleanObject((left == TRUE) && (right == TRUE))
+
+	case operator == "or":
+		/*
+			- If the 'or' operator is used with booleans and integers.
+				- First we convert the integer to boolean
+				- Then we compare the two booleans
+		*/
+		if left.Type() == object.INTEGER_OBJ && right.Type() == object.BOOLEAN_OBJ {
+			left = getBooleanObject(intToBool(left.(*object.Integer).Value))
+		} else if left.Type() == object.BOOLEAN_OBJ && right.Type() == object.INTEGER_OBJ {
+			right = getBooleanObject(intToBool(right.(*object.Integer).Value))
+		}
+
+		return getBooleanObject((left == TRUE) || (right == TRUE))
 
 	case left.Type() != right.Type():
 		return throwError("type mismatch: %s %s %s", left.Type(), operator, right.Type())
@@ -90,6 +120,20 @@ func evalIntegerInfixExpression(operator string, left object.Object, right objec
 
 	case "!=":
 		return getBooleanObject(leftVal != rightVal)
+
+	case "and":
+		/*
+			- If the 'and' operator is used with integers.
+			- No matter what the left value is (true or false) the right value will be returned
+		*/
+		return &object.Integer{Value: rightVal}
+
+	case "or":
+		/*
+			- If the 'or' operator is used with integers.
+			- No matter what the right value is (true or false) the left value will be returned
+		*/
+		return &object.Integer{Value: leftVal}
 
 	default:
 		return throwError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
@@ -147,6 +191,20 @@ func evalFloatInfixExpression(operator string, left object.Object, right object.
 
 	case "!=":
 		return getBooleanObject(leftVal != rightVal)
+
+	case "and":
+		/*
+			- If the 'and' operator is used with floats.
+			- No matter what the left value is (true or false) the right value will be returned
+		*/
+		return &object.Float{Value: rightVal}
+
+	case "or":
+		/*
+			- If the 'or' operator is used with floats.
+			- No matter what the right value is (true or false) the left value will be returned
+		*/
+		return &object.Float{Value: leftVal}
 
 	default:
 		return throwError("unknown operator: %s %s %s", left.Type(), operator, right.Type())

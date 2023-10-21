@@ -297,6 +297,52 @@ func TestIfStatement(t *testing.T) {
 	testString(t, program, "if (1 > 2): {logs('Awesome!');} else {logs('Not Awesome!');}")
 }
 
+func TestAndOperator(t *testing.T) {
+	program := &ast.Program{
+		Statements: []ast.Statement{
+			&ast.ExpressionStatement{
+				Expression: &ast.InfixExpression{
+					Token: token.Token{Type: token.AND, Literal: "and"},
+					Left: &ast.Boolean{
+						Token: token.Token{Type: token.TRUE, Literal: "true"},
+						Value: true,
+					},
+					Operator: "and",
+					Right: &ast.Boolean{
+						Token: token.Token{Type: token.FALSE, Literal: "false"},
+						Value: false,
+					},
+				},
+			},
+		},
+	}
+
+	testString(t, program, "(true and false)")
+}
+
+func TestOrOperator(t *testing.T) {
+	program := &ast.Program{
+		Statements: []ast.Statement{
+			&ast.ExpressionStatement{
+				Expression: &ast.InfixExpression{
+					Token: token.Token{Type: token.OR, Literal: "or"},
+					Left: &ast.Boolean{
+						Token: token.Token{Type: token.TRUE, Literal: "true"},
+						Value: true,
+					},
+					Operator: "or",
+					Right: &ast.Boolean{
+						Token: token.Token{Type: token.FALSE, Literal: "false"},
+						Value: false,
+					},
+				},
+			},
+		},
+	}
+
+	testString(t, program, "(true or false)")
+}
+
 func TestAssignStatement(t *testing.T) {
 	program := &ast.Program{
 		Statements: []ast.Statement{
