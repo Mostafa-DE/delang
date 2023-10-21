@@ -13,20 +13,28 @@ func TestForEval(t *testing.T) {
 	}{
 		{
 			`
+				const arr = [];
 				for num in [1, 2, 3, 4, 5]: {
 					logs(num);
+					push(arr, num);
 				}
+
+				return arr;
 			`,
-			nil,
+			[]int{1, 2, 3, 4, 5},
 		},
 		{
 			`
-				const arr = [1, 2, 3, 4, 5];
+				const arr = [1, 2, 3];
+				const newArr = [];
 				for idx, num in arr: {
 					logs(num);
+					push(newArr, num);
 				}
+
+				return newArr;
 			`,
-			nil,
+			[]int{1, 2, 3},
 		},
 		{
 			`
@@ -36,6 +44,7 @@ func TestForEval(t *testing.T) {
 					if num == 3: {
 						break;
 					}
+					
 					logs(num);
 					push(newArr, num);
 				}

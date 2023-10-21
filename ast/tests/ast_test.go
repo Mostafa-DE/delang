@@ -455,7 +455,7 @@ func TestFloatExpression(t *testing.T) {
 	testString(t, program, "1.1")
 }
 
-func TestStringLiteralExpression(t *testing.T) {
+func TestStringExpression(t *testing.T) {
 	program := &ast.Program{
 		Statements: []ast.Statement{
 			&ast.ExpressionStatement{

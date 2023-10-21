@@ -21,19 +21,21 @@ const (
 )
 
 var precedences = map[token.TokenType]int{
-	token.EQUAL:       EQUAL,
-	token.NOTEQUAL:    EQUAL,
-	token.LESSTHAN:    LESS_GREATER,
-	token.GREATERTHAN: LESS_GREATER,
-	token.AND:         AND_OR,
-	token.OR:          AND_OR,
-	token.PLUS:        SUM_SUB,
-	token.MINUS:       SUM_SUB,
-	token.SLASH:       MUL_DIV_MOD,
-	token.ASTERISK:    MUL_DIV_MOD,
-	token.MOD:         MUL_DIV_MOD,
-	token.LEFTPAR:     CALL,
-	token.LEFTSQPRAC:  INDEX, // array indexing has the highest precedence
+	token.EQUAL:         EQUAL,
+	token.NOTEQUAL:      EQUAL,
+	token.LESSTHAN:      LESS_GREATER,
+	token.GREATERTHAN:   LESS_GREATER,
+	token.LESSTHANEQ:    LESS_GREATER,
+	token.GREATERTHANEQ: LESS_GREATER,
+	token.AND:           AND_OR,
+	token.OR:            AND_OR,
+	token.PLUS:          SUM_SUB,
+	token.MINUS:         SUM_SUB,
+	token.SLASH:         MUL_DIV_MOD,
+	token.ASTERISK:      MUL_DIV_MOD,
+	token.MOD:           MUL_DIV_MOD,
+	token.LEFTPAR:       CALL,
+	token.LEFTSQPRAC:    INDEX, // array indexing has the highest precedence
 }
 
 type (

@@ -115,6 +115,12 @@ func evalIntegerInfixExpression(operator string, left object.Object, right objec
 	case ">":
 		return getBooleanObject(leftVal > rightVal)
 
+	case "<=":
+		return getBooleanObject(leftVal <= rightVal)
+
+	case ">=":
+		return getBooleanObject(leftVal >= rightVal)
+
 	case "==":
 		return getBooleanObject(leftVal == rightVal)
 
@@ -185,6 +191,12 @@ func evalFloatInfixExpression(operator string, left object.Object, right object.
 
 	case ">":
 		return getBooleanObject(leftVal > rightVal)
+
+	case "<=":
+		return getBooleanObject(leftVal <= rightVal)
+
+	case ">=":
+		return getBooleanObject(leftVal >= rightVal)
 
 	case "==":
 		return getBooleanObject(leftVal == rightVal)

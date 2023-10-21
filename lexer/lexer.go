@@ -84,10 +84,22 @@ func (l *Lexer) NextToken() token.Token {
 		tok = newToken(token.ASTERISK, l.currentChar)
 
 	case '<':
-		tok = newToken(token.LESSTHAN, l.currentChar)
+		if l.peekNChar(1) == '=' {
+			prevChar := l.currentChar
+			l.readChar()
+			tok = token.Token{Type: token.LESSTHANEQ, Literal: string(prevChar) + string(l.currentChar)}
+		} else {
+			tok = newToken(token.LESSTHAN, l.currentChar)
+		}
 
 	case '>':
-		tok = newToken(token.GREATERTHAN, l.currentChar)
+		if l.peekNChar(1) == '=' {
+			prevChar := l.currentChar
+			l.readChar()
+			tok = token.Token{Type: token.GREATERTHANEQ, Literal: string(prevChar) + string(l.currentChar)}
+		} else {
+			tok = newToken(token.GREATERTHAN, l.currentChar)
+		}
 
 	case ';':
 		tok = newToken(token.SEMICOLON, l.currentChar)

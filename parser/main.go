@@ -84,6 +84,8 @@ func initRegisterInfix(p *Parser) {
 		{token.NOTEQUAL, p.parseInfixExpression},
 		{token.LESSTHAN, p.parseInfixExpression},
 		{token.GREATERTHAN, p.parseInfixExpression},
+		{token.LESSTHANEQ, p.parseInfixExpression},
+		{token.GREATERTHANEQ, p.parseInfixExpression},
 		{token.LEFTPAR, p.parseCallFunction},
 		{token.LEFTSQPRAC, p.parseIndexExpression},
 		{token.AND, p.parseInfixExpression},

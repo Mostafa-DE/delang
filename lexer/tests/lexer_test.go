@@ -23,6 +23,10 @@ func TestNextToken(t *testing.T) {
 
 		5 < 10 > 5;
 
+		1 >= 1;
+
+		1 <= 1;
+
 		if 5 < 10: {
 			return true;
 		} else {
@@ -123,6 +127,16 @@ func TestNextToken(t *testing.T) {
 		{token.INT, "10"},
 		{token.GREATERTHAN, ">"},
 		{token.INT, "5"},
+		{token.SEMICOLON, ";"},
+
+		{token.INT, "1"},
+		{token.GREATERTHANEQ, ">="},
+		{token.INT, "1"},
+		{token.SEMICOLON, ";"},
+
+		{token.INT, "1"},
+		{token.LESSTHANEQ, "<="},
+		{token.INT, "1"},
 		{token.SEMICOLON, ";"},
 
 		{token.IF, "if"},
