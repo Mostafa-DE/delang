@@ -504,8 +504,8 @@ func (p *Parser) parseForStatement() *ast.ForStatement {
 		- Otherwise throw an error
 
 	*/
-	if p.peekTokenTypeIs(token.IDENT) {
-		p.nextToken()
+	p.nextToken()
+	if p.currentTokenTypeIs(token.IDENT) && p.currentToken.Literal != "_" {
 		if p.peekTokenTypeIs(token.COMMA) {
 			fs.IdxIdent = &ast.Identifier{Token: p.currentToken, Value: p.currentToken.Literal}
 			p.nextToken()
@@ -515,9 +515,7 @@ func (p *Parser) parseForStatement() *ast.ForStatement {
 			fs.IdxIdent = nil
 			fs.VarIdent = &ast.Identifier{Token: p.currentToken, Value: p.currentToken.Literal}
 		}
-	} else if p.peekTokenTypeIs(token.UNDERSCORE) {
-		p.nextToken()
-
+	} else if p.currentTokenTypeIs(token.IDENT) && p.currentToken.Literal == "_" {
 		if !p.peekTokenTypeIs(token.COMMA) {
 			p.errors = append(p.errors, "Expected a comma after underscore")
 			return nil

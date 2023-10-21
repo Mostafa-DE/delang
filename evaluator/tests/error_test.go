@@ -95,6 +95,14 @@ func TestErrorHandling(t *testing.T) {
 			`,
 			"Cannot reassign constant 'PI'",
 		},
+		{
+			`
+				for _, num in [1, 2, 3]: {
+					logs(_);
+				}
+			`,
+			"identifier not found: _",
+		},
 	}
 
 	for _, val := range tests {
