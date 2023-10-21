@@ -67,6 +67,8 @@ func codeExecHandler(resW http.ResponseWriter, req *http.Request) {
 
 		resW.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(resW).Encode(res)
+
+		return
 	}
 
 	fileContents, err := ioutil.ReadFile(fileName)
@@ -80,6 +82,8 @@ func codeExecHandler(resW http.ResponseWriter, req *http.Request) {
 
 		resW.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(resW).Encode(res)
+
+		return
 	}
 
 	fileContentString := string(fileContents)
@@ -97,12 +101,27 @@ func codeExecHandler(resW http.ResponseWriter, req *http.Request) {
 
 		resW.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(resW).Encode(res)
+
+		return
 	}
 
 	env := object.NewEnvironment()
 	env.Set("timeoutLoop", &object.Boolean{Value: true}, false)
 
 	eval := evaluator.Eval(program, env)
+
+	if eval.Type() == object.ERROR_OBJ {
+		res = map[string]string{
+			"error": eval.Inspect(),
+		}
+
+		os.Remove(fileName)
+
+		resW.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(resW).Encode(res)
+
+		return
+	}
 
 	logs, logsOk := env.Get("bufferLogs")
 	timeOutExceeded, timeoutOk := env.Get("timeoutExceeded")
