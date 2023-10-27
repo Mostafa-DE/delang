@@ -6,6 +6,7 @@ import (
 	"github.com/Mostafa-DE/delang/object"
 )
 
+// TODO: This should be multiple tests instead of one big test, to cover more cases
 func TestErrorHandling(t *testing.T) {
 	tests := []struct {
 		input    string
@@ -102,6 +103,142 @@ func TestErrorHandling(t *testing.T) {
 				}
 			`,
 			"identifier not found: _",
+		},
+		{
+			`1 / 0;`,
+			"division by zero",
+		},
+		{
+			`1 % 0;`,
+			"division by zero",
+		},
+		{
+			`1.1 / 0;`,
+			"division by zero",
+		},
+		{
+			`1.1 % 0;`,
+			"division by zero",
+		},
+		{
+			`decimal(1) / 0;`,
+			"division by zero",
+		},
+		{
+			`
+				getDecimalData["divPrec"] = -1;
+
+				decimal(300) / decimal(1.2121);
+			`,
+			"Valid range for divPrec is [0 to 28]",
+		},
+		{
+			`
+				getDecimalData["prec"] = -1;
+
+				decimal(300) * decimal(1.2121);
+			`,
+			"Valid range for prec is [0 to 8]",
+		},
+		{
+			`
+				getDecimalData["prec"] = -1;
+
+				decimal(300) + decimal(1.2121);
+			`,
+			"Valid range for prec is [0 to 8]",
+		},
+		{
+			`
+				getDecimalData["prec"] = -1;
+
+				decimal(300) - decimal(1.2121);
+			`,
+			"Valid range for prec is [0 to 8]",
+		},
+		{
+			`
+				getDecimalData["divPrec"] = -1;
+
+				decimal(300) % decimal(1.2121);
+			`,
+			"Valid range for divPrec is [0 to 28]",
+		},
+		{
+			`
+				const len = fun(arr) {
+					return arr;
+				}
+			`,
+			"Shadowing of 'len' is not allowed",
+		},
+		{
+			`
+				const first = fun(arr) {
+					return arr[0];
+				}
+			`,
+			"Shadowing of 'first' is not allowed",
+		},
+		{
+			`
+				const last = fun(arr) {
+					return arr[len(arr) - 1];
+				}
+			`,
+			"Shadowing of 'last' is not allowed",
+		},
+		{
+			`
+				const skipFirst = fun(arr) {
+					return skipFirst(arr);
+				}
+			`,
+			"Shadowing of 'skipFirst' is not allowed",
+		},
+		{
+			`
+				const skipLast = fun(arr) {
+					return skipLast(arr);
+				}
+			`,
+			"Shadowing of 'skipLast' is not allowed",
+		},
+		{
+			`
+				const push = "Hello";
+			`,
+			"Shadowing of 'push' is not allowed",
+		},
+		{
+			`
+				const pop = "Hello";
+			`,
+			"Shadowing of 'pop' is not allowed",
+		},
+		{
+			`
+				const logs = "Hello";
+			`,
+			"Shadowing of 'logs' is not allowed",
+		},
+		{
+			`
+				const range = [1, 2, 3];
+			`,
+			"Shadowing of 'range' is not allowed",
+		},
+		{
+			`
+				const decimal = 10;
+			`,
+			"Shadowing of 'decimal' is not allowed",
+		},
+		{
+			`
+				const typeof = "integer";
+			`,
+			"Shadowing of 'typeof' is not allowed",
 		},
 	}
 

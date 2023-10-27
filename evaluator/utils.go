@@ -51,9 +51,5 @@ func boolToInt(val bool) int64 {
 }
 
 func intToBool(val int64) bool {
-	if val != 0 {
-		return true
-	}
-
-	return false
+	return val != 0
 }

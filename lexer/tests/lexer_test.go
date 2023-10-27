@@ -283,6 +283,7 @@ func TestNextToken(t *testing.T) {
 		{token.RIGHTPAR, ")"},
 		{token.SEMICOLON, ";"},
 		{token.RIGHTBRAC, "}"},
+
 		{token.EOFILE, ""},
 	}
 

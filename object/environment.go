@@ -12,7 +12,9 @@ type Environment struct {
 }
 
 func NewEnvironment() *Environment {
-	s := make(StoreType)
+	s := map[string]Object{
+		"getDecimalData": decimalData(),
+	}
 
 	return &Environment{store: s, outer: nil, constValues: make(map[string]struct{})}
 }
@@ -35,6 +37,10 @@ func (e *Environment) Get(name string) (Object, bool) {
 }
 
 func (e *Environment) Set(name string, val Object, isConst bool) Object {
+	if checkShadowing(name) {
+		return throwError("Shadowing of '%s' is not allowed", name)
+	}
+
 	if _, ok := e.store[name]; ok {
 		if isConst {
 			return throwError("Cannot redeclare constant '%s'", name)
@@ -64,4 +70,52 @@ func (e *Environment) GetMainEnv() *Environment {
 	}
 
 	return e
+}
+
+func decimalData() *Hash {
+	return &Hash{
+		Pairs: map[HashKey]HashPair{
+			(&String{Value: "prec"}).HashKey(): {
+				Key: &String{
+					Value: "prec",
+				},
+				Value: &Integer{
+					Value: 8,
+				},
+			},
+			(&String{Value: "divPrec"}).HashKey(): {
+				Key: &String{
+					Value: "divPrec",
+				},
+				Value: &Integer{
+					Value: 28,
+				},
+			},
+		},
+	}
+}
+
+func checkShadowing(name string) bool {
+	arr := []string{
+		"getDecimalData",
+		"len",
+		"first",
+		"last",
+		"skipFirst",
+		"skipLast",
+		"push",
+		"pop",
+		"logs",
+		"range",
+		"decimal",
+		"typeof",
+	}
+
+	for _, v := range arr {
+		if name == v {
+			return true
+		}
+	}
+
+	return false
 }

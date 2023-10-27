@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/Mostafa-DE/delang/ast"
+	"github.com/shopspring/decimal"
 )
 
 type ObjectType string
@@ -22,6 +23,10 @@ type Integer struct {
 
 type Float struct {
 	Value float64
+}
+
+type Decimal struct {
+	Value decimal.Decimal
 }
 
 type Boolean struct {
@@ -88,6 +93,7 @@ type Skip struct{}
 const (
 	INTEGER_OBJ  = "INTEGER"
 	FLOAT_OBJ    = "FLOAT"
+	DECIMAL_OBJ  = "DECIMAL"
 	BOOLEAN_OBJ  = "BOOLEAN"
 	RETURN_OBJ   = "RETURN"
 	ERROR_OBJ    = "ERROR"
@@ -115,6 +121,14 @@ func (float *Float) Type() ObjectType {
 
 func (float *Float) Inspect() string {
 	return fmt.Sprintf("%v", float.Value)
+}
+
+func (decimal *Decimal) Type() ObjectType {
+	return DECIMAL_OBJ
+}
+
+func (decimal *Decimal) Inspect() string {
+	return fmt.Sprintf("%v", decimal.Value)
 }
 
 func (boolean *Boolean) Type() ObjectType {

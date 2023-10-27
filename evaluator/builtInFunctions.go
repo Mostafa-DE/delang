@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"github.com/Mostafa-DE/delang/object"
+
+	"github.com/shopspring/decimal"
 )
 
 // TODO: Revisit this file and refactor it
@@ -217,5 +219,37 @@ var builtins = map[string]*object.Builtin{
 		},
 		Desc: "Returns an array of integers from 0 to the given number, excluding the given number",
 		Name: "range",
+	},
+	"decimal": {
+		Func: func(args ...object.Object) object.Object {
+			if len(args) != 1 {
+				return throwError("wrong number of arguments passed to decimal(). got=%d, want=1", len(args))
+			}
+
+			switch arg := args[0].(type) {
+			case *object.Integer:
+				return &object.Decimal{Value: decimal.NewFromInt(arg.Value)}
+
+			case *object.Float:
+				return &object.Decimal{Value: decimal.NewFromFloat(arg.Value)}
+
+			default:
+				return throwError("argument to `decimal` not supported, got %s", args[0].Type())
+
+			}
+		},
+		Desc: "Converts an integer to a decimal",
+		Name: "decimal",
+	},
+	"typeof": {
+		Func: func(args ...object.Object) object.Object {
+			if len(args) != 1 {
+				return throwError("wrong number of arguments passed to typeof(). got=%d, want=1", len(args))
+			}
+
+			return &object.String{Value: string(args[0].Type())}
+		},
+		Desc: "Returns the type of the given value",
+		Name: "typeof",
 	},
 }

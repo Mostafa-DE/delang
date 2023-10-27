@@ -21,6 +21,25 @@ func TestStringLiteral(t *testing.T) {
 	}
 }
 
+func TestAddStringToNumber(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{`"1" + 5`, "15"},
+		{`5 + "1"`, "51"},
+		{`"1" + 5.5`, "15.5"},
+		{`5.5 + "1"`, "5.51"},
+		{`"5.5" + "5.5"`, "5.55.5"},
+		{`"Number " + 5`, "Number 5"},
+	}
+
+	for _, val := range tests {
+		evaluated := testEval(val.input)
+		testStringObject(t, evaluated, val.expected)
+	}
+}
+
 func TestStringConcatenation(t *testing.T) {
 	input := `"DE" + " " + "Lang!"`
 

@@ -8,6 +8,7 @@ import (
 	"github.com/Mostafa-DE/delang/lexer"
 	"github.com/Mostafa-DE/delang/object"
 	"github.com/Mostafa-DE/delang/parser"
+	"github.com/shopspring/decimal"
 )
 
 func testEval(input string) object.Object {
@@ -52,6 +53,24 @@ func testFloatObject(t *testing.T, obj object.Object, expected float64) bool {
 
 	if result.Value != expected {
 		t.Errorf("Object has wrong value. Got %f, expected %f", result.Value, expected)
+		return false
+	}
+
+	return true
+}
+
+func testDecimalObject(t *testing.T, obj object.Object, expected decimal.Decimal) bool {
+	result, ok := obj.(*object.Decimal)
+	if !ok {
+		t.Errorf("Object is not a decimal. Got %T (%+v)", obj, obj)
+		return false
+	}
+
+	expectedStr := expected.String()
+	resultStr := result.Value.String()
+
+	if resultStr != expectedStr {
+		t.Errorf("Object has wrong value. Got %s, expected %s", result.Value, expected)
 		return false
 	}
 
