@@ -6,6 +6,7 @@ import (
 
 	"github.com/Mostafa-DE/delang/lexer"
 	"github.com/Mostafa-DE/delang/parser"
+	"github.com/shopspring/decimal"
 
 	"github.com/Mostafa-DE/delang/ast"
 )
@@ -140,6 +141,26 @@ func testBoolean(t *testing.T, expression ast.Expression, value bool) bool {
 	return true
 }
 
+func testFloat(t *testing.T, expression ast.Expression, value float64) bool {
+	float, ok := expression.(*ast.Float)
+	if !ok {
+		t.Errorf("expression not *ast.Float. got=%T", expression)
+		return false
+	}
+
+	if float.Value != value {
+		t.Errorf("float.Value not %f. got=%f", float.Value, value)
+		return false
+	}
+
+	if float.TokenLiteral() != decimal.NewFromFloat(value).String() {
+		t.Errorf("float.TokenLiteral not %f. got=%s", value, float.TokenLiteral())
+		return false
+	}
+
+	return true
+}
+
 func testLiteralExpression(
 	t *testing.T,
 	expression ast.Expression,
@@ -148,12 +169,22 @@ func testLiteralExpression(
 	switch v := expected.(type) {
 	case int:
 		return testInteger(t, expression, int64(v))
+
 	case int64:
 		return testInteger(t, expression, v)
+
 	case string:
+		if stringLiteral, ok := expression.(*ast.StringLiteral); ok {
+			return testString(t, stringLiteral, v)
+		}
 		return testIdentifier(t, expression, v)
+
 	case bool:
 		return testBooleanLiteral(t, expression, v)
+
+	case float64:
+		return testFloat(t, expression, v)
+
 	}
 
 	t.Errorf("type of expression not handled. got=%T", expression)

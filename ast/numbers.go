@@ -21,11 +21,11 @@ func (integer *Integer) TokenLiteral() string {
 	return integer.Token.Literal
 }
 
-func (decimal *Float) String() string {
-	return decimal.TokenLiteral()
+func (float *Float) String() string {
+	return float.TokenLiteral()
 }
 
-func (decimal *Float) expressionNode() {}
-func (decimal *Float) TokenLiteral() string {
-	return decimal.Token.Literal
+func (float *Float) expressionNode() {}
+func (float *Float) TokenLiteral() string {
+	return float.Token.Literal
 }
