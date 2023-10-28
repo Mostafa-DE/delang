@@ -14,11 +14,7 @@ func TestFunctionStatement(t *testing.T) {
 		fun(x, y) { x + y; };
 	`
 
-	l := lexer.New(input)
-	p := parser.New(l)
-
-	program := p.ParseProgram()
-	checkParserErrors(t, p)
+	program := parseProgram(t, input)
 
 	if len(program.Statements) != 1 {
 		t.Fatalf("program.Statements does not contain 1 statements. got=%d\n", len(program.Statements))

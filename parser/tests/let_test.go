@@ -4,8 +4,6 @@ import (
 	"testing"
 
 	"github.com/Mostafa-DE/delang/ast"
-	"github.com/Mostafa-DE/delang/lexer"
-	"github.com/Mostafa-DE/delang/parser"
 )
 
 func TestLetStatements(t *testing.T) {
@@ -20,12 +18,7 @@ func TestLetStatements(t *testing.T) {
 	}
 
 	for _, val := range tests {
-		l := lexer.New(val.input)
-		p := parser.New(l)
-
-		program := p.ParseProgram()
-		checkParserErrors(t, p)
-
+		program := parseProgram(t, val.input)
 		statement := program.Statements[0]
 
 		if !testLetStatement(t, statement, val.expectedIdentifier) {

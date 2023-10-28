@@ -4,17 +4,12 @@ import (
 	"testing"
 
 	"github.com/Mostafa-DE/delang/ast"
-	"github.com/Mostafa-DE/delang/lexer"
-	"github.com/Mostafa-DE/delang/parser"
 )
 
 func TestIdentifierExpression(t *testing.T) {
 	input := "foobar;"
-	l := lexer.New(input)
-	p := parser.New(l)
 
-	program := p.ParseProgram()
-	checkParserErrors(t, p)
+	program := parseProgram(t, input)
 
 	if len(program.Statements) != 1 {
 		t.Fatalf("program has not enough statements. got=%d", len(program.Statements))

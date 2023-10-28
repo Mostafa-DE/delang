@@ -4,18 +4,12 @@ import (
 	"testing"
 
 	"github.com/Mostafa-DE/delang/ast"
-	"github.com/Mostafa-DE/delang/lexer"
-	"github.com/Mostafa-DE/delang/parser"
 )
 
 func TestParseArray(t *testing.T) {
 	input := "[1, 2, 2 * 2];"
 
-	l := lexer.New(input)
-	p := parser.New(l)
-
-	program := p.ParseProgram()
-	checkParserErrors(t, p)
+	program := parseProgram(t, input)
 
 	if program == nil {
 		t.Fatalf("ParseProgram() returned nil")
@@ -43,11 +37,7 @@ func TestParseArray(t *testing.T) {
 func TestParseIndexExpression(t *testing.T) {
 	input := "deArray[1 + 1];"
 
-	l := lexer.New(input)
-	p := parser.New(l)
-
-	program := p.ParseProgram()
-	checkParserErrors(t, p)
+	program := parseProgram(t, input)
 
 	if program == nil {
 		t.Fatalf("ParseProgram() returned nil")

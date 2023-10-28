@@ -4,9 +4,7 @@ import (
 	"testing"
 
 	"github.com/Mostafa-DE/delang/ast"
-	"github.com/Mostafa-DE/delang/lexer"
 	"github.com/Mostafa-DE/delang/object"
-	"github.com/Mostafa-DE/delang/parser"
 )
 
 func TestHashStringKeys(t *testing.T) {
@@ -18,11 +16,7 @@ func TestHashStringKeys(t *testing.T) {
 		}
 	`
 
-	l := lexer.New(input)
-	p := parser.New(l)
-	program := p.ParseProgram()
-
-	checkParserErrors(t, p)
+	program := parseProgram(t, input)
 
 	if len(program.Statements) != 1 {
 		t.Fatalf("program.Statements does not contain %d statements. got=%d\n", 1, len(program.Statements))
@@ -72,12 +66,7 @@ func TestHashStringKeys(t *testing.T) {
 func TestEmptyHash(t *testing.T) {
 	input := "{}"
 
-	l := lexer.New(input)
-	p := parser.New(l)
-	program := p.ParseProgram()
-
-	checkParserErrors(t, p)
-
+	program := parseProgram(t, input)
 	statement, ok := program.Statements[0].(*ast.ExpressionStatement)
 
 	if !ok {
@@ -98,12 +87,7 @@ func TestEmptyHash(t *testing.T) {
 func TestHashWithExpressions(t *testing.T) {
 	input := `{"age1": 1 * 1, "age2": 1 / 1, "age3": 2 - 1}`
 
-	l := lexer.New(input)
-	p := parser.New(l)
-	program := p.ParseProgram()
-
-	checkParserErrors(t, p)
-
+	program := parseProgram(t, input)
 	statement, ok := program.Statements[0].(*ast.ExpressionStatement)
 
 	if !ok {

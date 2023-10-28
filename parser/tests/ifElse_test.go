@@ -4,8 +4,6 @@ import (
 	"testing"
 
 	"github.com/Mostafa-DE/delang/ast"
-	"github.com/Mostafa-DE/delang/lexer"
-	"github.com/Mostafa-DE/delang/parser"
 )
 
 func TestIfElseStatements(t *testing.T) {
@@ -15,12 +13,7 @@ func TestIfElseStatements(t *testing.T) {
 		if 5 < 2: { return true; } else { return 5 - 2; };
 	`
 
-	l := lexer.New(input)
-	p := parser.New(l)
-
-	program := p.ParseProgram()
-
-	checkParserErrors(t, p)
+	program := parseProgram(t, input)
 
 	if len(program.Statements) != 3 {
 		t.Fatalf("program has not enough statements. got=%d", len(program.Statements))

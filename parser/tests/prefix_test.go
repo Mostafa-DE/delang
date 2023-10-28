@@ -4,8 +4,6 @@ import (
 	"testing"
 
 	"github.com/Mostafa-DE/delang/ast"
-	"github.com/Mostafa-DE/delang/lexer"
-	"github.com/Mostafa-DE/delang/parser"
 )
 
 func TestParsingPrefixExpressions(t *testing.T) {
@@ -19,11 +17,7 @@ func TestParsingPrefixExpressions(t *testing.T) {
 	}
 
 	for _, val := range prefixTests {
-		l := lexer.New(val.input)
-		p := parser.New(l)
-
-		program := p.ParseProgram()
-		checkParserErrors(t, p)
+		program := parseProgram(t, val.input)
 
 		if len(program.Statements) != 1 {
 			t.Fatalf("program has not enough statements. got=%d", len(program.Statements))

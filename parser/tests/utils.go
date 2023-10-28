@@ -4,10 +4,21 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/Mostafa-DE/delang/lexer"
 	"github.com/Mostafa-DE/delang/parser"
 
 	"github.com/Mostafa-DE/delang/ast"
 )
+
+func parseProgram(t *testing.T, input string) *ast.Program {
+	l := lexer.New(input)
+	p := parser.New(l)
+
+	parseProgram := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	return parseProgram
+}
 
 func checkParserErrors(t *testing.T, p *parser.Parser) {
 	errors := p.Errors()

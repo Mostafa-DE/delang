@@ -3,10 +3,7 @@ package tests
 import (
 	"testing"
 
-	"github.com/Mostafa-DE/delang/parser"
-
 	"github.com/Mostafa-DE/delang/ast"
-	"github.com/Mostafa-DE/delang/lexer"
 )
 
 func TestInfixExpression(t *testing.T) {
@@ -33,11 +30,7 @@ func TestInfixExpression(t *testing.T) {
 	}
 
 	for _, val := range infixTests {
-		l := lexer.New(val.input)
-		p := parser.New(l)
-
-		program := p.ParseProgram()
-		checkParserErrors(t, p)
+		program := parseProgram(t, val.input)
 
 		if len(program.Statements) != 1 {
 			t.Fatalf("program has not enough statements. got=%d", len(program.Statements))

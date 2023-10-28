@@ -4,8 +4,6 @@ import (
 	"testing"
 
 	"github.com/Mostafa-DE/delang/ast"
-	"github.com/Mostafa-DE/delang/lexer"
-	"github.com/Mostafa-DE/delang/parser"
 )
 
 func TestForStatement(t *testing.T) {
@@ -24,11 +22,7 @@ func TestForStatement(t *testing.T) {
 	}
 
 	for idx, input := range inputs {
-		l := lexer.New(input)
-		p := parser.New(l)
-		program := p.ParseProgram()
-
-		checkParserErrors(t, p)
+		program := parseProgram(t, input)
 
 		if program == nil {
 			t.Fatalf("ParseProgram() returned nil")

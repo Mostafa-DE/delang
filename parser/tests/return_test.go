@@ -3,9 +3,6 @@ package tests
 import (
 	"testing"
 
-	"github.com/Mostafa-DE/delang/lexer"
-	"github.com/Mostafa-DE/delang/parser"
-
 	"github.com/Mostafa-DE/delang/ast"
 )
 
@@ -20,11 +17,7 @@ func TestReturnStatements(t *testing.T) {
 	}
 
 	for _, val := range tests {
-		l := lexer.New(val.input)
-		p := parser.New(l)
-
-		program := p.ParseProgram()
-		checkParserErrors(t, p)
+		program := parseProgram(t, val.input)
 
 		if program == nil {
 			t.Fatalf("ParseProgram() returned nil :( ")

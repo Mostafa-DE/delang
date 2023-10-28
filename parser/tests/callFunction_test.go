@@ -3,10 +3,7 @@ package tests
 import (
 	"testing"
 
-	"github.com/Mostafa-DE/delang/parser"
-
 	"github.com/Mostafa-DE/delang/ast"
-	"github.com/Mostafa-DE/delang/lexer"
 )
 
 func TestCallFunction(t *testing.T) {
@@ -14,11 +11,7 @@ func TestCallFunction(t *testing.T) {
 		add(1, 2 * 3, 4 + 5);
 	`
 
-	l := lexer.New(input)
-	p := parser.New(l)
-
-	program := p.ParseProgram()
-	checkParserErrors(t, p)
+	program := parseProgram(t, input)
 
 	if len(program.Statements) != 1 {
 		t.Fatalf("program.Statements does not contain 1 statements. got=%d\n", len(program.Statements))
@@ -59,11 +52,7 @@ func TestCallFunctionParameters(t *testing.T) {
 	}
 
 	for _, val := range tests {
-		l := lexer.New(val.input)
-		p := parser.New(l)
-
-		program := p.ParseProgram()
-		checkParserErrors(t, p)
+		program := parseProgram(t, val.input)
 
 		statement := program.Statements[0].(*ast.ExpressionStatement)
 		callFunction := statement.Expression.(*ast.CallFunction)

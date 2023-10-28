@@ -4,18 +4,12 @@ import (
 	"testing"
 
 	"github.com/Mostafa-DE/delang/ast"
-	"github.com/Mostafa-DE/delang/lexer"
-	"github.com/Mostafa-DE/delang/parser"
 )
 
 func TestAssignExpression(t *testing.T) {
 	input := `x = 5;`
 
-	l := lexer.New(input)
-	p := parser.New(l)
-
-	program := p.ParseProgram()
-	checkParserErrors(t, p)
+	program := parseProgram(t, input)
 
 	if program == nil {
 		t.Fatalf("ParseProgram() returned nil")
@@ -37,11 +31,7 @@ func TestAssignExpression(t *testing.T) {
 func TestAssignDictKeyExpression(t *testing.T) {
 	input := `x["key"] = 5;`
 
-	l := lexer.New(input)
-	p := parser.New(l)
-
-	program := p.ParseProgram()
-	checkParserErrors(t, p)
+	program := parseProgram(t, input)
 
 	if program == nil {
 		t.Fatalf("ParseProgram() returned nil")
@@ -88,11 +78,7 @@ func TestAssignDictKeyExpression(t *testing.T) {
 func TestAssignArrayIndexExpression(t *testing.T) {
 	input := `x[1] = 5;`
 
-	l := lexer.New(input)
-	p := parser.New(l)
-
-	program := p.ParseProgram()
-	checkParserErrors(t, p)
+	program := parseProgram(t, input)
 
 	if program == nil {
 		t.Fatalf("ParseProgram() returned nil")

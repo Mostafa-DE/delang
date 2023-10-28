@@ -2,9 +2,6 @@ package tests
 
 import (
 	"testing"
-
-	"github.com/Mostafa-DE/delang/lexer"
-	"github.com/Mostafa-DE/delang/parser"
 )
 
 func TestOperatorPrecedence(t *testing.T) {
@@ -105,12 +102,7 @@ func TestOperatorPrecedence(t *testing.T) {
 	}
 
 	for _, val := range tests {
-		l := lexer.New(val.input)
-		p := parser.New(l)
-
-		program := p.ParseProgram()
-		checkParserErrors(t, p)
-
+		program := parseProgram(t, val.input)
 		actual := program.String()
 
 		if actual != val.expected {
