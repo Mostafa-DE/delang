@@ -120,18 +120,6 @@ func TestForEval(t *testing.T) {
 		{
 			`
 				const arr = [];
-
-				for idx, _ in [10, 20, 30, 40]: {
-					push(arr, idx);
-				}
-
-				return arr;
-			`,
-			[]int{0, 1, 2, 3},
-		},
-		{
-			`
-				const arr = [];
 				for idx, num in [1, 2, 3, 4, 5]: {
 					push(arr, "Index: " + idx + " Number: " + num);
 				}

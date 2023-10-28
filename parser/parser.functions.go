@@ -483,25 +483,67 @@ func (p *Parser) parseSkipStatement() *ast.SkipStatement {
 func (p *Parser) parseForStatement() *ast.ForStatement {
 	fs := &ast.ForStatement{Token: p.currentToken}
 	/*
-		Steps to parse a for statement:
-		- current token is "for token"
-
-		- Check if the next token is an identifier
-			- If it is, go to the next token (identifier) // p.nextToken()
-			- Check if the next token is a comma
-					- If it is, now we know for sure we have an index identifier
-				- If it is not, then we have a variable identifier
-
-		- Otherwise check if the next token is an underscore
 		* Underscore can be used to omit the index identifier but not the variable identifier
 		* The variable identifier has to be there
-		    - If it is, go to the next token (underscore) // p.nextToken()
-			- Until this point the second token has to be COMMA.
-				- If it is not, then throw an error
-			- Skip the COMMA
-			- Now the current token is the variable identifier
 
-		- Otherwise throw an error
+		Steps to parse for loop statement:
+		- current token is "for token"
+
+		- Step 1:
+			-Check if the current token is not an underscore
+				- Check if the next token is a COMMA
+					- Yes,
+						- Assign the current token to the index identifier
+						- Skip the COMMA
+						- Check if the current token is an underscore
+							- Yes,
+								- then throw an error
+
+							- No,
+								- Assign the current token to the variable identifier
+
+					- No,
+						- Assign the current token to the variable identifier
+
+			- Else, check if the current token is an underscore
+				- Yes, Check if the next token is a comma
+					- No, then throw an error
+
+					- Yes,
+						- Skip the COMMA
+						- Check if the current token is an underscore
+							- Yes, then throw an error
+							* You can't skip both the index and the variable identifier
+							* Use "during" loop instead
+
+						- Check if the current token is an IN token
+							- Yes, then throw an error
+
+						- Assign the current token to the variable identifier
+
+			- Else, throw an error
+			* variable identifier is required after "for" keyword
+
+
+		- Step 2:
+			- Check if the current token is an IN token
+				- No, then throw an error
+
+				- Yes, skip the IN token
+				- Parse the iterable expression
+
+		- Step 3:
+			- Check if the current token is a COLON token
+				- No, then throw an error
+
+				- Yes, skip the COLON token
+
+		- Step 4:
+			- Check if the current token is a LEFTBRAC token
+				- No, then throw an error
+
+				- Yes, skip the LEFTBRAC token
+				- Parse the block statement
 
 	*/
 	p.nextToken()
@@ -510,11 +552,16 @@ func (p *Parser) parseForStatement() *ast.ForStatement {
 			fs.IdxIdent = &ast.Identifier{Token: p.currentToken, Value: p.currentToken.Literal}
 			p.nextToken()
 			p.nextToken()
+			if p.currentTokenTypeIs(token.IDENT) && p.currentToken.Literal == "_" {
+				p.errors = append(p.errors, "Cannot use underscore as a variable identifier in for statement")
+				return nil
+			}
 			fs.VarIdent = &ast.Identifier{Token: p.currentToken, Value: p.currentToken.Literal}
 		} else {
 			fs.IdxIdent = nil
 			fs.VarIdent = &ast.Identifier{Token: p.currentToken, Value: p.currentToken.Literal}
 		}
+
 	} else if p.currentTokenTypeIs(token.IDENT) && p.currentToken.Literal == "_" {
 		if !p.peekTokenTypeIs(token.COMMA) {
 			p.errors = append(p.errors, "Expected a comma after underscore")
@@ -524,6 +571,11 @@ func (p *Parser) parseForStatement() *ast.ForStatement {
 		p.nextToken()
 		p.nextToken()
 
+		if p.currentTokenTypeIs(token.IDENT) && p.currentToken.Literal == "_" {
+			p.errors = append(p.errors, "Cannot use two underscores in for statement")
+			return nil
+		}
+
 		if p.currentTokenTypeIs(token.IN) {
 			p.errors = append(p.errors, "Expected an identifier after underscore")
 			return nil
@@ -531,6 +583,7 @@ func (p *Parser) parseForStatement() *ast.ForStatement {
 
 		fs.IdxIdent = nil
 		fs.VarIdent = &ast.Identifier{Token: p.currentToken, Value: p.currentToken.Literal}
+
 	} else {
 		p.errors = append(p.errors, "Expected an identifier or underscore after for statement")
 		return nil
@@ -556,6 +609,10 @@ func (p *Parser) parseForStatement() *ast.ForStatement {
 	}
 
 	fs.Body = p.parseBlockStatement()
+
+	if p.peekTokenTypeIs(token.SEMICOLON) {
+		p.nextToken()
+	}
 
 	return fs
 }
