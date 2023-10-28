@@ -185,12 +185,12 @@ func (function *Function) Inspect() string {
 	return out.String()
 }
 
-func (string *String) Type() ObjectType {
+func (str *String) Type() ObjectType {
 	return STRING_OBJ
 }
 
-func (string *String) Inspect() string {
-	return string.Value
+func (str *String) Inspect() string {
+	return str.Value
 }
 
 func (builtin *Builtin) Type() ObjectType {

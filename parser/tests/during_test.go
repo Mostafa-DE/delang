@@ -7,33 +7,78 @@ import (
 )
 
 func TestDuringStatements(t *testing.T) {
-	input := `
-		during x < y: { logs("DE!!"); };
-	`
-
-	program := parseProgram(t, input)
-
-	if len(program.Statements) != 1 {
-		t.Fatalf("program has not enough statements. got=%d", len(program.Statements))
+	tests := []struct {
+		input    string
+		expected struct {
+			condition struct {
+				left     string
+				operator string
+				right    string
+			}
+			body string
+		}
+	}{
+		{
+			`
+				during x < y: { logs("DE!!"); };
+			`,
+			struct {
+				condition struct {
+					left     string
+					operator string
+					right    string
+				}
+				body string
+			}{
+				condition: struct {
+					left     string
+					operator string
+					right    string
+				}{
+					left:     "x",
+					operator: "<",
+					right:    "y",
+				},
+				body: `logs(DE!!)`,
+			},
+		},
 	}
 
-	statement, ok := program.Statements[0].(*ast.ExpressionStatement)
+	for _, val := range tests {
+		program := parseProgram(t, val.input)
+		statement, ok := program.Statements[0].(*ast.ExpressionStatement)
 
-	if !ok {
-		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T", program.Statements[0])
-	}
+		if !ok {
+			t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T", program.Statements[0])
+		}
 
-	expression, ok := statement.Expression.(*ast.DuringExpression)
+		expression, ok := statement.Expression.(*ast.DuringExpression)
 
-	if !ok {
-		t.Fatalf("statement.Expression is not ast.DuringExpression. got=%T", statement.Expression)
-	}
+		if !ok {
+			t.Fatalf("statement.Expression is not ast.DuringExpression. got=%T", statement.Expression)
+		}
 
-	if !testInfixExpression(t, expression.Condition, "x", "<", "y") {
-		return
-	}
+		left := val.expected.condition.left
+		operator := val.expected.condition.operator
+		right := val.expected.condition.right
 
-	if len(expression.Body.Statements) != 1 {
-		t.Errorf("Body is not 1 statements. got=%d\n", len(expression.Body.Statements))
+		if !testInfixExpression(t, expression.Condition, left, operator, right) {
+			return
+		}
+
+		if len(expression.Body.Statements) != 1 {
+			t.Errorf("Body is not 1 statements. got=%d\n", len(expression.Body.Statements))
+		}
+
+		body, ok := expression.Body.Statements[0].(*ast.ExpressionStatement)
+
+		if !ok {
+			t.Fatalf("Body.Statements[0] is not ast.ExpressionStatement. got=%T", expression.Body.Statements[0])
+		}
+
+		if body.String() != val.expected.body {
+			t.Errorf("body.String() is not %q. got=%q", val.expected.body, body.String())
+		}
+
 	}
 }
