@@ -20,8 +20,6 @@ func (returnStatement *ReturnStatement) String() string {
 		out.WriteString(returnStatement.ReturnValue.String())
 	}
 
-	out.WriteString(";")
-
 	return out.String()
 }
 

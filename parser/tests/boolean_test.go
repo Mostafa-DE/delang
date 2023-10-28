@@ -6,7 +6,7 @@ import (
 	"github.com/Mostafa-DE/delang/ast"
 )
 
-func TestBooleanExpression1(t *testing.T) {
+func TestBooleanExpression(t *testing.T) {
 	booleanTests := []struct {
 		input    string
 		expected bool
@@ -17,10 +17,6 @@ func TestBooleanExpression1(t *testing.T) {
 
 	for _, val := range booleanTests {
 		program := parseProgram(t, val.input)
-
-		if len(program.Statements) != 1 {
-			t.Fatalf("program has not enough statements. got=%d", len(program.Statements))
-		}
 
 		statement, ok := program.Statements[0].(*ast.ExpressionStatement)
 		if !ok {

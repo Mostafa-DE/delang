@@ -66,7 +66,7 @@ func TestReturnStatement(t *testing.T) {
 		},
 	}
 
-	testString(t, program, "return 100;")
+	testString(t, program, "return 100")
 }
 
 func TestArray(t *testing.T) {

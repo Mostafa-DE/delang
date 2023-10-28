@@ -244,7 +244,7 @@ func (hash *Hash) Inspect() string {
 	pairs := []string{}
 
 	for _, pair := range hash.Pairs {
-		pairs = append(pairs, fmt.Sprintf("%s: %s", pair.Key.Inspect(), pair.Value.Inspect()))
+		pairs = append(pairs, fmt.Sprintf("'%s': '%s'", pair.Key.Inspect(), pair.Value.Inspect()))
 	}
 
 	out.WriteString("{")
