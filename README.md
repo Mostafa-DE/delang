@@ -9,11 +9,12 @@ It incorporates concepts from various programming languages to create a unique a
 * Built on Go
 * Emphasis on Simplicity
 * Support for Higher-Order Functions and Closures
+* Built-in decimals system.
 
 <br />
 
 ## Getting DE via Git
-You can check out the DE source tree mirror using the following command:
+You can check out the DE source tree using the following command:
 
     $ git clone git@github.com:Mostafa-DE/delang.git
 
