@@ -317,10 +317,10 @@ func evalDecimalInfixExpression(operator string, left object.Object, right objec
 	leftVal := left.(*object.Decimal).Value
 	rightVal := right.(*object.Decimal).Value
 
-	decimalData, ok := env.Get("getDecimalData")
+	decimalData, ok := env.Get("_getDecimalData")
 
 	if !ok {
-		return throwError("getDecimalData() not found")
+		return throwError("_getDecimalData() not found")
 	}
 
 	decimalHash := decimalData.(*object.Hash)

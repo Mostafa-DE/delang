@@ -48,11 +48,11 @@ func TestDivRoundingDecimal(t *testing.T) {
 			`
 				decimal(300) / decimal(1.2121)
 			`,
-			"247.5043313257982014685256991997",
+			"247.50433133",
 		},
 		{
 			`
-				getDecimalData["divPrec"] = 10;	
+				_getDecimalData["divPrec"] = 10;	
 				
 				decimal(300) / decimal(1.2121)
 			`,
@@ -60,7 +60,7 @@ func TestDivRoundingDecimal(t *testing.T) {
 		},
 		{
 			`
-				getDecimalData["divPrec"] = 1;
+				_getDecimalData["divPrec"] = 1;
 
 				decimal(300) / decimal(1.2121)
 			`,
@@ -68,7 +68,7 @@ func TestDivRoundingDecimal(t *testing.T) {
 		},
 		{
 			`
-				getDecimalData["divPrec"] = 20;
+				_getDecimalData["divPrec"] = 20;
 
 				decimal(300) / decimal(1.2121)
 
@@ -77,7 +77,7 @@ func TestDivRoundingDecimal(t *testing.T) {
 		},
 		{
 			`
-				getDecimalData["divPrec"] = -1;
+				_getDecimalData["divPrec"] = -1;
 
 				decimal(300) / decimal(1.2121)
 			`,
@@ -128,7 +128,7 @@ func TestMulRoundingDecimal(t *testing.T) {
 		},
 		{
 			`
-				getDecimalData["prec"] = 5;	
+				_getDecimalData["prec"] = 5;	
 				
 				decimal(1.21113) * decimal(2.22113)
 			`,
@@ -136,7 +136,7 @@ func TestMulRoundingDecimal(t *testing.T) {
 		},
 		{
 			`
-				getDecimalData["prec"] = 3;
+				_getDecimalData["prec"] = 3;
 
 				decimal(1.21113) * decimal(2.22113)
 			`,
@@ -144,7 +144,7 @@ func TestMulRoundingDecimal(t *testing.T) {
 		},
 		{
 			`
-				getDecimalData["prec"] = 1;
+				_getDecimalData["prec"] = 1;
 
 				decimal(1.21113) * decimal(2.22113)
 
@@ -153,7 +153,7 @@ func TestMulRoundingDecimal(t *testing.T) {
 		},
 		{
 			`
-				getDecimalData["prec"] = 5;
+				_getDecimalData["prec"] = 5;
 
 				decimal(300) * decimal(1.2121);
 			`,
@@ -161,7 +161,7 @@ func TestMulRoundingDecimal(t *testing.T) {
 		},
 		{
 			`
-				getDecimalData["prec"] = -1;
+				_getDecimalData["prec"] = -1;
 
 				decimal(300) * decimal(1.2121)
 			`,
@@ -212,7 +212,7 @@ func TestAddRoundingDecimal(t *testing.T) {
 		},
 		{
 			`
-				getDecimalData["prec"] = 5;	
+				_getDecimalData["prec"] = 5;	
 				
 				decimal(1.21113) + decimal(2.22113);
 			`,
@@ -220,7 +220,7 @@ func TestAddRoundingDecimal(t *testing.T) {
 		},
 		{
 			`
-				getDecimalData["prec"] = 3;
+				_getDecimalData["prec"] = 3;
 
 				decimal(1.21113) + decimal(2.22113);
 			`,
@@ -228,7 +228,7 @@ func TestAddRoundingDecimal(t *testing.T) {
 		},
 		{
 			`
-				getDecimalData["prec"] = 1;
+				_getDecimalData["prec"] = 1;
 
 				decimal(1.21113) + decimal(2.22113);
 
@@ -237,7 +237,7 @@ func TestAddRoundingDecimal(t *testing.T) {
 		},
 		{
 			`
-				getDecimalData["prec"] = 5;
+				_getDecimalData["prec"] = 5;
 
 				decimal(300) + decimal(1.2121);
 			`,
@@ -245,7 +245,7 @@ func TestAddRoundingDecimal(t *testing.T) {
 		},
 		{
 			`
-				getDecimalData["prec"] = -1;
+				_getDecimalData["prec"] = -1;
 
 				decimal(300) + decimal(1.2121)
 			`,
@@ -301,7 +301,7 @@ func TestSubRoundingDecimal(t *testing.T) {
 		},
 		{
 			`
-				getDecimalData["prec"] = 3;	
+				_getDecimalData["prec"] = 3;	
 				
 				decimal(1.2911) - decimal(22.221);
 			`,
@@ -309,7 +309,7 @@ func TestSubRoundingDecimal(t *testing.T) {
 		},
 		{
 			`
-				getDecimalData["prec"] = 3;
+				_getDecimalData["prec"] = 3;
 
 				decimal(32.7564) - decimal(34.5478);
 			`,
@@ -317,7 +317,7 @@ func TestSubRoundingDecimal(t *testing.T) {
 		},
 		{
 			`
-				getDecimalData["prec"] = 1;
+				_getDecimalData["prec"] = 1;
 
 				decimal(1.21113) - decimal(2.22113);
 
@@ -326,7 +326,7 @@ func TestSubRoundingDecimal(t *testing.T) {
 		},
 		{
 			`
-				getDecimalData["prec"] = 5;
+				_getDecimalData["prec"] = 5;
 
 				decimal(300) - decimal(1.2121);
 			`,
@@ -334,7 +334,7 @@ func TestSubRoundingDecimal(t *testing.T) {
 		},
 		{
 			`
-				getDecimalData["prec"] = -1;
+				_getDecimalData["prec"] = -1;
 
 				decimal(300) - decimal(1.2121)
 			`,
