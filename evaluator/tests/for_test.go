@@ -6,6 +6,7 @@ import (
 	"github.com/Mostafa-DE/delang/object"
 )
 
+// TODO: Split into multiple tests
 func TestForEval(t *testing.T) {
 	tests := []struct {
 		input    string

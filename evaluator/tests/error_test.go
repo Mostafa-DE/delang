@@ -126,7 +126,7 @@ func TestErrorHandling(t *testing.T) {
 		},
 		{
 			`
-				getDecimalData["divPrec"] = -1;
+				_getDecimalData["divPrec"] = -1;
 
 				decimal(300) / decimal(1.2121);
 			`,
@@ -134,7 +134,7 @@ func TestErrorHandling(t *testing.T) {
 		},
 		{
 			`
-				getDecimalData["prec"] = -1;
+				_getDecimalData["prec"] = -1;
 
 				decimal(300) * decimal(1.2121);
 			`,
@@ -142,7 +142,7 @@ func TestErrorHandling(t *testing.T) {
 		},
 		{
 			`
-				getDecimalData["prec"] = -1;
+				_getDecimalData["prec"] = -1;
 
 				decimal(300) + decimal(1.2121);
 			`,
@@ -150,7 +150,7 @@ func TestErrorHandling(t *testing.T) {
 		},
 		{
 			`
-				getDecimalData["prec"] = -1;
+				_getDecimalData["prec"] = -1;
 
 				decimal(300) - decimal(1.2121);
 			`,
@@ -158,7 +158,7 @@ func TestErrorHandling(t *testing.T) {
 		},
 		{
 			`
-				getDecimalData["divPrec"] = -1;
+				_getDecimalData["divPrec"] = -1;
 
 				decimal(300) % decimal(1.2121);
 			`,

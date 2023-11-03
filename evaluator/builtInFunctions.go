@@ -195,29 +195,27 @@ var builtins = map[string]*object.Builtin{
 	},
 	"range": {
 		Func: func(args ...object.Object) object.Object {
-			if len(args) != 1 {
-				return throwError("wrong number of arguments passed to range(). got=%d, want=1", len(args))
+			if len(args) <= 0 || len(args) > 2 {
+				return throwError("wrong number of arguments passed to range(). got=%d, want=2", len(args))
 			}
 
-			integer, ok := args[0].(*object.Integer)
+			if len(args) == 1 {
+				if args[0].Type() != object.INTEGER_OBJ {
+					return throwError("argument to `range` must be INTEGER")
+				}
 
-			if !ok {
-				return throwError("argument to `range` must be INTEGER, got %s", args[0].Type())
+				return makeRangeArray(0, args[0].(*object.Integer).Value)
+
+			} else {
+				if args[0].Type() != object.INTEGER_OBJ || args[1].Type() != object.INTEGER_OBJ {
+					return throwError("argument to `range` must be INTEGER")
+				}
+
+				return makeRangeArray(args[0].(*object.Integer).Value, args[1].(*object.Integer).Value)
 			}
 
-			if integer.Value < 0 || integer.Value == 0 {
-				return &object.Array{}
-			}
-
-			elements := make([]object.Object, integer.Value)
-
-			for i := 0; i < int(integer.Value); i++ {
-				elements[i] = &object.Integer{Value: int64(i)}
-			}
-
-			return &object.Array{Elements: elements}
 		},
-		Desc: "Returns an array of integers from 0 to the given number, excluding the given number",
+		Desc: "Returns an array of integers in the given range",
 		Name: "range",
 	},
 	"decimal": {
@@ -251,5 +249,60 @@ var builtins = map[string]*object.Builtin{
 		},
 		Desc: "Returns the type of the given value",
 		Name: "typeof",
+	},
+
+	// TODO: Add tests
+	"copy": {
+		Func: func(args ...object.Object) object.Object {
+			if len(args) != 1 {
+				return throwError("wrong number of arguments passed to copy(). got=%d, want=1", len(args))
+			}
+
+			switch arg := args[0].(type) {
+			case *object.Array:
+				newElements := make([]object.Object, len(arg.Elements))
+				copy(newElements, arg.Elements)
+
+				return &object.Array{Elements: newElements}
+
+			case *object.Hash:
+				newPairs := make(map[object.HashKey]object.HashPair)
+
+				for key, value := range arg.Pairs {
+					newPairs[key] = value
+				}
+
+				return &object.Hash{Pairs: newPairs}
+
+			case *object.String:
+				return &object.String{Value: arg.Value}
+
+			default:
+				return throwError("argument to `copy` not supported, got %s", args[0].Type())
+
+			}
+		},
+		Desc: "Returns a copy of the given value",
+		Name: "copy",
+	},
+
+	// TODO: Add tests
+	"input": {
+		Func: func(args ...object.Object) object.Object {
+			if len(args) > 1 {
+				return throwError("wrong number of arguments passed to input(). got=%d", len(args))
+			}
+
+			if len(args) == 1 {
+				fmt.Println(args[0].Inspect())
+			}
+
+			var input string
+			fmt.Scanln(&input)
+
+			return &object.String{Value: input}
+		},
+		Desc: "Reads a line from the standard input",
+		Name: "input",
 	},
 }
