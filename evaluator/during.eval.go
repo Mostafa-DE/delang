@@ -9,6 +9,8 @@ import (
 )
 
 func evalDuringExpression(node *ast.DuringExpression, env *object.Environment) object.Object {
+	// This is just a temporary solution to the problem of the timeout
+	// The language has nothing to do with the playground website and the server
 	condition := Eval(node.Condition, env)
 	timeoutLoop, _ := env.Get("timeoutLoop")
 	var timeout <-chan time.Time
@@ -16,6 +18,8 @@ func evalDuringExpression(node *ast.DuringExpression, env *object.Environment) o
 	if timeoutLoop != nil {
 		timeout = time.After(5 * time.Second)
 	}
+
+	localEnv := object.NewLocalEnvironment(env)
 
 loop:
 	for isTruthy(condition) {
@@ -27,7 +31,7 @@ loop:
 			break loop
 
 		default:
-			result := evalBlockStatement(node.Body.Statements, env)
+			result := evalBlockStatement(node.Body.Statements, localEnv)
 
 			if isError(result) {
 				return result
@@ -39,12 +43,12 @@ loop:
 				}
 
 				if result.Type() == object.SKIP_OBJ {
-					condition = Eval(node.Condition, env)
+					condition = Eval(node.Condition, localEnv)
 					continue loop
 				}
 			}
 
-			condition = Eval(node.Condition, env)
+			condition = Eval(node.Condition, localEnv)
 
 			if isTruthy(condition) {
 				continue loop
