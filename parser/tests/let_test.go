@@ -15,6 +15,7 @@ func TestLetStatements(t *testing.T) {
 		{"let x = 5;", "x", 5},
 		{"let y = 10;", "y", 10},
 		{"let num = 1234;", "num", 1234},
+		{"let test;", "test", nil},
 	}
 
 	for _, val := range tests {

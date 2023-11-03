@@ -9,6 +9,7 @@ import (
 	"github.com/Mostafa-DE/delang/parser"
 )
 
+// TODO: Split into multiple tests
 func TestDuringEval(t *testing.T) {
 	tests := []struct {
 		Desc     string
@@ -38,7 +39,7 @@ func TestDuringEval(t *testing.T) {
 			`
 				let x = 0;
 				during x < 4: {
-					let x = fun() {
+					x = fun() {
 						return 1;
 					}();
 
@@ -49,6 +50,22 @@ func TestDuringEval(t *testing.T) {
 			`,
 			"x",
 			1,
+		},
+		{
+			"It should work fine with local scope",
+			`
+				let x = 0; // global scope
+				during x < 4: {
+					let x = 1; // local scope
+					
+					if x == 1: {
+						break;
+					}
+
+				}
+			`,
+			"x",
+			0,
 		},
 		{
 			"It should work fine with if/else statement",
@@ -122,7 +139,7 @@ func TestDuringEval(t *testing.T) {
 
 					during x < 5: {
 						x = x + 1;
-						
+
 						if x == 5: {
 							break;
 						}

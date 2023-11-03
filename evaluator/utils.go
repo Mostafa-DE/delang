@@ -31,6 +31,10 @@ func isTruthy(obj object.Object) bool {
 		return false
 	}
 
+	if obj == NULL {
+		return false
+	}
+
 	if obj.Type() == object.INTEGER_OBJ {
 		return obj.(*object.Integer).Value != 0
 	}
@@ -42,14 +46,17 @@ func isTruthy(obj object.Object) bool {
 	return true
 }
 
-func boolToInt(val bool) int64 {
-	if val {
-		return 1
-	}
-
-	return 0
-}
-
 func intToBool(val int64) bool {
 	return val != 0
+}
+
+func makeRangeArray(startRange int64, endRange int64) *object.Array {
+	size := endRange - startRange + 1
+	elements := make([]object.Object, size)
+
+	for i := int64(0); i < size; i++ {
+		elements[i] = &object.Integer{Value: startRange + i}
+	}
+
+	return &object.Array{Elements: elements}
 }

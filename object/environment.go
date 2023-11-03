@@ -1,7 +1,5 @@
 package object
 
-import "fmt"
-
 // Environment is a map of strings to Objects that we can use to store and retrieve values
 // from the environment we're currently in (e.g. global or local)
 
@@ -54,7 +52,6 @@ func (e *Environment) Set(name string, val Object, isConst bool) Object {
 	}
 
 	if val == nil {
-		fmt.Println("val is nil")
 		e.store[name] = &Null{}
 	}
 

@@ -185,6 +185,9 @@ func testLiteralExpression(
 	case float64:
 		return testFloat(t, expression, v)
 
+	case nil:
+		return expression == nil
+
 	}
 
 	t.Errorf("type of expression not handled. got=%T", expression)

@@ -180,6 +180,9 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 	case *ast.SkipStatement:
 		return &object.Skip{}
 
+	case nil:
+		return NULL
+
 	}
 
 	return nil

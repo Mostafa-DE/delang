@@ -56,7 +56,11 @@ func setHashIndex(hash object.Object, index object.Object, value object.Object) 
 	pair, ok := hashObject.Pairs[key.HashKey()]
 
 	if !ok {
-		return throwError("Index not found")
+		// TODO: These need to be tested
+		// When the key is not found, we add it to the hash
+		hashObject.Pairs[key.HashKey()] = object.HashPair{Key: index, Value: value}
+
+		return NULL
 	}
 
 	pair.Value = value

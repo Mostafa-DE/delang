@@ -119,6 +119,14 @@ func TestLogsFunction(t *testing.T) {
 			`,
 			[]string{"Inside the callback function", "Inside the main function", "Outside the main function"},
 		},
+		{
+			"It should log a null value if the argument is null",
+			`
+				let x;
+				logs(x);
+			`,
+			[]string{"null"},
+		},
 	}
 
 	for _, val := range tests {
@@ -670,14 +678,14 @@ func TestRangeFunction(t *testing.T) {
 			`
 				range(5);
 			`,
-			[]int{0, 1, 2, 3, 4},
+			[]int{0, 1, 2, 3, 4, 5},
 		},
 		{
 			"It should return an empty array if the given number is 0",
 			`
 				range(0);
 			`,
-			[]int{},
+			[]int{0},
 		},
 		{
 			"It should return an empty array if the given number is negative",
@@ -686,19 +694,14 @@ func TestRangeFunction(t *testing.T) {
 			`,
 			[]int{},
 		},
+
+		// TODO: Move this to a separate test
 		{
 			"It should return error if the argument is not an integer",
 			`
 				range("1");
 			`,
-			"argument to `range` must be INTEGER, got STRING",
-		},
-		{
-			"It should return error if the number of arguments is not 1",
-			`
-				range(1, 2);
-			`,
-			"wrong number of arguments passed to range(). got=2, want=1",
+			"argument to `range` must be INTEGER",
 		},
 	}
 

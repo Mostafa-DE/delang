@@ -18,11 +18,14 @@ func (p *Parser) parseVariableStatement(statementType string) *ast.VariableState
 
 	statement.Name = &ast.Identifier{Token: p.currentToken, Value: p.currentToken.Literal}
 
-	if !p.expectPeekType(token.ASSIGN) {
-		p.errors = append(p.errors, "Expected '=' after variable name")
-		return &ast.VariableStatement{}
+	if !p.peekTokenTypeIs(token.ASSIGN) {
+		if p.peekTokenTypeIs(token.SEMICOLON) {
+			p.nextToken()
+		}
+		return statement
 	}
 
+	p.nextToken() // Skip the '='W
 	p.nextToken()
 
 	statement.Value = p.parseExpression(LOWEST)
