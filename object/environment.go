@@ -1,5 +1,7 @@
 package object
 
+import "fmt"
+
 // Environment is a map of strings to Objects that we can use to store and retrieve values
 // from the environment we're currently in (e.g. global or local)
 
@@ -13,7 +15,7 @@ type Environment struct {
 
 func NewEnvironment() *Environment {
 	s := map[string]Object{
-		"getDecimalData": decimalData(),
+		"_getDecimalData": decimalData(),
 	}
 
 	return &Environment{store: s, outer: nil, constValues: make(map[string]struct{})}
@@ -51,6 +53,11 @@ func (e *Environment) Set(name string, val Object, isConst bool) Object {
 		return throwError("Cannot reassign constant '%s'", name)
 	}
 
+	if val == nil {
+		fmt.Println("val is nil")
+		e.store[name] = &Null{}
+	}
+
 	e.store[name] = val
 
 	if isConst {
@@ -72,6 +79,21 @@ func (e *Environment) GetMainEnv() *Environment {
 	return e
 }
 
+// GetTargetEnv returns the environment that contains the variable with the given name
+// If the variable is not found, it returns nil
+// This is used to check if a variable is declared in the current scope or not
+func (e *Environment) GetTargetEnv(name string) *Environment {
+	if _, ok := e.store[name]; ok {
+		return e
+	}
+
+	if e.outer != nil {
+		return e.outer.GetTargetEnv(name)
+	}
+
+	return nil
+}
+
 func decimalData() *Hash {
 	return &Hash{
 		Pairs: map[HashKey]HashPair{
@@ -88,7 +110,7 @@ func decimalData() *Hash {
 					Value: "divPrec",
 				},
 				Value: &Integer{
-					Value: 28,
+					Value: 8,
 				},
 			},
 		},
@@ -97,7 +119,7 @@ func decimalData() *Hash {
 
 func checkShadowing(name string) bool {
 	arr := []string{
-		"getDecimalData",
+		"_getDecimalData",
 		"len",
 		"first",
 		"last",

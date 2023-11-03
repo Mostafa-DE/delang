@@ -4,6 +4,8 @@ import (
 	"testing"
 )
 
+// TODO: Add tests related to global and local scopes
+// TODO: Split this test into multiple tests
 func TestAssignExpression(t *testing.T) {
 	tests := []struct {
 		input    string

@@ -18,11 +18,11 @@ func evalAssignExpression(node *ast.AssignExpression, env *object.Environment) o
 		return throwError("identifier not found: %s", node.Ident.Value)
 	}
 
-	envVal := env.Set(node.Ident.Value, val, false)
+	returnVal := env.GetTargetEnv(node.Ident.Value).Set(node.Ident.Value, val, false)
 
-	if isError(envVal) {
-		return envVal
+	if isError(returnVal) {
+		return returnVal
 	}
 
-	return val
+	return returnVal
 }
