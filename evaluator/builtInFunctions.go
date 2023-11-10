@@ -178,6 +178,54 @@ var builtins = map[string]*object.Builtin{
 		Desc: "Removes the last element of an array",
 		Name: "pop",
 	},
+
+	// TODO: Add tests
+	"shift": {
+		Func: func(args ...object.Object) object.Object {
+			if len(args) != 1 {
+				return throwError("wrong number of arguments passed to shift(). got=%d, want=1", len(args))
+			}
+
+			array, ok := args[0].(*object.Array)
+
+			if !ok {
+				return throwError("argument to `shift` must be ARRAY, got %s", args[0].Type())
+			}
+
+			length := len(array.Elements)
+
+			if length > 0 {
+				array.Elements = array.Elements[1:length]
+
+				return array
+			}
+
+			return NULL
+		},
+		Desc: "Removes the first element of an array",
+		Name: "shift",
+	},
+
+	// TODO: Add tests
+	"unshift": {
+		Func: func(args ...object.Object) object.Object {
+			if len(args) != 2 {
+				return throwError("wrong number of arguments passed to unshift(). got=%d, want=2", len(args))
+			}
+
+			array, ok := args[0].(*object.Array)
+
+			if !ok {
+				return throwError("argument to `unshift` must be ARRAY, got %s", args[0].Type())
+			}
+
+			array.Elements = append([]object.Object{args[1]}, array.Elements...)
+
+			return array
+		},
+		Desc: "Adds an element to the beginning of an array",
+		Name: "unshift",
+	},
 	"logs": {
 		Func: func(args ...object.Object) object.Object {
 			for _, arg := range args {
