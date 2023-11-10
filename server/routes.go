@@ -110,6 +110,10 @@ func codeExecHandler(resW http.ResponseWriter, req *http.Request) {
 
 	eval := evaluator.Eval(program, env)
 
+	if eval == nil {
+		eval = &object.Null{}
+	}
+
 	if eval.Type() == object.ERROR_OBJ {
 		res = map[string]string{
 			"error": eval.Inspect(),
