@@ -410,6 +410,16 @@ var builtins = map[string]*object.Builtin{
 			case *object.Decimal:
 				return &object.Integer{Value: arg.Value.IntPart()}
 
+			case *object.Float:
+				return &object.Integer{Value: int64(arg.Value)}
+
+			case *object.Boolean:
+				if arg.Value {
+					return &object.Integer{Value: 1}
+				}
+
+				return &object.Integer{Value: 0}
+
 			case *object.Integer:
 				return arg
 
