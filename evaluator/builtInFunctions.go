@@ -241,6 +241,33 @@ var builtins = map[string]*object.Builtin{
 		Desc: "Prints the result to the console",
 		Name: "logs",
 	},
+
+	// TODO: Add tests
+	"del": {
+		Func: func(args ...object.Object) object.Object {
+			if len(args) != 2 {
+				return throwError("wrong number of arguments passed to del(). got=%d, want=2", len(args))
+			}
+
+			hash, ok := args[0].(*object.Hash)
+
+			if !ok {
+				return throwError("argument to `del` must be dictionary, got %s", args[0].Type())
+			}
+
+			key, ok := args[1].(object.Hashable)
+
+			if !ok {
+				return throwError("unusable as hash key: %s", args[1].Type())
+			}
+
+			delete(hash.Pairs, key.HashKey())
+
+			return hash
+		},
+		Desc: "Deletes a key from a dictionary",
+		Name: "del",
+	},
 	"range": {
 		Func: func(args ...object.Object) object.Object {
 			if len(args) <= 0 || len(args) > 2 {
