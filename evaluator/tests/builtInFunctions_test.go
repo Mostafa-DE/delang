@@ -524,12 +524,23 @@ func TestPushFunction(t *testing.T) {
 			[]int{1},
 		},
 		{
+			"It should push the element to the array with modifying the original array",
+			`
+				let x = [1, 2, 3];
+				push(x, 4);
+				return x;
+			`,
+			[]int{1, 2, 3, 4},
+		},
+		// TODO: Move this to a separate test
+		{
 			"It should return error if the first argument is not an array",
 			`
 				push(1, 2);
 			`,
 			"argument to `push` must be ARRAY, got INTEGER",
 		},
+		// TODO: Move this to a separate test
 		{
 			"It should return error if the number of arguments is not 2",
 			`

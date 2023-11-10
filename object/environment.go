@@ -128,6 +128,12 @@ func checkShadowing(name string) bool {
 		"range",
 		"decimal",
 		"typeof",
+		"copy",
+		"input",
+		"int",
+		"float",
+		"bool",
+		"str",
 	}
 
 	for _, v := range arr {

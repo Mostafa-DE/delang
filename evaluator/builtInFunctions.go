@@ -231,6 +231,14 @@ var builtins = map[string]*object.Builtin{
 			case *object.Float:
 				return &object.Decimal{Value: decimal.NewFromFloat(arg.Value)}
 
+			case *object.String:
+				val, err := decimal.NewFromString(arg.Value)
+				if err != nil {
+					return throwError("string argument to `decimal` not supported, got `%s`", args[0].Inspect())
+				}
+
+				return &object.Decimal{Value: val}
+
 			default:
 				return throwError("argument to `decimal` not supported, got %s", args[0].Type())
 
@@ -239,6 +247,8 @@ var builtins = map[string]*object.Builtin{
 		Desc: "Converts an integer to a decimal",
 		Name: "decimal",
 	},
+
+	// TODO: Add tests
 	"typeof": {
 		Func: func(args ...object.Object) object.Object {
 			if len(args) != 1 {
@@ -304,5 +314,153 @@ var builtins = map[string]*object.Builtin{
 		},
 		Desc: "Reads a line from the standard input",
 		Name: "input",
+	},
+
+	// TODO: Add tests
+	"int": {
+		Func: func(args ...object.Object) object.Object {
+			if len(args) != 1 {
+				return throwError("wrong number of arguments passed to int(). got=%d, want=1", len(args))
+			}
+
+			switch arg := args[0].(type) {
+			case *object.String:
+				val, err := decimal.NewFromString(arg.Value)
+				if err != nil {
+					return throwError("string argument to `int` not supported, got `%s`", args[0].Inspect())
+				}
+
+				return &object.Integer{Value: val.IntPart()}
+
+			case *object.Decimal:
+				return &object.Integer{Value: arg.Value.IntPart()}
+
+			case *object.Integer:
+				return arg
+
+			default:
+				return throwError("string argument to `int` not supported, got `%s`", args[0].Inspect())
+
+			}
+		},
+		Desc: "Converts a value to an integer",
+		Name: "int",
+	},
+
+	// TODO: Add tests
+	"float": {
+		Func: func(args ...object.Object) object.Object {
+			if len(args) != 1 {
+				return throwError("wrong number of arguments passed to float(). got=%d, want=1", len(args))
+			}
+
+			switch arg := args[0].(type) {
+			case *object.String:
+				val, err := decimal.NewFromString(arg.Value)
+				if err != nil {
+					return throwError("string argument to `float` not supported, got `%s`", args[0].Inspect())
+				}
+
+				floatval, _ := val.Float64()
+
+				return &object.Float{Value: floatval}
+
+			case *object.Decimal:
+				floatval, _ := arg.Value.Float64()
+				return &object.Float{Value: floatval}
+
+			case *object.Integer:
+				return &object.Float{Value: float64(arg.Value)}
+
+			case *object.Float:
+				return arg
+
+			default:
+				return throwError("string argument to `float` not supported, got `%s`", args[0].Inspect())
+
+			}
+		},
+		Desc: "Converts a value to a float",
+		Name: "float",
+	},
+
+	// TODO: Add tests
+	"bool": {
+		Func: func(args ...object.Object) object.Object {
+			if len(args) != 1 {
+				return throwError("wrong number of arguments passed to bool(). got=%d, want=1", len(args))
+			}
+
+			switch arg := args[0].(type) {
+			case *object.String:
+				if arg.Value == "" {
+					return FALSE
+				}
+
+				return TRUE
+
+			case *object.Integer:
+				if arg.Value == 0 {
+					return FALSE
+				}
+
+				return TRUE
+
+			case *object.Float:
+				if arg.Value == 0 {
+					return FALSE
+				}
+
+				return TRUE
+
+			case *object.Decimal:
+				if arg.Value.IsZero() {
+					return FALSE
+				}
+
+				return TRUE
+
+			case *object.Boolean:
+				return arg
+
+			default:
+				return TRUE
+
+			}
+		},
+		Desc: "Converts a value to a boolean",
+		Name: "bool",
+	},
+
+	// TODO: Add tests
+	"str": {
+		Func: func(args ...object.Object) object.Object {
+			if len(args) != 1 {
+				return throwError("wrong number of arguments passed to str(). got=%d, want=1", len(args))
+			}
+
+			switch arg := args[0].(type) {
+			case *object.String:
+				return arg
+
+			case *object.Integer:
+				return &object.String{Value: arg.Inspect()}
+
+			case *object.Float:
+				return &object.String{Value: arg.Inspect()}
+
+			case *object.Decimal:
+				return &object.String{Value: arg.Inspect()}
+
+			case *object.Boolean:
+				return &object.String{Value: arg.Inspect()}
+
+			default:
+				return &object.String{Value: arg.Inspect()}
+
+			}
+		},
+		Desc: "Converts a value to a string",
+		Name: "str",
 	},
 }
