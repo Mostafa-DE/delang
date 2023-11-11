@@ -64,6 +64,16 @@ func evalInfixExpression(operator string, left object.Object, right object.Objec
 
 		return evalDecimalInfixExpression(operator, left, right, env)
 
+	case _leftType == object.DECIMAL_OBJ && _rightType == object.FLOAT_OBJ:
+		right = &object.Decimal{Value: decimal.NewFromFloat(right.(*object.Float).Value)}
+
+		return evalDecimalInfixExpression(operator, left, right, env)
+
+	case _leftType == object.FLOAT_OBJ && _rightType == object.DECIMAL_OBJ:
+		left = &object.Decimal{Value: decimal.NewFromFloat(left.(*object.Float).Value)}
+
+		return evalDecimalInfixExpression(operator, left, right, env)
+
 	/*
 		- This is pointer comparison because we only have one instance of TRUE and FALSE in memory
 		- This not the case for integers because we create a new object for every integer literal
