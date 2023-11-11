@@ -6,4 +6,4 @@ You have successfully finished the **Data Structures** section of the tour. You 
 
 <br />
 
-Click here to continue the tour: <a href="https://delang.mostafade.com/play/builtInFunc/welcome">Data Structures Section</a>
+Click here to continue the tour: <a href="https://delang.mostafade.com/play/builtInFunc/welcome">Built-in Functions</a>
