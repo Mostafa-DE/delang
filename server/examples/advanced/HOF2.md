@@ -1,4 +1,4 @@
-### High Other Functions (Continued)
+### High Order Functions (Continued)
 
 <br />
 
