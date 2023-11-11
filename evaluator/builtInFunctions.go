@@ -179,7 +179,6 @@ var builtins = map[string]*object.Builtin{
 		Name: "pop",
 	},
 
-	// TODO: Add tests
 	"shift": {
 		Func: func(args ...object.Object) object.Object {
 			if len(args) != 1 {
@@ -206,7 +205,6 @@ var builtins = map[string]*object.Builtin{
 		Name: "shift",
 	},
 
-	// TODO: Add tests
 	"unshift": {
 		Func: func(args ...object.Object) object.Object {
 			if len(args) != 2 {

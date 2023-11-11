@@ -762,3 +762,175 @@ func TestRangeFunction(t *testing.T) {
 		}
 	}
 }
+
+func TestShiftFunction(t *testing.T) {
+	tests := []struct {
+		description string
+		input       string
+		expected    interface{}
+	}{
+		{
+			"It should remove the first element of an array",
+			`
+				shift([1, 2, 3]);
+			`,
+			[]int{2, 3},
+		},
+		{
+			"It should return an empty array if the array has only one element",
+			`
+				shift([1]);
+			`,
+			[]int{},
+		},
+		{
+			"It should return null if the array is empty",
+			`
+				shift([]);
+			`,
+			"null",
+		},
+		{
+			"It should return error if the argument is not an array",
+			`
+				shift(1);
+			`,
+			"argument to `shift` must be ARRAY, got INTEGER",
+		},
+		{
+			"It should return error if the number of arguments is not 1",
+			`
+				shift([1], [2]);
+			`,
+			"wrong number of arguments passed to shift(). got=2, want=1",
+		},
+	}
+
+	for _, val := range tests {
+		evaluated := testEval(val.input)
+
+		switch expected := val.expected.(type) {
+		case []int:
+			array, ok := evaluated.(*object.Array)
+
+			if !ok {
+				t.Errorf("object is not Array. got=%T (%+v)", evaluated, evaluated)
+				continue
+			}
+
+			if len(array.Elements) != len(expected) {
+				t.Errorf("Mismatch number of elements in the array. want=%d, got=%d", len(expected), len(array.Elements))
+				continue
+			}
+
+			for idx, element := range array.Elements {
+				testIntegerObject(t, element, int64(expected[idx]))
+			}
+
+		case string:
+			errObj, ok := evaluated.(*object.Error)
+
+			if expected == "null" {
+				if _, ok := evaluated.(*object.Null); !ok {
+					t.Errorf("The return value is not null. got=%T (%+v)", evaluated, evaluated)
+					continue
+				}
+			}
+
+			if expected != "null" {
+				if !ok {
+					t.Errorf("object is not Error. got=%T (%+v)", evaluated, evaluated)
+					continue
+				}
+
+				if errObj.Msg != expected {
+					t.Errorf("wrong error message. expected=%q, got=%q", expected, errObj.Msg)
+				}
+			}
+
+		default:
+			t.Errorf("Unknown type. got=%T", expected)
+		}
+	}
+}
+
+func TestUnshiftFunction(t *testing.T) {
+	tests := []struct {
+		description string
+		input       string
+		expected    interface{}
+	}{
+		{
+			"It should add an element to the beginning of an array",
+			`
+				unshift([1, 2, 3], 0);
+			`,
+			[]int{0, 1, 2, 3},
+		},
+		{
+			"It should add an element to an empty array",
+			`
+				unshift([], 1);
+			`,
+			[]int{1},
+		},
+		{
+			"It should add the element to the array with modifying the original array",
+			`
+				let x = [1, 2, 3];
+				unshift(x, 0);
+				return x;
+			`,
+			[]int{0, 1, 2, 3},
+		},
+		{
+			"It should return error if the first argument is not an array",
+			`
+				unshift(1, 2);
+			`,
+			"argument to `unshift` must be ARRAY, got INTEGER",
+		},
+		{
+			"It should return error if the number of arguments is not 2",
+			`
+				unshift([1], 2, 3);
+			`,
+			"wrong number of arguments passed to unshift(). got=3, want=2",
+		},
+	}
+
+	for _, val := range tests {
+		evaluated := testEval(val.input)
+
+		switch expected := val.expected.(type) {
+		case []int:
+			array, ok := evaluated.(*object.Array)
+
+			if !ok {
+				t.Errorf("object is not Array. got=%T (%+v)", evaluated, evaluated)
+				continue
+			}
+
+			if len(array.Elements) != len(expected) {
+				t.Errorf("Mismatch number of elements in the array. want=%d, got=%d", len(expected), len(array.Elements))
+				continue
+			}
+
+			for idx, element := range array.Elements {
+				testIntegerObject(t, element, int64(expected[idx]))
+			}
+
+		case string:
+			errObj, ok := evaluated.(*object.Error)
+
+			if !ok {
+				t.Errorf("object is not Error. got=%T (%+v)", evaluated, evaluated)
+				continue
+			}
+
+			if errObj.Msg != expected {
+				t.Errorf("wrong error message. expected=%q, got=%q", expected, errObj.Msg)
+			}
+		}
+	}
+}
