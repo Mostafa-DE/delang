@@ -127,6 +127,17 @@ func TestLogsFunction(t *testing.T) {
 			`,
 			[]string{"null"},
 		},
+		{
+			"It should log a value inside self invoking function",
+			`
+				fun() {
+					let x = 1;
+					logs(x);
+				}();
+
+			`,
+			[]string{"1"},
+		},
 	}
 
 	for _, val := range tests {
