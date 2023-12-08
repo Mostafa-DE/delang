@@ -317,7 +317,7 @@ var builtins = map[string]*object.Builtin{
 
 			}
 		},
-		Desc: "Converts an integer to a decimal",
+		Desc: "Converts an integer, float or string to a decimal",
 		Name: "decimal",
 	},
 
