@@ -2,6 +2,7 @@ package evaluator
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/Mostafa-DE/delang/object"
 
@@ -545,5 +546,17 @@ var builtins = map[string]*object.Builtin{
 		},
 		Desc: "Converts a value to a string",
 		Name: "str",
+	},
+
+	// TODO: Add tests
+	"time": {
+		Func: func(args ...object.Object) object.Object {
+			now := time.Now()
+			seconds := float64(now.Unix()) + float64(now.Nanosecond())/1e9
+			return &object.Decimal{Value: decimal.NewFromFloat(seconds)}
+		},
+
+		Desc: "Returns the current time in seconds",
+		Name: "time",
 	},
 }
