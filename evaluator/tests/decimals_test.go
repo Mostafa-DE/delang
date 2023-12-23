@@ -280,7 +280,7 @@ func TestAddRoundingDecimal(t *testing.T) {
 			t.Errorf("Expected evaluated to be a decimal. Got=nil")
 		}
 
-		if evaluatedDecimal.Value.String() != val.expected {
+		if evaluatedDecimal != nil && evaluatedDecimal.Value.String() != val.expected {
 			t.Errorf("Expected %s, got %s", val.expected, evaluatedDecimal.Value.String())
 		}
 

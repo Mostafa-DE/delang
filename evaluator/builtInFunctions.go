@@ -240,8 +240,6 @@ var builtins = map[string]*object.Builtin{
 		Desc: "Prints the result to the console",
 		Name: "logs",
 	},
-
-	// TODO: Add tests
 	"del": {
 		Func: func(args ...object.Object) object.Object {
 			if len(args) != 2 {
@@ -251,7 +249,7 @@ var builtins = map[string]*object.Builtin{
 			hash, ok := args[0].(*object.Hash)
 
 			if !ok {
-				return throwError("argument to `del` must be dictionary, got %s", args[0].Type())
+				return throwError("first argument to `del` must be HASH, got %s", args[0].Type())
 			}
 
 			key, ok := args[1].(object.Hashable)

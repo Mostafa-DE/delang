@@ -934,3 +934,82 @@ func TestUnshiftFunction(t *testing.T) {
 		}
 	}
 }
+
+func TestDelFunction(t *testing.T) {
+	tests := []struct {
+		description string
+		input       string
+		expected    interface{}
+	}{
+		{
+			"It should delete the given key from the object",
+			`
+				let x = { "name": "Mostafa", "age": 25 };
+				del(x, "name");
+				return x;
+			`,
+			map[string]interface{}{"age": 25},
+		},
+		{
+			"It should delete the given key from the object with modifying the original object",
+			`
+				let x = { "name": "Mostafa", "age": 25 };
+				del(x, "name");
+				return x;
+			`,
+			map[string]interface{}{"age": 25},
+		},
+		{
+			"It should return error if the first argument is not an object",
+			`
+				del(1, "name");
+			`,
+			"first argument to `del` must be HASH, got INTEGER",
+		},
+		{
+			"It should return error if the number of arguments is not 2",
+			`
+				del({ "name": "Mostafa" }, "name", "age");
+			`,
+			"wrong number of arguments passed to del(). got=3, want=2",
+		},
+		{
+			"It should return error if the key is not hashable",
+			`
+				del({ "name": "Mostafa" }, [1, 2, 3]);
+			`,
+			"unusable as hash key: ARRAY",
+		},
+	}
+
+	for _, val := range tests {
+		evaluated := testEval(val.input)
+
+		switch expected := val.expected.(type) {
+		case map[string]interface{}:
+			object, ok := evaluated.(*object.Hash)
+
+			if !ok {
+				t.Errorf("object is not Hash. got=%T (%+v)", evaluated, evaluated)
+				continue
+			}
+
+			if len(object.Pairs) != len(expected) {
+				t.Errorf("Mismatch Hash pairs. expected=%d, got=%d", len(expected), len(object.Pairs))
+				continue
+			}
+
+		case string:
+			errObj, ok := evaluated.(*object.Error)
+
+			if !ok {
+				t.Errorf("object is not Error. got=%T (%+v)", evaluated, evaluated)
+				continue
+			}
+
+			if errObj.Msg != expected {
+				t.Errorf("wrong error message. expected=%q, got=%q", expected, errObj.Msg)
+			}
+		}
+	}
+}
