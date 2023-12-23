@@ -1,8 +1,9 @@
 ![alt text](https://res.cloudinary.com/dcj3o6yi5/image/upload/v1694817428/delang_ir5crh.gif)
 
 # What is delang?
-Delang (DE) is a user-friendly programming language developed as a graduate project.
-It incorporates concepts from various programming languages to create a unique and enjoyable coding experience.
+is an interpreted, functional, dynamic, high-level programming language.
+It is Javascript-Python-like, combining the two language syntaxes.
+The language was created as a project for a graduate degree.
 
 ## Key Features
 * Functional Programming
@@ -16,11 +17,22 @@ It incorporates concepts from various programming languages to create a unique a
 ## Getting DE via Git
 You can check out the DE source tree using the following command:
 
-    $ git clone git@github.com:Mostafa-DE/delang.git
+    git clone git@github.com:Mostafa-DE/delang.git
 
 ## Install DE as a Go package
 
-    $ go get github.com/Mostafa-DE/delang@latest
+    go get github.com/Mostafa-DE/delang@latest
+
+## Install DE on Ubuntu/Debian
+#### Download and Install DE
+    curl -O https://delangbackend.mostafade.com/api/de/ubuntu/de_install.sh && chmod +x ./de_install.sh && ./de_install.sh
+#### Update Shell Configuration
+    source ~/.bashrc or ~/.zshrc
+#### Set Up Go Environment (Only if Go isn't already installed)
+    export GOROOT=/usr/local/go && export PATH=$PATH:$GOROOT/bin
+#### Verify DE Installation
+    de --version
+    
 
 <br />
 
