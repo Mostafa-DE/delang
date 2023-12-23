@@ -107,7 +107,7 @@ func TestLogsFunction(t *testing.T) {
 		{
 			"It should log multiple strings in multiple cases",
 			`
-				let x = fun() {
+				let x = fun(n) {
 					logs("Inside the main function");
 				}
 
