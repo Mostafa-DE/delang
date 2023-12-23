@@ -9,6 +9,10 @@ import (
 func evalFunction(fun object.Object, args []object.Object, env *object.Environment) object.Object {
 	switch fun := fun.(type) {
 	case *object.Function:
+		if len(fun.Parameters) != len(args) {
+			return throwError("wrong number of arguments: want=%d, got=%d", len(fun.Parameters), len(args))
+		}
+
 		localEnv := createLocalEnv(fun, args)
 		evaluated := Eval(fun.Body, localEnv)
 

@@ -135,3 +135,31 @@ func TestHOF(t *testing.T) {
 
 	testIntegerObject(t, testEval(input), 3)
 }
+
+func TestCallingWithoutArgs(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected object.Object
+	}{
+		{
+			`
+				const add = fun(x, y) { return x + y; };
+				// const add = fun() { return 1 + 1; };
+				add();
+			`, &object.Error{Msg: "wrong number of arguments: want=2, got=0"},
+		},
+		{
+			`
+				const _logs = fun(x) { return x; };
+				_logs();
+			`, &object.Error{Msg: "wrong number of arguments: want=1, got=0"},
+		},
+	}
+	for _, val := range tests {
+		evaluated := testEval(val.input)
+
+		if evaluated.Inspect() != val.expected.Inspect() {
+			t.Errorf("Expected %v, got %v", val.expected, evaluated)
+		}
+	}
+}
