@@ -241,12 +241,22 @@ func (p *Parser) parseFunction() ast.Expression {
 
 	function.Parameters = p.parseFunctionParameters()
 
+	if !p.currentTokenTypeIs(token.RIGHTPAR) {
+		p.errors = append(p.errors, "Function is not closed with ')'")
+		return &ast.Function{}
+	}
+
 	if !p.expectPeekType(token.LEFTBRAC) {
 		p.errors = append(p.errors, "Function is not started with '{'")
 		return &ast.Function{}
 	}
 
 	function.Body = p.parseBlockStatement()
+
+	if !p.currentTokenTypeIs(token.RIGHTBRAC) {
+		p.errors = append(p.errors, "Function is not closed with '}'")
+		return &ast.Function{}
+	}
 
 	return function
 }

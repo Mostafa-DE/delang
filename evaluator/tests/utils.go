@@ -21,7 +21,7 @@ func testEval(input string) object.Object {
 		for _, err := range p.Errors() {
 			fmt.Println(err)
 		}
-		return nil
+		return &object.Error{Msg: p.Errors()[0]}
 	}
 
 	env := object.NewEnvironment()

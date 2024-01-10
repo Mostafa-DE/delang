@@ -10,10 +10,8 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-type ObjectType string
-
 type Object interface {
-	Type() ObjectType
+	Type() string
 	Inspect() string
 }
 
@@ -69,7 +67,7 @@ type Array struct {
 }
 
 type HashKey struct {
-	Type  ObjectType
+	Type  string
 	Value uint64
 }
 
@@ -107,7 +105,7 @@ const (
 	SKIP_OBJ     = "SKIP"
 )
 
-func (integer *Integer) Type() ObjectType {
+func (integer *Integer) Type() string {
 	return INTEGER_OBJ
 }
 
@@ -115,7 +113,7 @@ func (integer *Integer) Inspect() string {
 	return fmt.Sprintf("%d", integer.Value)
 }
 
-func (float *Float) Type() ObjectType {
+func (float *Float) Type() string {
 	return FLOAT_OBJ
 }
 
@@ -123,7 +121,7 @@ func (float *Float) Inspect() string {
 	return fmt.Sprintf("%v", float.Value)
 }
 
-func (decimal *Decimal) Type() ObjectType {
+func (decimal *Decimal) Type() string {
 	return DECIMAL_OBJ
 }
 
@@ -131,7 +129,7 @@ func (decimal *Decimal) Inspect() string {
 	return fmt.Sprintf("%v", decimal.Value)
 }
 
-func (boolean *Boolean) Type() ObjectType {
+func (boolean *Boolean) Type() string {
 	return BOOLEAN_OBJ
 }
 
@@ -139,7 +137,7 @@ func (boolean *Boolean) Inspect() string {
 	return fmt.Sprintf("%t", boolean.Value)
 }
 
-func (null *Null) Type() ObjectType {
+func (null *Null) Type() string {
 	return NULL_OBJ
 }
 
@@ -147,7 +145,7 @@ func (null *Null) Inspect() string {
 	return "null"
 }
 
-func (returnObj *Return) Type() ObjectType {
+func (returnObj *Return) Type() string {
 	return RETURN_OBJ
 }
 
@@ -155,7 +153,7 @@ func (returnObj *Return) Inspect() string {
 	return returnObj.Value.Inspect()
 }
 
-func (err *Error) Type() ObjectType {
+func (err *Error) Type() string {
 	return ERROR_OBJ
 }
 
@@ -163,7 +161,7 @@ func (err *Error) Inspect() string {
 	return "ERROR: " + err.Msg
 }
 
-func (function *Function) Type() ObjectType {
+func (function *Function) Type() string {
 	return FUNCTION_OBJ
 }
 
@@ -185,7 +183,7 @@ func (function *Function) Inspect() string {
 	return out.String()
 }
 
-func (str *String) Type() ObjectType {
+func (str *String) Type() string {
 	return STRING_OBJ
 }
 
@@ -193,7 +191,7 @@ func (str *String) Inspect() string {
 	return str.Value
 }
 
-func (builtin *Builtin) Type() ObjectType {
+func (builtin *Builtin) Type() string {
 	return BUILTIN_OBJ
 }
 
@@ -201,7 +199,7 @@ func (builtin *Builtin) Inspect() string {
 	return "builtin function" // TODO: add the name of the function
 }
 
-func (array *Array) Type() ObjectType {
+func (array *Array) Type() string {
 	return ARRAY_OBJ
 }
 
@@ -220,7 +218,7 @@ func (array *Array) Inspect() string {
 	return out.String()
 }
 
-func (buffer *Buffer) Type() ObjectType {
+func (buffer *Buffer) Type() string {
 	return "BUFFER"
 }
 
@@ -235,7 +233,7 @@ func (buffer *Buffer) Inspect() string {
 	return out.String()
 }
 
-func (hash *Hash) Type() ObjectType {
+func (hash *Hash) Type() string {
 	return HASH_OBJ
 }
 
@@ -279,7 +277,7 @@ func (str *String) HashKey() HashKey {
 	return HashKey{Type: str.Type(), Value: h.Sum64()}
 }
 
-func (b *Break) Type() ObjectType {
+func (b *Break) Type() string {
 	return BREAK_OBJ
 }
 
@@ -287,7 +285,7 @@ func (b *Break) Inspect() string {
 	return "break"
 }
 
-func (s *Skip) Type() ObjectType {
+func (s *Skip) Type() string {
 	return SKIP_OBJ
 }
 
