@@ -3,6 +3,7 @@ package repl
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/Mostafa-DE/delang/evaluator"
 	"github.com/Mostafa-DE/delang/lexer"
@@ -25,6 +26,9 @@ func StartSession() {
 	fmt.Printf("Type '.help' to see a list of commands.\n")
 
 	history := []string{}
+
+	history = loadHistoryFromFile("history.txt")
+
 	historyIndex := 0
 	currentInput := ""
 	cursorPosition := 0
@@ -46,6 +50,10 @@ func StartSession() {
 				fmt.Println("\nBye!")
 				return
 			} else {
+				if err := saveHistoryToFile(history, "history.txt"); err != nil {
+					log.Fatalf("Failed to save history: %v", err)
+				}
+
 				fmt.Println()
 				fmt.Printf("\033[33m%s\033[0m\n", "Press ctrl + c again to exit.")
 			}
@@ -78,7 +86,7 @@ func StartSession() {
 	}
 }
 
-func startExec(command string, env *object.Environment) {
+func startExec(command string, env *object.Environment, history *[]string, historyIndex *int) {
 	l := lexer.New(command)
 	p := parser.New(l)
 
@@ -87,11 +95,27 @@ func startExec(command string, env *object.Environment) {
 		return
 	}
 
+	if command == ".exit" {
+		fmt.Println("Bye!")
+		os.Exit(0)
+	}
+
+	if command == ".clearHistory" {
+		*history = []string{}
+		*historyIndex = 0
+		fmt.Println("History cleared.")
+		return
+	}
+
 	if command == ".help" {
 		// This should be a separate function in the future
 		fmt.Println("Commands:")
-		fmt.Println(" ctrl + c: Exit the REPL")
+		fmt.Println(" ctrl + c or .exit: Exit the REPL")
 		fmt.Println(" .clear: Clear the terminal screen")
+		fmt.Println(" .clearHistory: Clear the command history")
+		fmt.Println(" .help: Show this help message")
+		fmt.Println()
+
 		return
 	}
 
@@ -120,7 +144,7 @@ func handleEnterKey(history *[]string, historyIndex *int, currentInput *string, 
 		*history = append(*history, *currentInput)
 		*historyIndex = len(*history)
 
-		startExec(*currentInput, env)
+		startExec(*currentInput, env, history, historyIndex)
 
 		*currentInput = ""
 		*cursorPosition = 0
@@ -134,9 +158,14 @@ func handleArrowUpDown(key keyboard.Key, history *[]string, historyIndex *int, c
 		*historyIndex++
 	}
 
-	if key == keyboard.KeyArrowUp || (key == keyboard.KeyArrowDown && *historyIndex < len(*history)) {
+	if *historyIndex == len(*history) {
+		*currentInput = ""
+		*cursorPosition = 0
+
+	} else if key == keyboard.KeyArrowUp || (key == keyboard.KeyArrowDown && *historyIndex < len(*history)) {
 		*currentInput = (*history)[*historyIndex]
 		*cursorPosition = len(*currentInput)
+
 	} else if key == keyboard.KeyArrowDown && *historyIndex == len(*history) {
 		// This is to handle the case when the user presses the down arrow key after reaching the end of the history
 		*currentInput = ""
