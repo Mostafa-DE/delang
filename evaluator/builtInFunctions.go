@@ -9,8 +9,6 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-// TODO: Revisit this file and refactor it
-
 var builtins = map[string]*object.Builtin{
 	"len": {
 		Func: func(args ...object.Object) object.Object {
@@ -225,6 +223,7 @@ var builtins = map[string]*object.Builtin{
 		Desc: "Adds an element to the beginning of an array",
 		Name: "unshift",
 	},
+
 	"logs": {
 		Func: func(args ...object.Object) object.Object {
 			for _, arg := range args {
@@ -240,6 +239,7 @@ var builtins = map[string]*object.Builtin{
 		Desc: "Prints the result to the console",
 		Name: "logs",
 	},
+
 	"del": {
 		Func: func(args ...object.Object) object.Object {
 			if len(args) != 2 {
@@ -265,6 +265,7 @@ var builtins = map[string]*object.Builtin{
 		Desc: "Deletes a key from a dictionary",
 		Name: "del",
 	},
+
 	"range": {
 		Func: func(args ...object.Object) object.Object {
 			if len(args) <= 0 || len(args) > 2 {
@@ -290,6 +291,7 @@ var builtins = map[string]*object.Builtin{
 		Desc: "Returns an array of integers in the given range",
 		Name: "range",
 	},
+
 	"decimal": {
 		Func: func(args ...object.Object) object.Object {
 			if len(args) != 1 {
@@ -320,7 +322,6 @@ var builtins = map[string]*object.Builtin{
 		Name: "decimal",
 	},
 
-	// TODO: Add tests
 	"typeof": {
 		Func: func(args ...object.Object) object.Object {
 			if len(args) != 1 {
@@ -333,7 +334,6 @@ var builtins = map[string]*object.Builtin{
 		Name: "typeof",
 	},
 
-	// TODO: Add tests
 	"copy": {
 		Func: func(args ...object.Object) object.Object {
 			if len(args) != 1 {
@@ -368,7 +368,6 @@ var builtins = map[string]*object.Builtin{
 		Name: "copy",
 	},
 
-	// TODO: Add tests
 	"input": {
 		Func: func(args ...object.Object) object.Object {
 			if len(args) > 1 {
@@ -388,7 +387,6 @@ var builtins = map[string]*object.Builtin{
 		Name: "input",
 	},
 
-	// TODO: Add tests
 	"int": {
 		Func: func(args ...object.Object) object.Object {
 			if len(args) != 1 {
@@ -421,7 +419,7 @@ var builtins = map[string]*object.Builtin{
 				return arg
 
 			default:
-				return throwError("string argument to `int` not supported, got `%s`", args[0].Inspect())
+				return throwError("argument to `int` not supported, got `%s`", args[0].Inspect())
 
 			}
 		},
@@ -429,7 +427,6 @@ var builtins = map[string]*object.Builtin{
 		Name: "int",
 	},
 
-	// TODO: Add tests
 	"float": {
 		Func: func(args ...object.Object) object.Object {
 			if len(args) != 1 {
@@ -466,7 +463,6 @@ var builtins = map[string]*object.Builtin{
 		Name: "float",
 	},
 
-	// TODO: Add tests
 	"bool": {
 		Func: func(args ...object.Object) object.Object {
 			if len(args) != 1 {
@@ -514,7 +510,6 @@ var builtins = map[string]*object.Builtin{
 		Name: "bool",
 	},
 
-	// TODO: Add tests
 	"str": {
 		Func: func(args ...object.Object) object.Object {
 			if len(args) != 1 {
@@ -546,7 +541,6 @@ var builtins = map[string]*object.Builtin{
 		Name: "str",
 	},
 
-	// TODO: Add tests
 	"time": {
 		Func: func(args ...object.Object) object.Object {
 			now := time.Now()

@@ -1013,3 +1013,389 @@ func TestDelFunction(t *testing.T) {
 		}
 	}
 }
+
+func TestTypeof(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{
+			`
+				typeof(1);
+			`,
+			"INTEGER",
+		},
+		{
+			`
+				typeof("hello");
+			`,
+			"STRING",
+		},
+		{
+			`
+				typeof(true);
+			`,
+			"BOOLEAN",
+		},
+		{
+			`
+				typeof([1, 2, 3]);
+			`,
+			"ARRAY",
+		},
+		{
+			`
+				typeof({ "name": "Mostafa" });
+			`,
+			"HASH",
+		},
+		{
+			`
+				typeof(fun() {});
+			`,
+			"FUNCTION",
+		},
+	}
+
+	for _, val := range tests {
+		evaluated := testEval(val.input)
+		testStringObject(t, evaluated, val.expected)
+	}
+}
+
+func TestCopy(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{
+			`
+				copy([1, 2, 3]);
+			`,
+			[]int{1, 2, 3},
+		},
+		{
+			`
+				const arr = [1, 2, 3];
+				copy(arr);
+			`,
+			[]int{1, 2, 3},
+		},
+		{
+			`
+				const arr = [1, 2, 3];
+				const arr2 = copy(arr);
+				arr2[0] = 0;
+
+				return arr;
+			`,
+			[]int{1, 2, 3},
+		},
+		{
+			`
+				const arr1 = [1, 2, 3];
+				const arr2 = arr1;
+
+				return arr1 == arr2;
+			`,
+			true,
+		},
+		{
+			`
+				const arr1 = [1, 2, 3];
+				const arr2 = copy(arr1);
+
+				return arr1 == arr2;
+			`,
+			false,
+		},
+	}
+
+	for _, val := range tests {
+		evaluated := testEval(val.input)
+
+		switch expected := val.expected.(type) {
+		case []int:
+			array, _ := evaluated.(*object.Array)
+
+			if len(array.Elements) != len(expected) {
+				t.Errorf("Mismatch number of elements in the array. want=%d, got=%d", len(expected), len(array.Elements))
+				continue
+			}
+
+			for idx, element := range array.Elements {
+				testIntegerObject(t, element, int64(expected[idx]))
+			}
+
+		case bool:
+			boolObj, _ := evaluated.(*object.Boolean)
+			testBooleanObject(t, boolObj, expected)
+
+		default:
+			t.Errorf("Unknown type. got=%T", expected)
+		}
+	}
+}
+
+func TestInt(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{
+			`
+				int("1");
+			`,
+			1,
+		},
+		{
+			`
+				int(1);
+			`,
+			1,
+		},
+		{
+			`
+				int(1.5);
+			`,
+			1,
+		},
+		{
+			`
+				int(true);
+			`,
+			1,
+		},
+		{
+			`
+				int(false);
+			`,
+			0,
+		},
+		{
+			`
+				const num = decimal("1.5"); 
+				int(num);
+			`,
+			1,
+		},
+		{
+			`
+				int("hello");
+			`,
+			"string argument to `int` not supported, got `hello`",
+		},
+		{
+			`
+				int([1, 2, 3]);
+			`,
+			"argument to `int` not supported, got `[1, 2, 3]`",
+		},
+		{
+			`
+				int(1, 1);
+			`,
+			"wrong number of arguments passed to int(). got=2, want=1",
+		},
+	}
+
+	for _, val := range tests {
+		evaluated := testEval(val.input)
+
+		switch expected := val.expected.(type) {
+		case int:
+			intObj, _ := evaluated.(*object.Integer)
+			testIntegerObject(t, intObj, int64(expected))
+
+		case string:
+			errObj, _ := evaluated.(*object.Error)
+			testErrorObject(t, errObj, expected)
+
+		default:
+			t.Errorf("Unknown type. got=%T", expected)
+		}
+	}
+}
+
+func TestFloat(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{
+			`
+				float("1");
+			`,
+			float64(1),
+		},
+		{
+			`
+				float(1);
+			`,
+			float64(1),
+		},
+		{
+			`
+				typeof(float(1));
+			`,
+			"FLOAT",
+		},
+		{
+			`
+				float(1.5);
+			`,
+			float64(1.5),
+		},
+	}
+
+	for _, val := range tests {
+		evaluated := testEval(val.input)
+
+		switch expected := val.expected.(type) {
+		case float64:
+			floatObj, _ := evaluated.(*object.Float)
+			testFloatObject(t, floatObj, expected)
+
+		case string:
+			strObj, _ := evaluated.(*object.String)
+			testStringObject(t, strObj, expected)
+
+		default:
+			t.Errorf("Unknown type. got=%T", expected)
+		}
+	}
+}
+
+func TestBool(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected bool
+	}{
+		{
+			`
+				bool("1");
+			`,
+			true,
+		},
+		{
+			`
+				bool(1);
+			`,
+			true,
+		},
+		{
+			`
+				bool(1.5);
+			`,
+			true,
+		},
+		{
+			`
+				bool("hello");
+			`,
+			true,
+		},
+		{
+			`
+				bool([1, 2, 3]);
+			`,
+			true,
+		},
+		{
+			`
+				bool(decimal("1.5"));
+			`,
+			true,
+		},
+		{
+			`
+				bool(true);
+			`,
+			true,
+		},
+		{
+			`
+				bool("");
+			`,
+			false,
+		},
+		{
+			`
+				bool(0);
+			`,
+			false,
+		},
+		{
+			`
+				bool(0.0);
+			`,
+			false,
+		},
+		{
+			`
+				bool(false);
+			`,
+			false,
+		},
+	}
+
+	for _, val := range tests {
+		evaluated := testEval(val.input)
+		testBooleanObject(t, evaluated, val.expected)
+	}
+}
+
+func TestStr(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{
+			`
+				str(1);
+			`,
+			"1",
+		},
+		{
+			`
+				str(1.5);
+			`,
+			"1.5",
+		},
+		{
+			`
+				str(true);
+			`,
+			"true",
+		},
+		{
+			`
+				str(false);
+			`,
+			"false",
+		},
+		{
+			`
+				str([1, 2, 3]);
+			`,
+			"[1, 2, 3]",
+		},
+		{
+			`
+				str({ "lang": "DE!" });
+			`,
+			"{'lang': 'DE!'}",
+		},
+		{
+			`
+				str(decimal("1.5"));
+			`,
+			"1.5",
+		},
+	}
+
+	for _, val := range tests {
+		evaluated := testEval(val.input)
+		testStringObject(t, evaluated, val.expected)
+	}
+}
