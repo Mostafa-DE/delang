@@ -1,13 +1,8 @@
 package tests
 
-import (
-	"testing"
+import "testing"
 
-	"github.com/Mostafa-DE/delang/object"
-)
-
-// TODO: This should be multiple tests instead of one big test, to cover more cases
-func TestErrorHandling(t *testing.T) {
+func TestMismatchOperations(t *testing.T) {
 	tests := []struct {
 		input    string
 		expected string
@@ -46,6 +41,24 @@ func TestErrorHandling(t *testing.T) {
 		},
 		{
 			`
+				5 > true;
+			`,
+			"type mismatch: INTEGER > BOOLEAN",
+		},
+		{
+			`
+				5 < true;
+			`,
+			"type mismatch: INTEGER < BOOLEAN",
+		},
+		{
+			`
+				"Hello" - "World";
+			`,
+			"unknown operator: STRING - STRING",
+		},
+		{
+			`
 				if 10 > 1: {
 					if 10 > 1: {
 						return true + false;
@@ -54,6 +67,19 @@ func TestErrorHandling(t *testing.T) {
 			`,
 			"unknown operator: BOOLEAN + BOOLEAN",
 		},
+	}
+
+	for _, val := range tests {
+		evaluated := testEval(val.input)
+		testErrorObject(t, evaluated, val.expected)
+	}
+}
+
+func TestIdentifierNotFound(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
 		{
 			`
 				de;
@@ -62,10 +88,27 @@ func TestErrorHandling(t *testing.T) {
 		},
 		{
 			`
-				"Hello" - "World";
+				const a = 5;
+				const b = 6;
+				const c = 7;
+
+				a + b + c + d;
 			`,
-			"unknown operator: STRING - STRING",
+			"identifier not found: d",
 		},
+	}
+
+	for _, val := range tests {
+		evaluated := testEval(val.input)
+		testErrorObject(t, evaluated, val.expected)
+	}
+}
+
+func TestConstantReassign(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
 		{
 			`
 				const a = 5;
@@ -96,14 +139,19 @@ func TestErrorHandling(t *testing.T) {
 			`,
 			"Cannot reassign constant 'PI'",
 		},
-		{
-			`
-				for _, num in [1, 2, 3]: {
-					logs(_);
-				}
-			`,
-			"identifier not found: _",
-		},
+	}
+
+	for _, val := range tests {
+		evaluated := testEval(val.input)
+		testErrorObject(t, evaluated, val.expected)
+	}
+}
+
+func TestDivisionByZero(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
 		{
 			`1 / 0;`,
 			"division by zero",
@@ -124,6 +172,19 @@ func TestErrorHandling(t *testing.T) {
 			`decimal(1) / 0;`,
 			"division by zero",
 		},
+	}
+
+	for _, val := range tests {
+		evaluated := testEval(val.input)
+		testErrorObject(t, evaluated, val.expected)
+	}
+}
+
+func TestRangeDecimal(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
 		{
 			`
 				_getDecimalData["divPrec"] = -1;
@@ -164,6 +225,19 @@ func TestErrorHandling(t *testing.T) {
 			`,
 			"Valid range for divPrec is [0 to 28]",
 		},
+	}
+
+	for _, val := range tests {
+		evaluated := testEval(val.input)
+		testErrorObject(t, evaluated, val.expected)
+	}
+}
+
+func TestShadowInitialize(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
 		{
 			`
 				const len = fun(arr) {
@@ -244,16 +318,6 @@ func TestErrorHandling(t *testing.T) {
 
 	for _, val := range tests {
 		evaluated := testEval(val.input)
-		errObj, ok := evaluated.(*object.Error)
-
-		if !ok {
-			t.Errorf("no error object returned. got=%T(%+v)", evaluated, evaluated)
-			continue
-		}
-
-		if errObj.Msg != val.expected {
-			t.Errorf("wrong error message. expected=%q, got=%q", val.expected, errObj.Msg)
-		}
+		testErrorObject(t, evaluated, val.expected)
 	}
-
 }
