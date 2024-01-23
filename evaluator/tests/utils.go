@@ -105,6 +105,21 @@ func testStringObject(t *testing.T, obj object.Object, expected string) bool {
 	return true
 }
 
+func testErrorObject(t *testing.T, obj object.Object, expected string) bool {
+	err, ok := obj.(*object.Error)
+	if !ok {
+		t.Errorf("Object is not an error. Got %T (%+v)", obj, obj)
+		return false
+	}
+
+	if err.Msg != expected {
+		t.Errorf("Wrong error message. Got %s, expected %s", err.Msg, expected)
+		return false
+	}
+
+	return true
+}
+
 func throwError(format string, a ...interface{}) *object.Error {
 	return &object.Error{Msg: fmt.Sprintf(format, a...)}
 }
