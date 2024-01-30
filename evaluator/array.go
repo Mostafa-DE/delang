@@ -8,8 +8,7 @@ func evalArrayIndex(array object.Object, index object.Object) object.Object {
 	max := int64(len(arrayObject.Elements) - 1)
 
 	if idx < 0 || idx > max {
-		// TODO: For now we return NULL, but we need to return an error
-		return NULL
+		return throwError("Index out of range")
 	}
 
 	return arrayObject.Elements[idx]

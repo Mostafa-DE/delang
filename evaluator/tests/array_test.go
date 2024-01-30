@@ -85,23 +85,24 @@ func TestArrayIndexExpression(t *testing.T) {
 		},
 		{
 			"[1, 2, 3][3];",
-			nil,
+			&object.Error{Msg: "Index out of range"},
 		},
 		{
 			"[1, 2, 3][-1];",
-			nil,
+			&object.Error{Msg: "Index out of range"},
 		},
 	}
 
 	for _, val := range tests {
 		evaluated := testEval(val.input)
 
-		integer, ok := val.expected.(int)
-
-		if ok {
-			testIntegerObject(t, evaluated, int64(integer))
-		} else {
-			testNullObject(t, evaluated)
+		switch expected := val.expected.(type) {
+		case int:
+			testIntegerObject(t, evaluated, int64(expected))
+		case *object.Error:
+			testErrorObject(t, evaluated, expected.Msg)
+		default:
+			t.Errorf("Unknown type %T", expected)
 		}
 	}
 }
