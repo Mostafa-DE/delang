@@ -20,7 +20,7 @@ func evalFunction(fun object.Object, args []object.Object, env *object.Environme
 
 	case *object.Builtin:
 		// TODO: This should be handled in a better way
-		// TODO: consider moving this to logs builtin function
+		// consider moving this to logs builtin function
 		if fun.Name == "logs" {
 			var buffer []bytes.Buffer
 

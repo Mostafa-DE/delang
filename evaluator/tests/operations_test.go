@@ -85,7 +85,6 @@ func TestExclamationOperator(T *testing.T) {
 	}
 }
 
-// TODO: Split this into multiple tests
 func TestGreater_Less_EQ_Operation(t *testing.T) {
 	tests := []struct {
 		input    string

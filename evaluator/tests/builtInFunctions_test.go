@@ -543,7 +543,6 @@ func TestPushFunction(t *testing.T) {
 			`,
 			[]int{1, 2, 3, 4},
 		},
-		// TODO: Move this to a separate test
 		{
 			"It should return error if the first argument is not an array",
 			`
@@ -551,7 +550,6 @@ func TestPushFunction(t *testing.T) {
 			`,
 			"argument to `push` must be ARRAY, got INTEGER",
 		},
-		// TODO: Move this to a separate test
 		{
 			"It should return error if the number of arguments is not 2",
 			`
@@ -716,8 +714,6 @@ func TestRangeFunction(t *testing.T) {
 			`,
 			[]int{},
 		},
-
-		// TODO: Move this to a separate test
 		{
 			"It should return error if the argument is not an integer",
 			`

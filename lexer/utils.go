@@ -11,7 +11,6 @@ func (l *Lexer) skipWhiteSpace() {
 }
 
 func isNumber(char byte) bool {
-	// This is just for INT, TODO: consider adding (float, hex, octal) etc...
 	return char >= '0' && char <= '9'
 }
 
@@ -25,6 +24,11 @@ func (l *Lexer) readIdentifier() string {
 }
 
 func (l *Lexer) readNumber() string {
+	// In DE we only support `int` and `float` types
+	// For alternative float you can use `decimal` type
+	// Refer to the documentation for more information
+	// https://delang.mostafade.com/play/dataTypes/decimal1
+
 	position := l.currentPosition
 	for isNumber(l.currentChar) {
 		l.readChar()
