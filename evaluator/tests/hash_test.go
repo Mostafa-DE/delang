@@ -64,7 +64,7 @@ func TestHashIndexExpressions(t *testing.T) {
 		},
 		{
 			`{"name": "DELANG"}["age"]`,
-			nil,
+			&object.Null{},
 		},
 		{
 			`let key = "name"; {"name": "DELANG"}[key]`,
@@ -72,7 +72,7 @@ func TestHashIndexExpressions(t *testing.T) {
 		},
 		{
 			`{}["name"]`,
-			nil,
+			&object.Null{},
 		},
 		{
 			`{5: 5}[5]`,
@@ -90,12 +90,17 @@ func TestHashIndexExpressions(t *testing.T) {
 
 	for _, val := range tests {
 		evaluated := testEval(val.input)
-		integer, ok := val.expected.(int)
 
-		if ok {
-			testIntegerObject(t, evaluated, int64(integer))
-		} else {
+		switch expected := val.expected.(type) {
+		case int:
+			testIntegerObject(t, evaluated, int64(expected))
+		case string:
+			testStringObject(t, evaluated, expected)
+		case *object.Null:
 			testNullObject(t, evaluated)
+
+		default:
+			t.Errorf("Unknown type %T", expected)
 		}
 	}
 }

@@ -79,7 +79,8 @@ func testDecimalObject(t *testing.T, obj object.Object, expected decimal.Decimal
 
 func testNullObject(t *testing.T, obj object.Object) bool {
 	if obj.Inspect() != "null" {
-		return true
+		t.Errorf("Object is not NULL. Got %T (%+v)", obj, obj)
+		return false
 	}
 
 	if obj != evaluator.NULL {
