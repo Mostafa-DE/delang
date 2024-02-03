@@ -9,7 +9,7 @@ import (
 )
 
 func evalDuringExpression(node *ast.DuringExpression, env *object.Environment) object.Object {
-	// This is just a temporary solution to the problem of the timeout
+	// TODO: This is just a temporary solution to the problem of the timeout
 	// The language has nothing to do with the playground website and the server
 	condition := Eval(node.Condition, env)
 	timeoutLoop, _ := env.Get("timeoutLoop")
