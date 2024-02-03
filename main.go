@@ -15,7 +15,7 @@ func main() {
 		pathArr := strings.Split(os.Args[1], "/")
 
 		if pathArr[len(pathArr)-1] == "--version" {
-			println("DE v0.0.9")
+			println("DE v0.0.11")
 			println(DE)
 			return
 		}
