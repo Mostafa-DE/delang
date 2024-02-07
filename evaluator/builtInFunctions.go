@@ -277,14 +277,18 @@ var builtins = map[string]*object.Builtin{
 					return throwError("argument to `range` must be INTEGER")
 				}
 
-				return makeRangeArray(0, args[0].(*object.Integer).Value)
+				if args[0].(*object.Integer).Value < 0 {
+					return &object.Array{Elements: []object.Object{}}
+				}
+
+				return makeRangeArray(0, args[0].(*object.Integer).Value-1)
 
 			} else {
 				if args[0].Type() != object.INTEGER_OBJ || args[1].Type() != object.INTEGER_OBJ {
 					return throwError("argument to `range` must be INTEGER")
 				}
 
-				return makeRangeArray(args[0].(*object.Integer).Value, args[1].(*object.Integer).Value)
+				return makeRangeArray(args[0].(*object.Integer).Value, args[1].(*object.Integer).Value-1)
 			}
 
 		},

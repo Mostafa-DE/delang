@@ -694,18 +694,18 @@ func TestRangeFunction(t *testing.T) {
 		expected    interface{}
 	}{
 		{
-			"It should return an array of numbers from 0 to the given number",
+			"It should return an array of numbers from 0 to the given number (exclusive)",
 			`
 				range(5);
 			`,
-			[]int{0, 1, 2, 3, 4, 5},
+			[]int{0, 1, 2, 3, 4},
 		},
 		{
 			"It should return an empty array if the given number is 0",
 			`
 				range(0);
 			`,
-			[]int{0},
+			[]int{},
 		},
 		{
 			"It should return an empty array if the given number is negative",
@@ -713,6 +713,13 @@ func TestRangeFunction(t *testing.T) {
 				range(-1);
 			`,
 			[]int{},
+		},
+		{
+			"It should return range from negative number to the given number (exclusive)",
+			`
+				range(-1, 3);
+			`,
+			[]int{-1, 0, 1, 2},
 		},
 		{
 			"It should return error if the argument is not an integer",
