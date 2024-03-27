@@ -1,7 +1,7 @@
 ![alt text](https://res.cloudinary.com/dcj3o6yi5/image/upload/v1694817428/delang_ir5crh.gif)
 
 # What is delang?
-An interpreted, functional, dynamic, high-level programming language.
+An interpreted, dynamic, high-level programming language.
 It is Javascript-Python-like, combining the two language syntaxes.
 The language was created as a project for a graduate degree.
 
