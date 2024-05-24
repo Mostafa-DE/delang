@@ -2,7 +2,6 @@ package execFile
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"github.com/Mostafa-DE/delang/evaluator"
@@ -18,7 +17,7 @@ func getFileContent() []byte {
 	}
 
 	filename := os.Args[1]
-	content, err := ioutil.ReadFile(filename)
+	content, err := os.ReadFile(filename)
 
 	if err != nil {
 		fmt.Println("Error reading file:", err)
