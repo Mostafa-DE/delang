@@ -22,7 +22,7 @@ func StartSession() {
 	}
 	defer keyboard.Close()
 
-	fmt.Printf("Hi! Welcome to DE v0.0.11\n")
+	fmt.Printf("Hi! Welcome to DE\n")
 	fmt.Printf("Type '.help' to see a list of commands.\n")
 
 	history := []string{}
