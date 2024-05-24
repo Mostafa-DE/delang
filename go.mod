@@ -1,6 +1,6 @@
 module github.com/Mostafa-DE/delang
 
-go 1.22.1
+go 1.22.3
 
 require (
 	github.com/eiannone/keyboard v0.0.0-20220611211555-0d226195f203
